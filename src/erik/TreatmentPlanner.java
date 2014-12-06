@@ -19,6 +19,10 @@ public class TreatmentPlanner {
 
 	public static void main(String[] args) {
 		
+		
+		//Test
+		
+		int bla =0 ;
 		/*
 	    // Start visualization
 	    Voxel[][][] testData = new Voxel[1][1][5];
