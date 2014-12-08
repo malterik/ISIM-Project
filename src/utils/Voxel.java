@@ -9,12 +9,21 @@ public class Voxel implements Serializable {
 	private double goalDosis;
 	private double currentDosis;
 	private Coordinate coordinate;
+	private int bodyType = -1;
 	
 	
 	public Voxel(int x, int y, int z) {
 		
 		coordinate = new Coordinate(x, y, z);
 		
+	}
+	
+	public void setBodyType (int bodyType) {
+		this.bodyType = bodyType;
+	}
+	
+	public int getBodyType () {
+		return bodyType;
 	}
 	
 	/**

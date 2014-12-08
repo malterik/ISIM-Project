@@ -1,16 +1,15 @@
 package sebastian;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-
-import com.jmatio.io.MatFileReader;
-import com.jmatio.types.MLArray;
 
 import utils.LogTool;
 import utils.Voxel;
@@ -139,7 +138,7 @@ public class SimpleDB {
 		
 		
 		for (int i = 0; i < treatmentEntries.size (); i++) {
-			ooStr.writeObject(treatmentEntries.get(i));
+			if (treatmentEntries.get(i).doSave()) ooStr.writeObject(treatmentEntries.get(i));
 		}
 		
 		ooStr.close();
@@ -161,23 +160,64 @@ public class SimpleDB {
   }
   
   public void readMatlabFile (File mFile) {
-	  MatFileReader mfr = null;
-	  MLArray array = null;
-	  Voxel[][][] body = null;
-	  
-	  try {
-		mfr = new MatFileReader (mFile);
-		array = mfr.getMLArray("phantom");
-		
-		
-		if (array != null) {
+    	BufferedReader reader = null;
+    	String line = "";
+    	String[] elements = null;
+    	boolean init = false;
+    	int[] dims = new int[3];
+    	dims[0] = 10; dims[1] = 10; dims[2] = 10;
+    	int x = 0, y = 0, z = 0, j = 0;
+    	Voxel[][][] body = null;
+    	
+    	try {		
+			reader = new BufferedReader (new FileReader(mFile));
 			
-			body = new Voxel[array.getDimensions()[0]][array.getDimensions()[1]][array.getDimensions()[2]];
+			while ((line = reader.readLine()) != null) {
+				elements = line.split(",");
+				
+				for (int i = 0; i < elements.length; i++) {
+					if (!init) {
+						dims[i] = Integer.parseInt (elements[i]);
+						
+						if (i == 2) {
+							body = new Voxel[dims[0]][dims[1]][dims[2]];
+							init = true;
+						}
+					}
+					else {
+						body[x][y][z] = new Voxel(x, y, z);
+						body[x][y][z].setBodyType(Integer.parseInt(elements[i].trim()));
+						z++;
+						j++;
+						
+						if (z >= dims[2] ) {
+							z = 0;
+							y++;
+						}
+						if (y >= dims[1]) {
+							y = 0;
+							x++;
+						}
+						if (x > dims[0]) {
+							System.out.println ("Error reading file: out of x-direction: " + x + "|" + dims[0]);
+							System.out.println ("j" + j);
+							return;
+						}
+					}	
+				}
+			}
 			
+			reader.close ();
+			
+			TreatmentEntry entry = new TreatmentEntry (body, dims, null);
+			entry.setSavePrevent(true);
+			addEntry (entry);
+			
+		} catch (FileNotFoundException fnfExc) {
+			LogTool.print("Could not find file: " + fnfExc, "error");
+		} catch (IOException ioExc) {
+			LogTool.print("Could not print to file: " + ioExc, "error");
 		}
-	} catch (IOException ioExc) {
-		LogTool.print("Could not read file: " + ioExc, "error");
-	}
   }
   
   public void checkForMatlabFiles () {
@@ -185,10 +225,14 @@ public class SimpleDB {
 	  File folder = new File (System.getProperty("user.dir"));
 	  File[] listOfFiles = folder.listFiles();
 	  
+	  System.out.println ("Checking for matlab files");
+	  
 	  if (listOfFiles != null) {
 		  for (File file: listOfFiles) {
-			  if (file.isFile() && file.getName().endsWith(".mat")) {
+			  if (file.isFile() && file.getName().endsWith(".mxt")) {
+				  System.out.println ("Checking file " + file.getName());
 				  readMatlabFile (file);
+				  break;
 			  }
 		  }
 	  }

@@ -12,12 +12,21 @@ public class TreatmentEntry implements Serializable {
   private int[] dims = null;
   private ArrayList<Coordinate> seedPositions = null;
   private int id = -1;
+  boolean preventSave = false;
   
   public TreatmentEntry(Voxel[][][] bodyArray, int[] dims, ArrayList<Coordinate> seedPositions) {
 	  this.bodyArray = bodyArray;
 	  this.dims = dims;
 	  this.seedPositions = seedPositions;
 	  this.id = SimpleDB.getID ();
+  }
+  
+  public void setSavePrevent (boolean preventSave) {
+	  this.preventSave = preventSave;
+  }
+  
+  public boolean doSave () {
+	  return !preventSave;
   }
   
   public Voxel[][][] getBodyArray () {
