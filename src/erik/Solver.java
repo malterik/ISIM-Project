@@ -1,13 +1,6 @@
 package erik;
 
-import java.util.List;
-
-import utils.Config;
-import utils.Coordinate;
-import utils.GeneticAlg;
 import utils.LogTool;
-import utils.RandGenerator;
-import utils.Seed;
 import utils.Voxel;
 
 public class Solver {

@@ -1,16 +1,8 @@
 package erik;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import sebastian.SimpleDB;
-import sebastian.TreatmentEntry;
 import utils.Config;
-import utils.Coordinate;
-import utils.GeneticAlg;
 import utils.LogTool;
-import utils.RandGenerator;
-import utils.Seed;
 import utils.Voxel;
 
 

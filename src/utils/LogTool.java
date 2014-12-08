@@ -19,19 +19,6 @@ public class LogTool {
 		
 	}
 
-public static void printGene(List<GeneticAlg<Seed>.EvaluatedGene> input) {
-		int count=0;
-		for(GeneticAlg<Seed>.EvaluatedGene eg : input) {
-			LogTool.print("Gene "+count,"debug");
-			count++;
-			for(Seed s: eg.value) {
-				
-				LogTool.print(Long.toString(s.getDurationMilliSec()), "debug");
-			}
-			//LogTool.print("Fitness Value: "+ eg.fitness, "debug");
-			
-			
-		}
-	}
+
 
 }
