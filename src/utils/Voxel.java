@@ -24,15 +24,18 @@ public class Voxel implements Serializable {
 	 * @return
 	 * The distance to the voxel
 	 */
-	public double distanceToVoxel (Voxel voxel) {
+	public double distanceToVoxel (Coordinate position) {
 		
-	    return( Math.sqrt( Math.pow(this.getCoordinate().getX()-voxel.getCoordinate().getX(), 2) + Math.pow(this.getCoordinate().getY()-voxel.getCoordinate().getY(), 2) + Math.pow(this.getCoordinate().getZ()-voxel.getCoordinate().getZ(), 2) ) );
+	    return( Math.sqrt( Math.pow(this.getCoordinate().getX()-position.getX(), 2) + Math.pow(this.getCoordinate().getY()-position.getY(), 2) + Math.pow(this.getCoordinate().getZ()-position.getZ(), 2) ) );
 				
 	}
-	
-	public double radiationIntensity(double distance, long durationMilliSec){
+	public double radiationIntensity(Coordinate position, long durationMilliSec){
+		
+		double distance = distanceToVoxel(position);
 		return ( Config.alpha * Math.exp( Config.beta * distance)) * durationMilliSec;
 	}
+	
+	
 	
 		
 	public int getX() {

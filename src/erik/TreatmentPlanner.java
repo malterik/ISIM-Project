@@ -65,14 +65,9 @@ public class TreatmentPlanner {
 		/*db = new SimpleDB ();
 		db.print ();*/
 		
-		System.exit (0);
+		//System.exit (0);
 		// End of db test
-		
-		List<Seed> gene1 = new ArrayList<Seed>();
-		List<Seed> gene2 = new ArrayList<Seed>();
-		List<Seed> gene3 = new ArrayList<Seed>();
-		
-		List<List<Seed>> geneList = new ArrayList<List<Seed>>();
+	
 		int ptvSize = 0;
 		int oarSize = 0;
 		
@@ -106,46 +101,13 @@ public class TreatmentPlanner {
 		
 		Solver solver = new Solver(body);			// The Solver implements the genetic Algorithm
 		LogTool.print("Initialized Solver!","notification");
-		
-		// Create the seeds & genes
-		for(int i=0; i< Config.numberOfGenes; i++)  {
-			List<Seed> gene = new ArrayList<Seed>();
-			
-			for(int j=0; j < Config.numberOfSeeds; j++) {
-				Seed seed = new Seed(RandGenerator.randInt(Config.ptvXLow, Config.ptvXHigh),RandGenerator.randInt(Config.ptvYLow, Config.ptvYHigh),RandGenerator.randInt(Config.ptvZLow, Config.ptvZHigh),RandGenerator.randInt(0,(int) Config.ptvMaxDose));
-				LogTool.print(seed.getX()+" "+seed.getY()+" "+seed.getY()+" "+seed.getDurationMilliSec(),"debug"); 
-				gene.add(seed);
-			}
-			System.out.println("  ");
-			geneList.add(gene);
-			
-		}
+	
+		solver.solveGeneticAlg();
+	
 		
 		
 		
-		List<GeneticAlg<Seed>.EvaluatedGene> templist;
 		
-		// optimize
-		for(int i=0; i < Config.numberOfIterations; i++) {
-			LogTool.print("Selection", "debug");
-			templist = solver.selection(geneList);
-			LogTool.printGene(templist);
-			
-			
-			LogTool.print("Cross-Over", "debug");
-			templist = solver.crossOver(templist);
-			LogTool.printGene(templist);
-			
-			LogTool.print("Mutation", "debug");
-			templist = solver.mutation(templist);
-			LogTool.printGene(templist);
-			
-			LogTool.print("Fitness Value : " + solver.fitnessFunction(geneList.get(0)) , "notification");
-			//LogTool.print("Fitness Value gene1: " + solver.fitnessFunction(gene1) , "debug");
-			
-		}
-		
-		LogTool.print("Radiation at Seed Position: " + body[2][2][2].getCurrentDosis() , "debug");
 		
 	
 

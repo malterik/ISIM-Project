@@ -15,9 +15,7 @@ public class Seed extends Voxel {
 	}
 	private long durationMilliSec = 0;
 	
-	public double radiationIntensity(double distance, long durationMilliSec){
-		return ( Config.alpha * Math.exp( Config.beta * distance)) * durationMilliSec;
-	}
+	
 	
 	public long getDurationMilliSec() {
 		return durationMilliSec;
