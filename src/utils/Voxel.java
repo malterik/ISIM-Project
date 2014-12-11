@@ -12,7 +12,7 @@ public class Voxel implements Serializable {
 	private int bodyType = -1;
 	
 	
-	public Voxel(int x, int y, int z) {
+	public Voxel(double x, double y, double z) {
 		
 		coordinate = new Coordinate(x, y, z);
 		

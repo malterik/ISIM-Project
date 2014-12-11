@@ -22,6 +22,8 @@ public class Config {
 	public static final double oarMinDose = 0;
 	public static final double oarMaxDose = 3;
 	public static final double oarGoalDose = 30;
+	
+	public static final double normalDose = 10;
 
 	public static final double alpha = 10;			// coefficents for the intensity function
 	public static final double beta = -0.5; 		//I(r,t)=alpa * exp(beta * r) * t

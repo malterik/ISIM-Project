@@ -9,6 +9,7 @@ import ilog.cplex.IloCplex;
 import java.util.Random;
 
 import utils.Config;
+import utils.Seed;
 import utils.Voxel;
 
 public class LP {
@@ -18,7 +19,7 @@ public class LP {
 		model3D();
 	}
 	
-	
+	//TODO seeds als Voxel 
 	public static void model3D() throws IloException
 	{
 			
@@ -64,15 +65,13 @@ public class LP {
 			
 			//positions
 			System.out.println("Setting up seeds...");
-			double seed[][] = new double[Config.numberOfSeeds][3];
+			//double seed[][] = new double[Config.numberOfSeeds][3];
 			
-			
+			Seed[] seed = new Seed[Config.numberOfSeeds];
 			
 			for(int i=0; i < Config.numberOfSeeds; i++)
-			{
-				seed[i][0] = randDouble(xmin,xmax);
-				seed[i][1] = randDouble(ymin,ymax);
-				seed[i][2] = randDouble(zmin,zmax);
+			{				
+				seed[i] = new Seed(randDouble(xmin,xmax),randDouble(ymin,ymax),randDouble(zmin,zmax),0);
 			}
 			
 			
@@ -108,7 +107,7 @@ public class LP {
 							//iterate over seeds
 							for(int k=0; k < Config.numberOfSeeds; k++)
 							{
-								objective.addTerm(dose3D(i, j, l, seed[k][0], seed[k][1], seed[k][2]), time[k]);
+								objective.addTerm(dose3D(i, j, l, seed[k].getX(), seed[k].getY(), seed[k].getZ()), time[k]);
 							}
 							
 						}
@@ -117,7 +116,7 @@ public class LP {
 							//iterate over seeds
 							for(int k=0; k < Config.numberOfSeeds; k++)
 							{
-								dosepart[k] = cplex.prod(dose3D(i, j, k, seed[k][0], seed[k][1], seed[k][2]), time[k]);
+								dosepart[k] = cplex.prod(dose3D(i, j, k, seed[k].getX(), seed[k].getY(), seed[k].getZ()), time[k]);
 							}
 							cplex.addLe(cplex.sum(dosepart), Config.normalDose);
 						}
@@ -132,9 +131,9 @@ public class LP {
 				System.out.println("solved");
 				for(int k=0; k < Config.numberOfSeeds; k++)
 				{
-					System.out.println("x" + k + " = " + seed[k][0]);
-					System.out.println("y" + k + " = " + seed[k][1]);
-					System.out.println("y" + k + " = " + seed[k][2]);
+					System.out.println("x" + k + " = " + seed[k].getX());
+					System.out.println("y" + k + " = " + seed[k].getY());
+					System.out.println("y" + k + " = " + seed[k].getZ());
 					System.out.println("time" + k + " = " + cplex.getValue(time[k]));
 				}
 			}
@@ -159,7 +158,7 @@ public class LP {
 							time_eval = cplex.getValue(time[l]);
 							if(time_eval != 0)
 							{
-								dose_eval += dose3D(i,j,k,seed[l][0],seed[l][1],seed[l][2])*time_eval;
+								dose_eval += dose3D(i,j,k,seed[l].getX(), seed[l].getY(), seed[l].getZ())*time_eval;
 							}
 						}
 						
