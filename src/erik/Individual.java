@@ -10,7 +10,7 @@ import utils.RandGenerator;
 
 public class Individual
 {
-    public static final int SIZE = 5;
+    public static final int SIZE = 40;
     private int[] genes = new int[SIZE];
     private Coordinate[] seedPostions= new Coordinate[SIZE];
     private double fitnessValue;
@@ -63,11 +63,19 @@ public class Individual
 					
 					Solver.body[x][y][z].setCurrentDosis(0);
 					for(int i=0; i<SIZE;++i) {
+						
+						
 						intensity = Solver.body[x][y][z].radiationIntensity(seedPostions[i], genes[i]);
+						if(Double.isNaN(intensity)) {
+							System.out.println("intensity NaN");
+							intensity = Solver.body[x][y][z].radiationIntensity(seedPostions[i], genes[i]);
+						}
 						Solver.body[x][y][z].addCurrentDosis(intensity);
 						
 					}	
-					temp += Math.pow((Solver.body[x][y][z].getCurrentDosis()-Solver.body[x][y][z].getGoalDosis()),2);
+					temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2);
+					//temp += Solver.body[x][y][z].getGoalDosis() - Solver.body[x][y][z].getCurrentDosis() ;
+					
 				}	
 			}
 		}

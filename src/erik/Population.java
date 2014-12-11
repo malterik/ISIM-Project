@@ -4,10 +4,10 @@ import java.util.Random;
 
 public class Population
 {
-    final static int ELITISM_K = 10;
-    final static int POP_SIZE = 90 + ELITISM_K;  // population size
-    final static int MAX_ITER = 500;             // max number of iterations
-    final static double MUTATION_RATE = 0.05;     // probability of mutation
+    final static int ELITISM_K = 5;
+    final static int POP_SIZE = 20 + ELITISM_K;  // population size
+    final static int MAX_ITER = 10;             // max number of iterations
+    final static double MUTATION_RATE = 0.55;     // probability of mutation
     final static double CROSSOVER_RATE = 0.8;     // probability of crossover
 
     private static Random m_rand = new Random();  // random-number generator
@@ -49,7 +49,9 @@ public class Population
         int idx;
         for (idx=0; idx<POP_SIZE && randNum>0; ++idx) {
             randNum -= m_population[idx].getFitnessValue();
+            
         }
+        
         return m_population[idx-1];
     }
 
