@@ -22,6 +22,8 @@ public class Config {
 	public static final double oarMinDose = 0;
 	public static final double oarMaxDose = 3;
 	public static final double oarGoalDose = 0;
+	
+	public static final double normalDose = 10;
 
 	public static final double alpha = 10;			// coefficents for the intensity function
 	public static final double beta = -0.5; 		//I(r,t)=alpa * exp(beta * r) * t
@@ -34,6 +36,16 @@ public class Config {
 	public static final boolean debug = true;
 	public static final boolean warnings = true;
 	public static final boolean notification = true;
+	
+	//states
+	public static final int normal 		= 1; //low dose
+	public static final int spine 		= 2; //no dose
+	public static final int liver 		= 3; //low-medium dose
+	public static final int pancreas 	= 4; // no dose
+	public static final int tumor 		= 5; // high dose
+	
+	
+	
 	
 
 }
