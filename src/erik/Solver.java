@@ -19,7 +19,11 @@ public class Solver {
 	public void solveGeneticAlg() {
 		
 		LogTool.print("Created Population","notification");
-		Population.solve();
+		Individual test = Population.solve();
+		
+		for(int i=0; i<Individual.SIZE;i++) {
+			System.out.println("Verweildauer: "+test.getGene(i));
+		}
 	}
 
 

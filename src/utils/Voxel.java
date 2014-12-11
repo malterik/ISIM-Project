@@ -39,9 +39,38 @@ public class Voxel implements Serializable {
 				
 	}
 	public double radiationIntensity(Coordinate position, long durationMilliSec){
-		
 		double distance = distanceToVoxel(position);
-		return ( Config.alpha * Math.exp( Config.beta * distance)) * durationMilliSec;
+		double gp = 0;
+		double dose= 0;
+		
+		if(distance > 10) {
+			return 0.0;
+		}
+		double[] coeff = { 		//coefficents for the interpolationspolynom
+				  4.889e-06,  
+		         -0.0002256,
+		          0.00439,
+		         -0.04693,
+		          0.3003,
+		         -1.178,
+		          2.793,
+		         -3.806,
+		          2.544,
+		          0.3994 };
+		
+		//  Interpolation for dose function (point source)
+		for(int i = 9; i > 0; i--){
+			gp += coeff[i] * Math.pow(distance, i);
+		}
+		if(distance != 0) {
+			dose = (Config.GAMMA_BEST_INDUSTRIES * Config.SK * Math.pow((Config.R0/distance),2) * gp) * durationMilliSec ; //TODO: PHIan
+		} else {
+			dose = Config.MAX_DOSE * durationMilliSec;
+		}
+		
+		
+		
+		return dose;
 	}
 	
 	

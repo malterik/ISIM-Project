@@ -17,11 +17,11 @@ public class Config {
 	
 	public static final double ptvMinDose = 6;
 	public static final double ptvMaxDose = 10;
-	public static final double ptvGoalDose = 8;
+	public static final double ptvGoalDose = 50;
 	
 	public static final double oarMinDose = 0;
 	public static final double oarMaxDose = 3;
-	public static final double oarGoalDose = 0;
+	public static final double oarGoalDose = 30;
 
 	public static final double alpha = 10;			// coefficents for the intensity function
 	public static final double beta = -0.5; 		//I(r,t)=alpa * exp(beta * r) * t
@@ -34,6 +34,25 @@ public class Config {
 	public static final boolean debug = true;
 	public static final boolean warnings = true;
 	public static final boolean notification = true;
+	
+	// Parameters for Dosefunction
+	public static final int SK = 55;
+	public static final double GAMMA_BEST_INDUSTRIES = 1.018;
+	public static final int R0 = 1;
+	public static final double MAX_DOSE = 55;
+	// f(x) = p1*x^9 + p2*x^8 + p3*x^7 + p4*x^6 +  p5*x^5 + p6*x^4 + p7*x^3 + p8*x^2 + p9*x + p10
+    /*
+     *    4.889e-06  
+         -0.0002256 
+          0.00439  
+         -0.04693  
+          0.3003  
+         -1.178  
+          2.793  
+         -3.806  
+          2.544  
+          0.3994  
+       */
 	
 
 }
