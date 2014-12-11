@@ -76,22 +76,22 @@ public class Voxel implements Serializable {
 	
 	
 		
-	public int getX() {
+	public double getX() {
 		return coordinate.getX();
 	}
-	public void setX(int x) {
+	public void setX(double x) {
 		coordinate.setX(x);
 	}
-	public int getY() {
+	public double getY() {
 		return coordinate.getY();
 	}
-	public void setY(int y) {
+	public void setY(double y) {
 		coordinate.setX(y);
 	}
-	public int getZ() {
+	public double getZ() {
 		return coordinate.getZ();
 	}
-	public void setZ(int z) {
+	public void setZ(double z) {
 		coordinate.setX(z);
 	}
 	public double getMaxDosis() {
