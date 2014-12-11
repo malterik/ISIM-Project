@@ -54,5 +54,15 @@ public class Config {
           0.3994  
        */
 	
+	//states
+	public static final int normal 		= 1; //low dose
+	public static final int spine 		= 2; //no dose
+	public static final int liver 		= 3; //low-medium dose
+	public static final int pancreas 	= 4; // no dose
+	public static final int tumor 		= 5; // high dose
+	
+	
+	
+	
 
 }
