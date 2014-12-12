@@ -27,13 +27,13 @@ public class LP {
 			Voxel[][][] body = new Voxel[Config.xDIM][Config.yDIM][Config.zDIM];
 			
 			System.out.println("Setting up body...");
-			for(int i = 0; i<Config.xDIM; i++)
+			for(int x = 0; x < Config.xDIM; x++)
 			{
-				for(int j=0; j<Config.yDIM; j++)
+				for(int y = 0; y < Config.yDIM; y++)
 				{
-					for(int l=0; l < Config.zDIM; l++)
+					for(int z = 0; z < Config.zDIM; z++)
 					{
-						body[i][j][l] = new Voxel(i, j, l);
+						body[x][y][z] = new Voxel(x, y, z);
 					}
 				}
 			}
@@ -51,13 +51,13 @@ public class LP {
 			int zmax = 60;			
 			
 			System.out.println("Setting up target...");
-			for(int i=xmin; i<=xmax; i++)
+			for(int x = xmin; x <= xmax; x++)
 			{
-				for(int j=ymin; j<=ymax; j++)
+				for(int y = ymin; y <= ymax; y++)
 				{
-					for(int l=zmin; l<=zmax; l++)
+					for(int z = zmin; z <= zmax; z++)
 					{
-						body[i][j][l].setBodyType(Config.tumorType);
+						body[x][y][z].setBodyType(Config.tumorType);
 					}
 				}
 			}
@@ -70,7 +70,7 @@ public class LP {
 			
 			Seed[] seed = new Seed[Config.numberOfSeeds];
 			
-			for(int i=0; i < Config.numberOfSeeds; i++)
+			for(int i = 0; i < Config.numberOfSeeds; i++)
 			{				
 				seed[i] = new Seed(randDouble(xmin,xmax),randDouble(ymin,ymax),randDouble(zmin,zmax),0);
 			}
@@ -96,67 +96,67 @@ public class LP {
 			
 			//iterate over world
 			System.out.println("Adding constraints...");
-			for(int i = 0; i<Config.xDIM; i++)
+			for(int x = 0; x < Config.xDIM; x++)
 			{
-				for(int j=0; j<Config.yDIM; j++)
+				for(int y = 0; y < Config.yDIM; y++)
 				{
-					for(int l=0; l < Config.zDIM; l++)
+					for(int z = 0; z < Config.zDIM; z++)
 					{
 						//check state of world
 						
-						switch(body[i][j][l].getBodyType())
+						switch(body[x][y][z].getBodyType())
 						{
 							case Config.normalType:
 							{
-								for(int k=0; k < Config.numberOfSeeds; k++)
+								for(int i = 0; i < Config.numberOfSeeds; i++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[i] = cplex.prod(seed[i].doseFunction(body[x][y][z].getCoordinate()), time[i]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
 								break;
 							}
 							case Config.spineType:
 							{
-								for(int k=0; k < Config.numberOfSeeds; k++)
+								for(int i = 0; i < Config.numberOfSeeds; i++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[i] = cplex.prod(seed[i].doseFunction(body[x][y][z].getCoordinate()), time[i]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.spineGoalDose);
 								break;
 							}
 							case Config.liverType:
 							{
-								for(int k=0; k < Config.numberOfSeeds; k++)
+								for(int i = 0; i < Config.numberOfSeeds; i++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[i] = cplex.prod(seed[i].doseFunction(body[x][y][z].getCoordinate()), time[i]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.liverGoalDose);
 								break;
 							}
 							case Config.pancreasType:
 							{
-								for(int k=0; k < Config.numberOfSeeds; k++)
+								for(int i = 0; i < Config.numberOfSeeds; i++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[i] = cplex.prod(seed[i].doseFunction(body[x][y][z].getCoordinate()), time[i]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.pancreasGoalDose);
 								break;
 							}
 							case Config.tumorType:
 							{
-								for(int k=0; k < Config.numberOfSeeds; k++)
+								for(int i = 0; i < Config.numberOfSeeds; i++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
-									objective.addTerm(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[i] = cplex.prod(seed[i].doseFunction(body[x][y][z].getCoordinate()), time[i]);
+									objective.addTerm(seed[i].doseFunction(body[x][y][z].getCoordinate()), time[i]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.tumorGoalDose);
 								break;
 							}
 							default:
 							{
-								for(int k=0; k < Config.numberOfSeeds; k++)
+								for(int i = 0; i < Config.numberOfSeeds; i++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[i] = cplex.prod(seed[i].doseFunction(body[x][y][z].getCoordinate()), time[i]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
 								break;
@@ -171,12 +171,12 @@ public class LP {
 			if(cplex.solve())
 			{
 				System.out.println("solved");
-				for(int k=0; k < Config.numberOfSeeds; k++)
+				for(int i = 0; i < Config.numberOfSeeds; i++)
 				{
-					System.out.println("x" + k + " = " + seed[k].getX());
-					System.out.println("y" + k + " = " + seed[k].getY());
-					System.out.println("y" + k + " = " + seed[k].getZ());
-					System.out.println("time" + k + " = " + cplex.getValue(time[k]));
+					System.out.println("x" + i + " = " + seed[i].getX());
+					System.out.println("y" + i + " = " + seed[i].getY());
+					System.out.println("y" + i + " = " + seed[i].getZ());
+					System.out.println("time" + i + " = " + cplex.getValue(time[i]));
 				}
 			}
 			else
@@ -184,27 +184,27 @@ public class LP {
 				System.out.println("not solved");
 			}
 			
-			System.out.println("Computing dose world.....");
+			System.out.println("Computing dose.....");
 			
 			double dose_eval = 0;
 			double time_eval = 0;
 			
-			for(int i = 0; i < Config.xDIM; i++)
+			for(int x = 0; x < Config.xDIM; x++)
 			{
-				for(int j = 0; j < Config.yDIM; j++)
+				for(int y = 0; y < Config.yDIM; y++)
 				{
-					for(int k = 0; k < Config.zDIM; k++)
+					for(int z = 0; z < Config.zDIM; z++)
 					{
-						for(int l = 0; l < Config.numberOfSeeds; l++)
+						for(int i = 0; i < Config.numberOfSeeds; i++)
 						{
-							time_eval = cplex.getValue(time[l]);
+							time_eval = cplex.getValue(time[i]);
 							if(time_eval != 0)
 							{
-								dose_eval += seed[l].doseFunction(body[i][j][k].getCoordinate());
+								dose_eval += seed[i].doseFunction(body[x][y][z].getCoordinate())*time_eval;
 							}
 						}
 						
-						body[i][j][k].setCurrentDosis(dose_eval);
+						body[x][y][z].setCurrentDosis(dose_eval);
 					}
 				}
 			}
