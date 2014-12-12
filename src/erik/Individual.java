@@ -2,24 +2,19 @@ package erik;
 
 import java.util.Random;
 
-import com.sun.prism.image.Coords;
-
 import utils.Config;
-import utils.Coordinate;
-import utils.RandGenerator;
+import utils.Seed;
 
 public class Individual
 {
-    public static final int SIZE = 40;
-    private int[] genes = new int[SIZE];
-    private Coordinate[] seedPostions= new Coordinate[SIZE];
+
+    private int[] genes = new int[Config.numberOfSeeds];
+    
     private double fitnessValue;
 
     public Individual() {
     	
-    	for(int i=0; i<SIZE;i++){
-    		seedPostions[i] = new Coordinate(RandGenerator.randInt(Config.ptvXLow, Config.ptvXHigh), RandGenerator.randInt(Config.ptvYLow, Config.ptvYHigh), RandGenerator.randInt(Config.ptvZLow, Config.ptvZHigh));
-    	}
+    
     }
 
     public double getFitnessValue() {
@@ -40,14 +35,14 @@ public class Individual
 
     public void randGenes() {
         Random rand = new Random();
-        for(int i=0; i<SIZE; ++i) {
+        for(int i=0; i<Config.numberOfSeeds; ++i) {
            this.setGene(i, rand.nextInt(2));
         }
     }
 
     public void mutate() {
         Random rand = new Random();
-        int index = rand.nextInt(SIZE);
+        int index = rand.nextInt(Config.numberOfSeeds);
         this.setGene(index, 1-this.getGene(index));    // flip
     }
 
@@ -62,19 +57,15 @@ public class Individual
 				for(int z=Config.ptvZLow-10; z < Config.ptvZHigh+10; z++) {
 					
 					Solver.body[x][y][z].setCurrentDosis(0);
-					for(int i=0; i<SIZE;++i) {
+					for(int i=0; i<Config.numberOfSeeds;++i) {
 						
 						
-						intensity = Solver.body[x][y][z].radiationIntensity(seedPostions[i], genes[i]);
-						if(Double.isNaN(intensity)) {
-							System.out.println("intensity NaN");
-							intensity = Solver.body[x][y][z].radiationIntensity(seedPostions[i], genes[i]);
-						}
+						intensity = Solver.body[x][y][z].radiationIntensity(Solver.seeds[i].getCoordinate(), genes[i]);
 						Solver.body[x][y][z].addCurrentDosis(intensity);
 						
 					}	
 					temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2);
-					//temp += Solver.body[x][y][z].getGoalDosis() - Solver.body[x][y][z].getCurrentDosis() ;
+					
 					
 				}	
 			}

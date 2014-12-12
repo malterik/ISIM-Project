@@ -3,6 +3,8 @@ package erik;
 import sebastian.SimpleDB;
 import utils.Config;
 import utils.LogTool;
+import utils.RandGenerator;
+import utils.Seed;
 import utils.Voxel;
 
 
@@ -88,10 +90,19 @@ public class TreatmentPlanner {
 				}
 			}	
 		}
-		LogTool.print("PTV Size: "+ptvSize+" OAR Size: "+oarSize,"debug");
+		
+		/* Initialize the Seeds */
+		 
+		Seed[] seeds = new Seed[Config.numberOfSeeds];
+		
+		for(int i=0; i < Config.numberOfSeeds; i++)
+		{				
+			seeds[i] = new Seed(RandGenerator.randDouble(Config.ptvXLow,Config.ptvXHigh),RandGenerator.randDouble(Config.ptvYLow,Config.ptvYHigh),RandGenerator.randDouble(Config.ptvZLow,Config.ptvZHigh),0);
+		}
+		
 		LogTool.print("Initialized Body Array!","notification");
 		
-		Solver solver = new Solver(body);			// The Solver implements the genetic Algorithm
+		Solver solver = new Solver(body,seeds);			// The Solver implements the genetic Algorithm
 		LogTool.print("Initialized Solver!","notification");
 	
 		solver.solveGeneticAlg();

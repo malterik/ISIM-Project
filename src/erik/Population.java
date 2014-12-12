@@ -2,6 +2,9 @@ package erik;
 
 import java.util.Random;
 
+import utils.Config;
+import utils.Seed;
+
 public class Population
 {
     final static int ELITISM_K = 5;
@@ -13,8 +16,10 @@ public class Population
     private static Random m_rand = new Random();  // random-number generator
     private Individual[] m_population;
     private double totalFitness;
-
+   
+    
     public Population() {
+
         m_population = new Individual[POP_SIZE];
 
         // init population
@@ -86,13 +91,13 @@ public class Population
         newIndiv[0] = new Individual();
         newIndiv[1] = new Individual();
 
-        int randPoint = m_rand.nextInt(Individual.SIZE);
+        int randPoint = m_rand.nextInt(Config.numberOfSeeds);
         int i;
         for (i=0; i<randPoint; ++i) {
             newIndiv[0].setGene(i, indiv1.getGene(i));
             newIndiv[1].setGene(i, indiv2.getGene(i));
         }
-        for (; i<Individual.SIZE; ++i) {
+        for (; i<Config.numberOfSeeds; ++i) {
             newIndiv[0].setGene(i, indiv2.getGene(i));
             newIndiv[1].setGene(i, indiv1.getGene(i));
         }

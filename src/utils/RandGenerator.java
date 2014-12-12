@@ -19,6 +19,13 @@ public class RandGenerator {
 	    return randomNum;
 	}
 	
+	public static double randDouble(double min, double max)
+	{
+		Random r = new Random();
+		double randomValue = min + (max - min) * r.nextDouble();
+		return randomValue;
+	}
+	
 	
 	
 	public static boolean randBoolean() {
