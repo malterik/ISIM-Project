@@ -19,7 +19,8 @@ public class LP {
 		model3D();
 	}
 	
-	//TODO seeds als Voxel 
+	//TODO use MATLAB body
+	//TODO use right dose function
 	public static void model3D() throws IloException
 	{
 			
@@ -65,7 +66,6 @@ public class LP {
 			
 			//positions
 			System.out.println("Setting up seeds...");
-			//double seed[][] = new double[Config.numberOfSeeds][3];
 			
 			Seed[] seed = new Seed[Config.numberOfSeeds];
 			
@@ -107,7 +107,7 @@ public class LP {
 							//iterate over seeds
 							for(int k=0; k < Config.numberOfSeeds; k++)
 							{
-								objective.addTerm(dose3D(i, j, l, seed[k].getX(), seed[k].getY(), seed[k].getZ()), time[k]);
+								objective.addTerm(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
 							}
 							
 						}
@@ -116,7 +116,7 @@ public class LP {
 							//iterate over seeds
 							for(int k=0; k < Config.numberOfSeeds; k++)
 							{
-								dosepart[k] = cplex.prod(dose3D(i, j, k, seed[k].getX(), seed[k].getY(), seed[k].getZ()), time[k]);
+								dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
 							}
 							cplex.addLe(cplex.sum(dosepart), Config.normalDose);
 						}
@@ -158,7 +158,7 @@ public class LP {
 							time_eval = cplex.getValue(time[l]);
 							if(time_eval != 0)
 							{
-								dose_eval += dose3D(i,j,k,seed[l].getX(), seed[l].getY(), seed[l].getZ())*time_eval;
+								dose_eval += seed[l].doseFunction(body[i][j][k].getCoordinate());
 							}
 						}
 						
@@ -174,47 +174,10 @@ public class LP {
 
 	}
 	
-	public static double distance2D(double centre1,double centre2,double x1,double x2)
-	{
-		return Math.sqrt((centre1-x1)*(centre1-x1)+(centre2-x2)*(centre2-x2));
-	}
-	
-	public static int randInt(int min, int max) {
-
-	    Random rand = new Random();
-
-	    int randomNum = rand.nextInt((max - min) + 1) + min;
-
-	    return randomNum;
-	}
-	
 	public static double randDouble(double min, double max)
 	{
 		Random r = new Random();
 		double randomValue = min + (max - min) * r.nextDouble();
 		return randomValue;
 	}
-	
-	
-	public static double dose3D(double centre1, double centre2, double centre3, double x1, double x2, double x3)
-	{
-		double result;
-		double distance = distance3D(centre1, centre2, centre3, x1, x2, x3);
-		
-		//compute does
-		result = 2/(distance+1);
-		
-		if(result < 0)
-			result = 0;
-		
-		return result;
-	}	
-	
-	public static double distance3D(double centre1, double centre2, double centre3, double x1, double x2, double x3)
-	{
-		return Math.sqrt((centre1-x1)*(centre1-x1)+(centre2-x2)*(centre2-x2)+(centre3-x3)*(centre3-x3));
-	}
-	
-	
-
 }

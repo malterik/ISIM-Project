@@ -73,6 +73,36 @@ public class Voxel implements Serializable {
 		return dose;
 	}
 	
+	public double doseFunction(Coordinate position){
+		double distance = distanceToVoxel(position);
+		double gp = 0;
+		
+		if(distance > 10) {
+			return 0.0;
+		}
+		double[] coeff = { 		//coefficents for the interpolationspolynom
+				  4.889e-06,  
+		         -0.0002256,
+		          0.00439,
+		         -0.04693,
+		          0.3003,
+		         -1.178,
+		          2.793,
+		         -3.806,
+		          2.544,
+		          0.3994 };
+		
+		//  Interpolation for dose function (point source)
+		for(int i = 9; i > 0; i--){
+			gp += coeff[i] * Math.pow(distance, i);
+		}
+		if(distance != 0) {
+			return (Config.GAMMA_BEST_INDUSTRIES * Config.SK * Math.pow((Config.R0/distance),2) * gp); //TODO: PHIan
+		} else {
+			return Config.MAX_DOSE;
+		}
+	}
+	
 	
 	
 		
