@@ -110,7 +110,7 @@ public class LP {
 							{
 								for(int k=0; k < Config.numberOfSeeds; k++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[k] = cplex.prod(seed[k].radiationIntensity(body[i][j][l].getCoordinate(),1), time[k]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
 								break;
@@ -119,7 +119,7 @@ public class LP {
 							{
 								for(int k=0; k < Config.numberOfSeeds; k++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[k] = cplex.prod(seed[k].radiationIntensity(body[i][j][l].getCoordinate(),1), time[k]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.spineGoalDose);
 								break;
@@ -128,7 +128,7 @@ public class LP {
 							{
 								for(int k=0; k < Config.numberOfSeeds; k++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[k] = cplex.prod(seed[k].radiationIntensity(body[i][j][l].getCoordinate(),1), time[k]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.liverGoalDose);
 								break;
@@ -137,7 +137,7 @@ public class LP {
 							{
 								for(int k=0; k < Config.numberOfSeeds; k++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[k] = cplex.prod(seed[k].radiationIntensity(body[i][j][l].getCoordinate(),1), time[k]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.pancreasGoalDose);
 								break;
@@ -146,8 +146,8 @@ public class LP {
 							{
 								for(int k=0; k < Config.numberOfSeeds; k++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
-									objective.addTerm(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[k] = cplex.prod(seed[k].radiationIntensity(body[i][j][l].getCoordinate(),1), time[k]);
+									objective.addTerm(seed[k].radiationIntensity(body[i][j][l].getCoordinate(),1), time[k]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.tumorGoalDose);
 								break;
@@ -156,7 +156,7 @@ public class LP {
 							{
 								for(int k=0; k < Config.numberOfSeeds; k++)
 								{
-									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									dosepart[k] = cplex.prod(seed[k].radiationIntensity(body[i][j][l].getCoordinate(),1), time[k]);
 								}
 								cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
 								break;
@@ -200,11 +200,13 @@ public class LP {
 							time_eval = cplex.getValue(time[l]);
 							if(time_eval != 0)
 							{
-								dose_eval += seed[l].doseFunction(body[i][j][k].getCoordinate());
+								dose_eval += seed[l].radiationIntensity(body[i][j][k].getCoordinate(),1)*time_eval;
 							}
 						}
 						
 						body[i][j][k].setCurrentDosis(dose_eval);
+						System.out.println("dose:" + dose_eval);
+						dose_eval = 0;
 					}
 				}
 			}

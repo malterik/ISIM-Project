@@ -18,8 +18,6 @@ public class Voxel implements Serializable {
 		
 	}
 	
-	
-	
 	/**
 	 * distanceToVoxel
 	 * @param voxel
@@ -41,26 +39,27 @@ public class Voxel implements Serializable {
 			return 0.0;
 		}
 		double[] coeff = { 		//coefficents for the interpolationspolynom
-				  4.889e-06,  
-		         -0.0002256,
-		          0.00439,
-		         -0.04693,
-		          0.3003,
-		         -1.178,
-		          2.793,
-		         -3.806,
-		          2.544,
-		          0.3994 };
+				0.000339677417477463,  
+				-0.00967651536238707,
+				0.101436431655208,
+				-0.466125245197087,
+				0.745586768135480,
+		        0.635278099796227 };
+		
 		
 		//  Interpolation for dose function (point source)
-		for(int i = 9; i > 0; i--){
-			gp += coeff[i] * Math.pow(distance, i);
+		int i,j=0;
+		for( i = 0,  j = 5 ; i < 6; i++,j--){
+			gp += coeff[i] * Math.pow(distance,j);
+			//System.out.println("koeffizient: "+ i+ " pow: "+gp);
 		}
-		if(distance != 0) {
+		if(distance > 1) {
+			//System.out.println("dose: "+Config.GAMMA_BEST_INDUSTRIES * Config.SK * Math.pow((Config.R0/distance),2) * gp+ " distance: "+ distance+ " gp: "+ gp);
 			dose = (Config.GAMMA_BEST_INDUSTRIES * Config.SK * Math.pow((Config.R0/distance),2) * gp) * durationMilliSec ; //TODO: PHIan
 		} else {
 			dose = Config.MAX_DOSE * durationMilliSec;
 		}
+		//System.out.println(dose);
 		
 		
 		
@@ -87,10 +86,11 @@ public class Voxel implements Serializable {
 		          0.3994 };
 		
 		//  Interpolation for dose function (point source)
-		for(int i = 9; i > 0; i--){
+		for(int i = -1; i >= 0; i--){
 			gp += coeff[i] * Math.pow(distance, i);
 		}
-		if(distance != 0) {
+		if(distance > 1) {
+			System.out.println(Config.GAMMA_BEST_INDUSTRIES * Config.SK * Math.pow((Config.R0/distance),2) * gp);
 			return (Config.GAMMA_BEST_INDUSTRIES * Config.SK * Math.pow((Config.R0/distance),2) * gp); //TODO: PHIan
 		} else {
 			return Config.MAX_DOSE;

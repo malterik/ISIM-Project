@@ -36,7 +36,7 @@ public class Individual
     public void randGenes() {
         Random rand = new Random();
         for(int i=0; i<Config.numberOfSeeds; ++i) {
-           this.setGene(i, rand.nextInt(2));
+           this.setGene(i, rand.nextInt(1000));
         }
     }
 

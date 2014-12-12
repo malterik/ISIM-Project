@@ -32,7 +32,6 @@ public class Config {
 	
 	// Parameters for the genetic algorithm
 	
-	public static final int numberOfGenes = 4;   //must be an even value
 	public static final int numberOfSeeds = 50;
 	public static final int numberOfIterations = 500;
 	// outputs
@@ -42,9 +41,9 @@ public class Config {
 	public static final boolean notification = true;
 	
 	// Parameters for Dosefunction
-	public static final int SK = 55;
+	public static final double SK = 55;
 	public static final double GAMMA_BEST_INDUSTRIES = 1.018;
-	public static final int R0 = 1;
+	public static final double R0 = 1;
 	public static final double MAX_DOSE = 55;
 	
 	
