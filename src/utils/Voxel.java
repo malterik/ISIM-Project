@@ -18,13 +18,7 @@ public class Voxel implements Serializable {
 		
 	}
 	
-	public void setBodyType (int bodyType) {
-		this.bodyType = bodyType;
-	}
 	
-	public int getBodyType () {
-		return bodyType;
-	}
 	
 	/**
 	 * distanceToVoxel
@@ -162,6 +156,13 @@ public class Voxel implements Serializable {
 	public void setGoalDosis(double goalDosis) {
 		this.goalDosis = goalDosis;
 	}
-
+	
+	public void setBodyType (int bodyType) {
+		this.bodyType = bodyType;
+	}
+	
+	public int getBodyType () {
+		return bodyType;
+	}
 
 }
