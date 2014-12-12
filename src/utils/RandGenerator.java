@@ -5,7 +5,7 @@ import java.util.Random;
 public class RandGenerator {
 	
 	
-	private static Random rand = new Random();
+	private static Random rand = new Random(2000);
 	public static int randInt(int min, int max) {
 
 	    // NOTE: Usually this should be a field rather than a method
@@ -21,7 +21,7 @@ public class RandGenerator {
 	
 	public static double randDouble(double min, double max)
 	{
-		Random r = new Random();
+		Random r = new Random(2000);
 		double randomValue = min + (max - min) * r.nextDouble();
 		return randomValue;
 	}

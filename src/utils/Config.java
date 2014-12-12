@@ -30,6 +30,10 @@ public class Config {
 	public static final double pancreasGoalDose = 0;
 	public static final double tumorGoalDose = 40;
 	
+        // Parameters for the Simulated Annealing algorithm
+        
+        public static final double NumberOfMetropolisRounds = 10;
+        
 	// Parameters for the genetic algorithm
 	
 	public static final int numberOfGenes = 4;   //must be an even value
