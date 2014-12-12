@@ -16,12 +16,11 @@ public class LP {
 	
 	public static void main(String[] args) throws IloException
 	{
-		model3D();
+		LPTreatment();
 	}
 	
 	//TODO use MATLAB body
-	//TODO use right dose function
-	public static void model3D() throws IloException
+	public static void LPTreatment() throws IloException
 	{
 			
 			
@@ -58,10 +57,12 @@ public class LP {
 				{
 					for(int l=zmin; l<=zmax; l++)
 					{
-						body[i][j][l].setBodyType(Config.tumor);
+						body[i][j][l].setBodyType(Config.tumorType);
 					}
 				}
 			}
+			
+			
 					
 			
 			//positions
@@ -102,24 +103,65 @@ public class LP {
 					for(int l=0; l < Config.zDIM; l++)
 					{
 						//check state of world
-						if(body[i][j][l].getBodyType()==Config.tumor)
+						
+						switch(body[i][j][l].getBodyType())
 						{
-							//iterate over seeds
-							for(int k=0; k < Config.numberOfSeeds; k++)
+							case Config.normalType:
 							{
-								objective.addTerm(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+								for(int k=0; k < Config.numberOfSeeds; k++)
+								{
+									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+								}
+								cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
+								break;
 							}
-							
-						}
-						else
-						{
-							//iterate over seeds
-							for(int k=0; k < Config.numberOfSeeds; k++)
+							case Config.spineType:
 							{
-								dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+								for(int k=0; k < Config.numberOfSeeds; k++)
+								{
+									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+								}
+								cplex.addLe(cplex.sum(dosepart), Config.spineGoalDose);
+								break;
 							}
-							cplex.addLe(cplex.sum(dosepart), Config.normalDose);
-						}
+							case Config.liverType:
+							{
+								for(int k=0; k < Config.numberOfSeeds; k++)
+								{
+									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+								}
+								cplex.addLe(cplex.sum(dosepart), Config.liverGoalDose);
+								break;
+							}
+							case Config.pancreasType:
+							{
+								for(int k=0; k < Config.numberOfSeeds; k++)
+								{
+									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+								}
+								cplex.addLe(cplex.sum(dosepart), Config.pancreasGoalDose);
+								break;
+							}
+							case Config.tumorType:
+							{
+								for(int k=0; k < Config.numberOfSeeds; k++)
+								{
+									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+									objective.addTerm(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+								}
+								cplex.addLe(cplex.sum(dosepart), Config.tumorGoalDose);
+								break;
+							}
+							default:
+							{
+								for(int k=0; k < Config.numberOfSeeds; k++)
+								{
+									dosepart[k] = cplex.prod(seed[k].doseFunction(body[i][j][l].getCoordinate()), time[k]);
+								}
+								cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
+								break;
+							}
+						}						
 					}
 				}
 			}

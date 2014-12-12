@@ -23,13 +23,18 @@ public class Config {
 	public static final double oarMaxDose = 3;
 	public static final double oarGoalDose = 30;
 	
-	public static final double normalDose = 10;
+	public static final double normalGoalDose = 10; //TODO evaluate
+	public static final double spineGoalDose = 0;
+	public static final double liverGoalDose = 20;
+	public static final double pancreasGoalDose = 0;
+	public static final double tumorGoalDose = 40;
+	
 
 	public static final double alpha = 10;			// coefficents for the intensity function
 	public static final double beta = -0.5; 		//I(r,t)=alpa * exp(beta * r) * t
 	
 	public static final int numberOfGenes = 4;   //must be an even value
-	public static final int numberOfSeeds = 5;
+	public static final int numberOfSeeds = 50;
 	public static final int numberOfIterations = 500;
 	// outputs
 	public static final boolean errors = true;
@@ -57,11 +62,11 @@ public class Config {
        */
 	
 	//states
-	public static final int normal 		= 1; //low dose
-	public static final int spine 		= 2; //no dose
-	public static final int liver 		= 3; //low-medium dose
-	public static final int pancreas 	= 4; // no dose
-	public static final int tumor 		= 5; // high dose
+	public static final int normalType 		= 1; //low dose
+	public static final int spineType 		= 2; //no dose
+	public static final int liverType 		= 3; //low-medium dose
+	public static final int pancreasType 	= 4; // no dose
+	public static final int tumorType 		= 5; // high dose
 	
 	
 	
