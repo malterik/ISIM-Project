@@ -8,8 +8,9 @@ import utils.Seed;
 
 public class Individual
 {
-
-    private int[] genes = new int[Config.numberOfSeeds];
+	
+	public static final double MAX_DWELL_TIME = 500;
+    private double[] genes = new double[Config.numberOfSeeds];
     
     private double fitnessValue;
 
@@ -18,33 +19,18 @@ public class Individual
     
     }
 
-    public double getFitnessValue() {
-        return fitnessValue;
-    }
-
-    public void setFitnessValue(double fitnessValue) {
-        this.fitnessValue = fitnessValue;
-    }
-
-    public int getGene(int index) {
-        return genes[index];
-    }
-
-    public void setGene(int index, int gene) {
-        this.genes[index] = gene;
-    }
-
+    
     public void randGenes() {
         Random rand = new Random();
         for(int i=0; i<Config.numberOfSeeds; ++i) {
-           this.setGene(i, rand.nextInt(1000));
+           this.setGene(i, RandGenerator.randDouble(0, MAX_DWELL_TIME));
         }
     }
 
     public void mutate() {
         Random rand = new Random();
         int index = rand.nextInt(Config.numberOfSeeds);
-        this.setGene(index, RandGenerator.randInt(0,this.getGene(index)));    // flip
+        this.setGene(index, RandGenerator.randDouble(0,this.getGene(index)));    // flip
     }
 
     public double evaluate() {
@@ -77,4 +63,22 @@ public class Individual
         
         return fitness;
     }
+    
+    
+    public double getFitnessValue() {
+        return fitnessValue;
+    }
+
+    public void setFitnessValue(double fitnessValue) {
+        this.fitnessValue = fitnessValue;
+    }
+
+    public double getGene(int index) {
+        return genes[index];
+    }
+
+    public void setGene(int index, double gene) {
+        this.genes[index] = gene;
+    }
+    
 }

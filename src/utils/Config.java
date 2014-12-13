@@ -38,6 +38,7 @@ public class Config {
 	
 	public static final int numberOfSeeds = 50;
 	public static final int numberOfIterations = 500;
+	
 	// outputs
 	public static final boolean errors = true;
 	public static final boolean debug = true;
