@@ -3,6 +3,7 @@ package erik;
 import java.util.Random;
 
 import utils.Config;
+import utils.RandGenerator;
 import utils.Seed;
 
 public class Individual
@@ -43,7 +44,7 @@ public class Individual
     public void mutate() {
         Random rand = new Random();
         int index = rand.nextInt(Config.numberOfSeeds);
-        this.setGene(index, 1-this.getGene(index));    // flip
+        this.setGene(index, RandGenerator.randInt(0,this.getGene(index)));    // flip
     }
 
     public double evaluate() {
