@@ -1,5 +1,7 @@
 package erik;
 
+import ilog.concert.IloException;
+import thobi.LPTreatment;
 import utils.Config;
 import utils.LogTool;
 import utils.Seed;
@@ -37,6 +39,22 @@ public class Solver {
 		for(int i=0; i<Config.numberOfSeeds;i++) {
 			System.out.println("Verweildauer: "+test.getGene(i));
 		}
+	}
+	
+	public void solveLP() throws IloException
+	{
+		new LPTreatment(body, seeds);
+		LPTreatment.solveLP();
+		
+		for(int i = 0; i < Config.numberOfSeeds; i++)
+		{
+			System.out.println("Seed");
+			System.out.println("x" + i + " : " + LPTreatment.getSeed()[i].getX());
+			System.out.println("y" + i + " : " + LPTreatment.getSeed()[i].getY());
+			System.out.println("z" + i + " : " + LPTreatment.getSeed()[i].getZ());
+			System.out.println("time" + i + " : " + LPTreatment.getSeed()[i].getDurationMilliSec());
+		}
+		
 	}
 
 

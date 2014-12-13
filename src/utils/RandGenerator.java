@@ -21,7 +21,7 @@ public class RandGenerator {
 	
 	public static double randDouble(double min, double max)
 	{
-		Random r = new Random(2000);
+		Random r = new Random();
 		double randomValue = min + (max - min) * r.nextDouble();
 		return randomValue;
 	}
