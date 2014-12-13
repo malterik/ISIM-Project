@@ -9,18 +9,19 @@ import ilog.cplex.IloCplex;
 import java.util.Random;
 
 import utils.Config;
+import utils.RandGenerator;
 import utils.Seed;
 import utils.Voxel;
 
-public class LP {
+public class LP {	
 	
 	public static void main(String[] args) throws IloException
 	{
-		LPTreatment();
+		LPcalc();
 	}
 	
 	//TODO use MATLAB body
-	public static void LPTreatment() throws IloException
+	public static void LPcalc() throws IloException
 	{
 			
 			
@@ -43,12 +44,12 @@ public class LP {
 			
 			//setting target
 			
-			int xmin = 5;
-			int xmax = 15;
-			int ymin = 20;
-			int ymax = 30;
-			int zmin = 50;
-			int zmax = 60;			
+			int xmin = 45;
+			int xmax = 55;
+			int ymin = 45;
+			int ymax = 55;
+			int zmin = 45;
+			int zmax = 55;			
 			
 			System.out.println("Setting up target...");
 			for(int x = xmin; x <= xmax; x++)
@@ -72,7 +73,9 @@ public class LP {
 			
 			for(int i = 0; i < Config.numberOfSeeds; i++)
 			{				
-				seed[i] = new Seed(randDouble(xmin,xmax),randDouble(ymin,ymax),randDouble(zmin,zmax),0);
+				seed[i] = new Seed(	RandGenerator.randDouble(xmin,xmax),
+									RandGenerator.randDouble(ymin,ymax),
+									RandGenerator.randDouble(zmin,zmax),0);
 			}
 			
 			
@@ -216,12 +219,5 @@ public class LP {
 			
 			
 
-	}
-	
-	public static double randDouble(double min, double max)
-	{
-		Random r = new Random();
-		double randomValue = min + (max - min) * r.nextDouble();
-		return randomValue;
 	}
 }
