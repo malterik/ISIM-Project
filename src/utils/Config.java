@@ -24,9 +24,9 @@ public class Config {
 	public static final double oarMaxDose = 3;
 	public static final double oarGoalDose = 30;
 	
-	public static final double normalGoalDose = 10; //TODO evaluate
+	public static final double normalGoalDose = 20; //TODO evaluate
 	public static final double spineGoalDose = 0;
-	public static final double liverGoalDose = 20;
+	public static final double liverGoalDose = 30;
 	public static final double pancreasGoalDose = 0;
 	public static final double tumorGoalDose = 50;
 	
@@ -36,7 +36,7 @@ public class Config {
         
 	// Parameters for the genetic algorithm
 	
-	public static final int numberOfSeeds = 50;
+	public static final int numberOfSeeds = 500;
 	public static final int numberOfIterations = 500;
 	
 	// outputs

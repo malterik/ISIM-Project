@@ -5,9 +5,6 @@ import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
-
-import java.util.Random;
-
 import utils.Config;
 import utils.RandGenerator;
 import utils.Seed;

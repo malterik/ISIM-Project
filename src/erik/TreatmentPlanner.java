@@ -80,11 +80,11 @@ public class TreatmentPlanner {
 					
 					body[x][y][z] = new Voxel(x, y, z);
 					if( (x >= Config.ptvXLow && x <= Config.ptvXHigh) && (y >= Config.ptvYLow && y <= Config.ptvYHigh) && (z >= Config.ptvZLow && z <= Config.ptvZHigh)  ) {		//consider whether the current voxel belongs to the tumor or not
-						body[x][y][z].setGoalDosis(Config.ptvGoalDose);
+						body[x][y][z].setGoalDosis(Config.tumorGoalDose);
 						body[x][y][z].setBodyType(Config.tumorType);
 						ptvSize++;
 					} else {
-						body[x][y][z].setGoalDosis(Config.oarGoalDose);
+						body[x][y][z].setGoalDosis(Config.normalGoalDose);
 						body[x][y][z].setBodyType(Config.normalType);
 						oarSize++;
 					}
@@ -118,7 +118,8 @@ public class TreatmentPlanner {
 			LogTool.print("Error in LP: ", "error");
 			e.printStackTrace();
 		}
-	*/
+		*/
+	
 		
 		
 		
