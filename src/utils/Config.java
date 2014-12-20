@@ -24,17 +24,21 @@ public class Config {
 	public static final double oarMaxDose = 3;
 	public static final double oarGoalDose = 30;
 	
-	public static final double normalGoalDose = 10; //TODO evaluate
+	public static final double normalGoalDose = 20; //TODO evaluate
 	public static final double spineGoalDose = 0;
-	public static final double liverGoalDose = 20;
+	public static final double liverGoalDose = 30;
 	public static final double pancreasGoalDose = 0;
-	public static final double tumorGoalDose = 40;
+	public static final double tumorGoalDose = 50;
 	
+        // Parameters for the Simulated Annealing algorithm
+        
+        public static final double NumberOfMetropolisRounds = 10;
+        
 	// Parameters for the genetic algorithm
 	
-	public static final int numberOfGenes = 4;   //must be an even value
-	public static final int numberOfSeeds = 50;
+	public static final int numberOfSeeds = 500;
 	public static final int numberOfIterations = 500;
+	
 	// outputs
 	public static final boolean errors = true;
 	public static final boolean debug = true;
@@ -42,9 +46,9 @@ public class Config {
 	public static final boolean notification = true;
 	
 	// Parameters for Dosefunction
-	public static final int SK = 55;
+	public static final double SK = 55;
 	public static final double GAMMA_BEST_INDUSTRIES = 1.018;
-	public static final int R0 = 1;
+	public static final double R0 = 1;
 	public static final double MAX_DOSE = 55;
 	
 	

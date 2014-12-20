@@ -3,15 +3,15 @@ package erik;
 import java.util.Random;
 
 import utils.Config;
-import utils.Seed;
 
 public class Population
 {
     final static int ELITISM_K = 5;
     final static int POP_SIZE = 20 + ELITISM_K;  // population size
-    final static int MAX_ITER = 10;             // max number of iterations
+    final static int MAX_ITER = 20;             // max number of iterations
     final static double MUTATION_RATE = 0.55;     // probability of mutation
     final static double CROSSOVER_RATE = 0.8;     // probability of crossover
+    
 
     private static Random m_rand = new Random();  // random-number generator
     private Individual[] m_population;

@@ -8,19 +8,19 @@ package utils;
 public class Seed extends Voxel {
 	
 	
-	public Seed(double x, double y, double z, long durationMilliSec) {
+	public Seed(double x, double y, double z, double durationMilliSec) {
 		super(x, y, z);
 		this.durationMilliSec = durationMilliSec;
 		
 	}
-	private long durationMilliSec = 0;
+	private double durationMilliSec = 0;
 	
 	
 	
-	public long getDurationMilliSec() {
+	public double getDurationMilliSec() {
 		return durationMilliSec;
 	}
-	public void setDurationMilliSec(long durationMilliSec) {
+	public void setDurationMilliSec(double durationMilliSec) {
 		this.durationMilliSec = durationMilliSec;
 	}
 
