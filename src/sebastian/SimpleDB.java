@@ -206,8 +206,9 @@ public class SimpleDB {
 	  }
 	  
 	  dims = new int[]{x, dims[0], dims[1]};
-	  addEntry (new TreatmentEntry(bodyArray, dims, null, mFolder.getName ()));
-	  System.out.println(String.format("%d|%d|%d: %s", dims[0], dims[1], dims[2], mFolder.getName ()));
+	  TreatmentEntry entry = new TreatmentEntry(bodyArray, dims, null, mFolder.getName ());
+	  entry.setSavePrevent(true);
+	  addEntry (entry);
   }
   
   public void checkForMatlabFiles () {	  
@@ -217,9 +218,8 @@ public class SimpleDB {
 	  if (listOfFiles != null) {
 		  for (File file: listOfFiles) {
 			  if (file.isDirectory ()) {
-				  System.out.println (file.getName());
+				  LogTool.print ("Reading array " + file.getName(), "debug");
 				  readMatlabFile (file);
-				  break;
 			  }
 		  }
 	  }

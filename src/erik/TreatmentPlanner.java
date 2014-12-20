@@ -1,9 +1,11 @@
 package erik;
 
+import sebastian.ScatterDisplay;
+import sebastian.ScatterDisplay.ChartType;
+import sebastian.SimpleDB;
+import sebastian.TreatmentEntry;
 import utils.Config;
 import utils.LogTool;
-import utils.RandGenerator;
-import utils.Seed;
 import utils.Voxel;
 
 
@@ -32,14 +34,14 @@ public class TreatmentPlanner {
 	    */
 		
 		// Database test
-		/*SimpleDB db = new SimpleDB ();
+		SimpleDB db = new SimpleDB ();
 		TreatmentEntry entry = db.getEntryByName("data2593.4844");
 		if (entry != null) {
 			ScatterDisplay display = new ScatterDisplay(ChartType.BodyType);
 			display.fill(entry.getBodyArray(), entry.getDimensions()[0], entry.getDimensions()[1], entry.getDimensions()[2]);
 			display.display ();
 		}
-		db.close ();*/
+		db.close ();
 		
 		// Test if it was correctly written
 		/*db = new SimpleDB ();
@@ -47,14 +49,14 @@ public class TreatmentPlanner {
 		
 		//System.exit (0);
 		// End of db test */
-	
+	/*
 		int ptvSize = 0;
 		int oarSize = 0;
 		
 		Voxel [][][] body = new Voxel[Config.xDIM][Config.yDIM][Config.zDIM];		// This is the body of the "patient"
-		LogTool.print("Created Body Array!","notification");
+		LogTool.print("Created Body Array!","notification");*/
 		
-		/* Initialize the body Array */
+		/* Initialize the body Array *//*
 
 		for(int x=0;x<Config.xDIM;x++) {
 			
@@ -77,8 +79,8 @@ public class TreatmentPlanner {
 					
 				}
 			}	
-		}
-		/* Initialize the Seeds */
+		}*/
+		/* Initialize the Seeds *//*
 		 
 		Seed[] seeds = new Seed[Config.numberOfSeeds];
 		
@@ -93,7 +95,7 @@ public class TreatmentPlanner {
 		LogTool.print("Initialized Solver!","notification");
 	
 		solver.solveGeneticAlg();
-		
+		*/
 		// LP:
 		/*
 		try {
