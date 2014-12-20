@@ -13,12 +13,20 @@ public class TreatmentEntry implements Serializable {
   private ArrayList<Coordinate> seedPositions = null;
   private int id = -1;
   boolean preventSave = false;
+  private String name = "";
   
-  public TreatmentEntry(Voxel[][][] bodyArray, int[] dims, ArrayList<Coordinate> seedPositions) {
+  public TreatmentEntry(Voxel[][][] bodyArray, int[] dims, ArrayList<Coordinate> seedPositions, String name) {
 	  this.bodyArray = bodyArray;
 	  this.dims = dims;
 	  this.seedPositions = seedPositions;
 	  this.id = SimpleDB.getID ();
+	  
+	  if (name != null) {
+		  this.name = name;
+	  }
+	  else{
+		  name = id + "";
+	  }
   }
   
   public void setSavePrevent (boolean preventSave) {
@@ -27,6 +35,10 @@ public class TreatmentEntry implements Serializable {
   
   public boolean doSave () {
 	  return !preventSave;
+  }
+  
+  public String getName () {
+	  return name;
   }
   
   public Voxel[][][] getBodyArray () {

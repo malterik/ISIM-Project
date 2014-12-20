@@ -32,8 +32,14 @@ public class ScatterDisplay{
 	 *  difference defines the colour change from the base colour (blue) to each side: if the current dosis 
 	 *  is smaller than the goal dosis, the colour gets greenish, if it's the other way round, the colour 
 	 *  turns reddish.
+	 * BodyType: every pixel represents one cell, colour mapping is as follows:
+	 *    Body (1): Blue
+	 *    Spine (2): Yellow
+	 *    Liver (3): Green
+	 *    Pancreas (4): Black
+	 *    Tumor (5): Red
 	 */
-	public static enum ChartType {CurrentDosis, MaxDosis, MinDosis, GoalDosis};
+	public static enum ChartType {CurrentDosis, MaxDosis, MinDosis, GoalDosis, BodyType};
 	
 	private static float TRANSPARENCY = 0.6f;
 	
@@ -43,7 +49,7 @@ public class ScatterDisplay{
     
     private Coord3d[] points = null;
     private Color[] colors = null;
-    private int scaling_factor = 1000;
+    private int scaling_factor = 10000;
     private ChartType type = null;
     private double max_dosis = 0;
 	
@@ -99,6 +105,27 @@ public class ScatterDisplay{
           	  factor = (float) ((data.getCurrentDosis() - data.getGoalDosis ()) / data.getGoalDosis () * 0.7f);
           	  color = new Color (0.3f + factor, 0, (0.7f - factor), TRANSPARENCY);
           	}
+        	break;
+        case BodyType:
+        	switch (data.getBodyType()) {
+        	case 1: // normal body
+        		color = new Color (0.8f, 0.8f, 0.8f, 0f);
+        		break;
+        	case 2: // spine
+        		color = new Color (1f, 1f, 0, 1f);
+        		break;
+        	case 3: // liver
+        		color = new Color (0f, 1f, 0f, 1f);
+        		break;
+        	case 4: // pancreas
+        		color = new Color (0f, 0f, 0f, 1f);
+        		break;
+        	case 5: // tumor
+        		color = new Color (1f, 0f, 0f, 1f);
+        		break;
+    		default:
+    			color = new Color (0f, 0f, 0f, 0f);
+        	}
         	break;
         }
     	
@@ -199,7 +226,7 @@ public class ScatterDisplay{
 		Scatter scatter = new Scatter (points, colors);		
 		chart = new Chart (Quality.Advanced, CANVAS_TYPE);
 		chart.getScene().add(scatter);
-		scatter.setWidth (7);
+		scatter.setWidth (1);
 		
 	}
 	

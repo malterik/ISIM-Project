@@ -1,6 +1,5 @@
 package erik;
 
-import sebastian.SimpleDB;
 import utils.Config;
 import utils.LogTool;
 import utils.RandGenerator;
@@ -33,34 +32,21 @@ public class TreatmentPlanner {
 	    */
 		
 		// Database test
-		SimpleDB db = new SimpleDB ();
-		/*Voxel[][][] testData = new Voxel[10][10][10];
-		ArrayList<Coordinate> seedPositions = new ArrayList<Coordinate> (5);
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
-				for (int k = 0; k < 10; k++) {
-					testData[i][j][k] = new Voxel(i, j, k);
-					testData[i][j][k].setCurrentDosis(Math.random () * 10 + 3);
-					testData[i][j][k].setGoalDosis(Math.random () * 10);
-					testData[i][j][k].setMinDosis(Math.random () * 5);
-					testData[i][j][k].setMaxDosis(Math.random () * 3 + 8);
-				}	
-			}	
+		/*SimpleDB db = new SimpleDB ();
+		TreatmentEntry entry = db.getEntryByName("data2593.4844");
+		if (entry != null) {
+			ScatterDisplay display = new ScatterDisplay(ChartType.BodyType);
+			display.fill(entry.getBodyArray(), entry.getDimensions()[0], entry.getDimensions()[1], entry.getDimensions()[2]);
+			display.display ();
 		}
-		for (int i = 0; i < 5; i++) {
-			seedPositions.add(new Coordinate ((int) Math.random () * 10, (int) Math.random () * 10, (int) Math.random () * 10));
-		}
-		db.addEntry(new TreatmentEntry (testData, new int[] {10, 10, 10}, seedPositions));
-		db.addEntry(new TreatmentEntry (testData, new int[] {10, 10, 10}, seedPositions));
-		db.deleteEntry(db.getSize() - 2);*/
-		db.close ();
+		db.close ();*/
 		
 		// Test if it was correctly written
 		/*db = new SimpleDB ();
 		db.print ();*/
 		
 		//System.exit (0);
-		// End of db test
+		// End of db test */
 	
 		int ptvSize = 0;
 		int oarSize = 0;
@@ -90,7 +76,6 @@ public class TreatmentPlanner {
 				}
 			}	
 		}
-		
 		/* Initialize the Seeds */
 		 
 		Seed[] seeds = new Seed[Config.numberOfSeeds];
@@ -106,18 +91,5 @@ public class TreatmentPlanner {
 		LogTool.print("Initialized Solver!","notification");
 	
 		solver.solveGeneticAlg();
-	
-		
-		
-		
-		
-		
-	
-
-
 	}
-	
-	
-	
-
 }

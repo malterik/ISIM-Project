@@ -1,11 +1,9 @@
 package sebastian;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,6 +11,10 @@ import java.util.ArrayList;
 
 import utils.LogTool;
 import utils.Voxel;
+
+import com.jmatio.io.MatFileReader;
+import com.jmatio.types.MLArray;
+import com.jmatio.types.MLDouble;
 
 public class SimpleDB {
   private static int id = 0;
@@ -43,6 +45,16 @@ public class SimpleDB {
   public TreatmentEntry getEntry (int index) {
 	  for (int i = 0; i < treatmentEntries.size(); i++) {
 		  if (treatmentEntries.get(i).getID() == i) {
+			  return treatmentEntries.get(i);
+		  }
+	  }
+	  
+	  return null;
+  }
+  
+  public TreatmentEntry getEntryByName (String name) {
+	  for (int i = 0; i < treatmentEntries.size (); i++) {
+		  if (treatmentEntries.get(i).getName().equals(name)) {
 			  return treatmentEntries.get(i);
 		  }
 	  }
@@ -117,7 +129,6 @@ public class SimpleDB {
 	  ObjectOutputStream ooStr = null;
 	  FileOutputStream foStr = null;
 	  File dbFile = new File (FILE_NAME);
-	  
 	  LogTool.print("Writing database to file", "debug");
 	  
 	  if (dbFile.exists() && dbFile.isFile()) {
@@ -148,6 +159,7 @@ public class SimpleDB {
 	} catch (IOException ioExc) {
 		LogTool.print ("Could not write to database: " + ioExc, "error");
 	}
+
   }
   
   /**
@@ -159,78 +171,53 @@ public class SimpleDB {
 	  id = -1;	  
   }
   
-  public void readMatlabFile (File mFile) {
-    	BufferedReader reader = null;
-    	String line = "";
-    	String[] elements = null;
-    	boolean init = false;
-    	int[] dims = new int[3];
-    	dims[0] = 10; dims[1] = 10; dims[2] = 10;
-    	int x = 0, y = 0, z = 0, j = 0;
-    	Voxel[][][] body = null;
-    	
-    	try {		
-			reader = new BufferedReader (new FileReader(mFile));
-			
-			while ((line = reader.readLine()) != null) {
-				elements = line.split(",");
-				
-				for (int i = 0; i < elements.length; i++) {
-					if (!init) {
-						dims[i] = Integer.parseInt (elements[i]);
-						
-						if (i == 2) {
-							body = new Voxel[dims[0]][dims[1]][dims[2]];
-							init = true;
+  public void readMatlabFile (File mFolder) {
+	  MLArray mlArray = null;
+	  MLDouble mlDouble = null;
+	  MatFileReader mReader = null;
+	  Voxel[][][] bodyArray = null;
+	  int x, k = 0; int dims[] = null;
+	  
+	  x = mFolder.listFiles().length;
+	  for (File mFile: mFolder.listFiles()) {
+		  if (mFile.isFile() && mFile.getName().endsWith(".mat")) {
+			  try {
+				k = Integer.parseInt(mFile.getName().substring(0, mFile.getName().indexOf(".mat")));
+				mReader = new MatFileReader (mFile);
+				mlArray = mReader.getMLArray("cpy_array");
+								
+				if (mlArray != null) {
+					if (bodyArray == null)  {
+						dims = mlArray.getDimensions();
+						bodyArray = new Voxel[x][dims[0]][dims[1]];						
+					}
+					mlDouble = (MLDouble) mlArray;
+					for (int i = 0; i < dims[0]; i++) {
+						for (int j = 0; j < dims[1]; j++) {
+							bodyArray[k - 1][i][j] = new Voxel(k - 1, i, j);
+							bodyArray[k - 1][i][j].setBodyType((int)(double) mlDouble.get(i, j));
 						}
 					}
-					else {
-						body[x][y][z] = new Voxel(x, y, z);
-						body[x][y][z].setBodyType(Integer.parseInt(elements[i].trim()));
-						z++;
-						j++;
-						
-						if (z >= dims[2] ) {
-							z = 0;
-							y++;
-						}
-						if (y >= dims[1]) {
-							y = 0;
-							x++;
-						}
-						if (x > dims[0]) {
-							System.out.println ("Error reading file: out of x-direction: " + x + "|" + dims[0]);
-							System.out.println ("j" + j);
-							return;
-						}
-					}	
 				}
+			} catch (IOException ioExc) {
+				LogTool.print ("Could not read file " + mFile + ": " + ioExc, "error");
 			}
-			
-			reader.close ();
-			
-			TreatmentEntry entry = new TreatmentEntry (body, dims, null);
-			entry.setSavePrevent(true);
-			addEntry (entry);
-			
-		} catch (FileNotFoundException fnfExc) {
-			LogTool.print("Could not find file: " + fnfExc, "error");
-		} catch (IOException ioExc) {
-			LogTool.print("Could not print to file: " + ioExc, "error");
-		}
+		  }
+	  }
+	  
+	  dims = new int[]{x, dims[0], dims[1]};
+	  addEntry (new TreatmentEntry(bodyArray, dims, null, mFolder.getName ()));
+	  System.out.println(String.format("%d|%d|%d: %s", dims[0], dims[1], dims[2], mFolder.getName ()));
   }
   
-  public void checkForMatlabFiles () {
-	  
-	  File folder = new File (System.getProperty("user.dir"));
+  public void checkForMatlabFiles () {	  
+	  File folder = new File (System.getProperty("user.dir") + "/datas");
 	  File[] listOfFiles = folder.listFiles();
-	  
-	  System.out.println ("Checking for matlab files");
-	  
+	  	  
 	  if (listOfFiles != null) {
 		  for (File file: listOfFiles) {
-			  if (file.isFile() && file.getName().endsWith(".mxt")) {
-				  System.out.println ("Checking file " + file.getName());
+			  if (file.isDirectory ()) {
+				  System.out.println (file.getName());
 				  readMatlabFile (file);
 				  break;
 			  }
