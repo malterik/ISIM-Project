@@ -1,11 +1,12 @@
 package erik;
 
-import sebastian.ScatterDisplay;
-import sebastian.ScatterDisplay.ChartType;
+import ilog.concert.IloException;
 import sebastian.SimpleDB;
 import sebastian.TreatmentEntry;
 import utils.Config;
 import utils.LogTool;
+import utils.RandGenerator;
+import utils.Seed;
 import utils.Voxel;
 
 
@@ -37,9 +38,89 @@ public class TreatmentPlanner {
 		SimpleDB db = new SimpleDB ();
 		TreatmentEntry entry = db.getEntryByName("data2593.4844");
 		if (entry != null) {
-			ScatterDisplay display = new ScatterDisplay(ChartType.BodyType);
-			display.fill(entry.getBodyArray(), entry.getDimensions()[0], entry.getDimensions()[1], entry.getDimensions()[2]);
-			display.display ();
+			//ScatterDisplay display = new ScatterDisplay(ChartType.BodyType);
+			//display.fill(entry.getBodyArray(), entry.getDimensions()[0], entry.getDimensions()[1], entry.getDimensions()[2]);
+			//display.display ();			
+			
+			
+			
+			Voxel [][][] body = new Voxel[entry.getDimensions()[0]][entry.getDimensions()[1]][entry.getDimensions()[2]];		// This is the body of the "patient"
+			LogTool.print("Created Body Array!","notification");
+			
+			for(int x = 0; x < entry.getDimensions()[0]; x++) {
+				
+				for(int y = 0; y < entry.getDimensions()[1]; y++) {
+					
+					for(int z = 0; z < entry.getDimensions()[0]; z++) {
+						
+						body[x][y][z] = new Voxel(x, y, z);
+						
+						switch(entry.getBodyArray()[x][y][z].getBodyType())
+						{
+							case Config.normalType:
+							{
+								body[x][y][z].setGoalDosis(Config.normalGoalDose);
+								body[x][y][z].setBodyType(Config.normalType);
+								break;
+							}
+							case Config.spineType:
+							{
+								body[x][y][z].setGoalDosis(Config.spineGoalDose);
+								body[x][y][z].setBodyType(Config.spineType);
+								break;
+							}
+							case Config.liverType:
+							{
+								body[x][y][z].setGoalDosis(Config.liverGoalDose);
+								body[x][y][z].setBodyType(Config.liverType);
+								break;
+							}
+							case Config.pancreasType:
+							{
+								body[x][y][z].setGoalDosis(Config.pancreasGoalDose);
+								body[x][y][z].setBodyType(Config.pancreasType);
+								break;
+							}
+							case Config.tumorType:
+							{
+								body[x][y][z].setGoalDosis(Config.tumorGoalDose);
+								body[x][y][z].setBodyType(Config.tumorType);
+								break;
+							}
+							default:
+							{
+								body[x][y][z].setGoalDosis(Config.normalGoalDose);
+								body[x][y][z].setBodyType(Config.normalType);
+								break;
+							}	
+						}
+						
+						
+						
+						
+					}
+				}	
+			}
+			/*
+			Seed[] seeds = new Seed[Config.numberOfSeeds];
+			
+			for(int i=0; i < Config.numberOfSeeds; i++)
+			{				
+				seeds[i] = new Seed(RandGenerator.randDouble(Config.ptvXLow,Config.ptvXHigh),RandGenerator.randDouble(Config.ptvYLow,Config.ptvYHigh),RandGenerator.randDouble(Config.ptvZLow,Config.ptvZHigh),0);
+			}
+			
+			LogTool.print("Initialized Body Array!","notification");
+			
+			Solver solver = new Solver(body,seeds);			// The Solver implements the genetic Algorithm
+			LogTool.print("Initialized Solver!","notification");
+			
+			try {
+				solver.solveLP();
+			} catch (IloException e) {
+				LogTool.print("Error in LP: ", "error");
+				e.printStackTrace();
+			}*/
+			
 		}
 		db.close ();
 		
