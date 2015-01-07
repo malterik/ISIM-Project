@@ -59,6 +59,11 @@ public class Config {
 	public static final int pancreasType 	= 4; // no dose
 	public static final int tumorType 		= 5; // high dose
 	
+	//Multithreading
+	
+	public static final int numberOfThreads = 4;
+	public static final int numberOfTasks = 2;
+	
 	
 	
 	

@@ -1,10 +1,15 @@
 package erik;
 
 import java.util.Random;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import utils.Config;
+import utils.Coordinate;
 import utils.RandGenerator;
-import utils.Seed;
 
 public class Individual
 {
@@ -34,6 +39,42 @@ public class Individual
     }
 
     public double evaluate() {
+    	
+    	ExecutorService threadPool = Executors.newFixedThreadPool(4);
+    	CompletionService<Double> pool = new ExecutorCompletionService<Double>(threadPool);
+    	Coordinate[] start = new Coordinate[Config.numberOfTasks];
+    	Coordinate[] end = new Coordinate[Config.numberOfTasks];
+    	
+    	//TODO bound calculation
+    	
+    	start[0] = new Coordinate(Config.ptvXLow-10, Config.ptvYLow-10, Config.ptvZLow-10);
+    	end[0] = new Coordinate(Config.ptvXLow, Config.ptvYLow, Config.ptvZLow);
+    	
+    	start[1] = new Coordinate(50, 50, 50);
+    	end[1] = new Coordinate(Config.ptvXHigh+10, Config.ptvYHigh+10, Config.ptvZHigh+10);
+    	
+    	
+    	for(int i = 0; i < Config.numberOfTasks; i++){
+    	   pool.submit(new DoseEvaluator(start[i],end[i],genes));
+    	}
+    	double[] partial_result = new double[Config.numberOfTasks];
+    	for(int i = 0; i < Config.numberOfTasks; i++){
+     	  try {
+			partial_result[i] = pool.take().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+     	}
+     	
+    	
+    	
+    	
+    	return Math.sqrt(partial_result[0]+partial_result[1]);
+    	/*
         double fitness = 0;
         double temp=0;
         double intensity=0;
@@ -62,6 +103,7 @@ public class Individual
         this.setFitnessValue(fitness);
         
         return fitness;
+        */
     }
     
     
