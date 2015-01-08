@@ -26,7 +26,7 @@ public class Individual
 
     
     public void randGenes() {
-        Random rand = new Random();
+        //Random rand = new Random();
         for(int i=0; i<Config.numberOfSeeds; ++i) {
            this.setGene(i, RandGenerator.randDouble(0, MAX_DWELL_TIME));
         }
@@ -39,28 +39,24 @@ public class Individual
     }
 
     public double evaluate() {
-    	
-    	ExecutorService threadPool = Executors.newFixedThreadPool(4);
+    	double fitness = 0;
+    	ExecutorService threadPool = Executors.newFixedThreadPool(Config.numberOfThreads);
     	CompletionService<Double> pool = new ExecutorCompletionService<Double>(threadPool);
-    	Coordinate[] start = new Coordinate[Config.numberOfTasks];
-    	Coordinate[] end = new Coordinate[Config.numberOfTasks];
+
     	
     	//TODO bound calculation
-    	
-    	start[0] = new Coordinate(Config.ptvXLow-10, Config.ptvYLow-10, Config.ptvZLow-10);
-    	end[0] = new Coordinate(Config.ptvXLow, Config.ptvYLow, Config.ptvZLow);
-    	
-    	start[1] = new Coordinate(50, 50, 50);
-    	end[1] = new Coordinate(Config.ptvXHigh+10, Config.ptvYHigh+10, Config.ptvZHigh+10);
-    	
-    	
-    	for(int i = 0; i < Config.numberOfTasks; i++){
-    	   pool.submit(new DoseEvaluator(start[i],end[i],genes));
+    	// Create tasks and submit them to the pool
+    	for(int i = 0; i < Solver.dimensions[0]; i++){
+    	   pool.submit(new DoseEvaluator(Solver.dimensions, genes,i));
     	}
-    	double[] partial_result = new double[Config.numberOfTasks];
-    	for(int i = 0; i < Config.numberOfTasks; i++){
+    	// The results will be stored here
+    	double[] partial_result = new double[Solver.dimensions[0]];
+    	
+    	for(int i = 0; i < Solver.dimensions[0]; i++){
      	  try {
 			partial_result[i] = pool.take().get();
+			//System.out.println(i+" Threads finished;");
+			fitness += partial_result[i];
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,11 +67,11 @@ public class Individual
      	}
      	
     	
-    	
-    	
-    	return Math.sqrt(partial_result[0]+partial_result[1]);
+    	fitness = Math.sqrt(fitness);
+    	this.setFitnessValue(fitness);
+    	return fitness;
     	/*
-        double fitness = 0;
+        
         double temp=0;
         double intensity=0;
         for(int x=Config.ptvXLow-10; x < Config.ptvXHigh+10; x++) {
@@ -100,7 +96,7 @@ public class Individual
 		}
         
         fitness = Math.sqrt(temp);
-        this.setFitnessValue(fitness);
+        
         
         return fitness;
         */

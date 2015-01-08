@@ -8,45 +8,44 @@ import utils.Coordinate;
 
 public class DoseEvaluator implements Callable<Double> {
 
-	private Coordinate start;
-	private Coordinate end;
+
+	private int x;
+	private int[] dimensions;
 	
 	 private double[] genes = new double[Config.numberOfSeeds];
 	
-	public DoseEvaluator(Coordinate start, Coordinate end, double[] genes) {
-		this.start = start;
-		this.end = end;
+	public DoseEvaluator(int[] dimensions, double[] genes, int x) {
+
 		this.genes = genes;
+		this.x = x;
+		this.dimensions = dimensions;
 	}
 	
 
 	
 	public double evaluate() {
-        double fitness = 0;
         double temp=0;
         double intensity=0;
-        for(int x = (int) start.getX(); x < (int) end.getX(); x++) {
+        
 			
-			for(int y = (int) start.getY(); y < (int) end.getY(); y++) {
+		for(int y =0; y < dimensions[1] ; y++) {
+			
+			for(int z = 0; z < dimensions[2]; z++) {
 				
-				for(int z = (int) start.getZ(); z < (int) end.getZ(); z++) {
+				Solver.body[x][y][z].setCurrentDosis(0);
+				for(int i=0; i<Config.numberOfSeeds;++i) {
 					
-					Solver.body[x][y][z].setCurrentDosis(0);
-					for(int i=0; i<Config.numberOfSeeds;++i) {
-						
-						
-						intensity = Solver.body[x][y][z].radiationIntensity(Solver.seeds[i].getCoordinate(), genes[i]);
-						Solver.body[x][y][z].addCurrentDosis(intensity);
-						
-					}	
-					temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2);
 					
+					intensity = Solver.body[x][y][z].radiationIntensity(Solver.seeds[i].getCoordinate(), genes[i]);
+					Solver.body[x][y][z].addCurrentDosis(intensity);
 					
 				}	
-			}
+				temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2);
+				
+				
+			}	
 		}
-        
-        //fitness = Math.sqrt(temp);
+		
         
         return temp;
     }

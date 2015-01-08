@@ -11,6 +11,7 @@ public class Solver {
 	
 	public static Voxel [][][] body;
 	public static Seed[] seeds = new Seed[Config.numberOfSeeds];
+	public static int[] dimensions;
 	
 	
 	/**
@@ -20,9 +21,10 @@ public class Solver {
 	 * @param seeds
 	 * The seeds which should be optimized
 	 */
-	public Solver(Voxel [][][] body, Seed[] seeds) {
-		this.body = body;
-		this.seeds = seeds;
+	public Solver(Voxel [][][] body, Seed[] seeds, int [] dimensions) {
+		Solver.body = body;
+		Solver.seeds = seeds;
+		Solver.dimensions = dimensions;
 	}
 	
 
