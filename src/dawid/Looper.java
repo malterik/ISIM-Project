@@ -24,12 +24,16 @@ public class Looper {
      * @param args
      */
     
-    public static Voxel [][][] body;
-    public static Seed[] seeds = new Seed[Config.numberOfSeeds];
+    public static Voxel [][][] body; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
+    public static Seed[] seeds = new Seed[Config.SAnumberOfSeeds];
+    public static Seed[] Cur_State = new Seed[Config.SAnumberOfSeeds];
+    public static Seed[] New_State = new Seed[Config.SAnumberOfSeeds];
 //    private double cost;
-    public static double[] dwelltimes;
-    private double Cur_cost, New_cost, temperature;
-    private double[] Cur_state;
+//    public  double[] dwelltimes; // Do I even need this ?
+    private double Cur_cost, New_cost, temperature; // Cost is a double...
+//    public Seed[] Cur_state = (Seed[]) seeds.clone();
+    
+//    private Seed[] New_state = seeds; //Essentially a copy of seeds
     
     /**
 	 * WHAT THIS DOES
@@ -42,10 +46,55 @@ public class Looper {
     public Looper(Voxel [][][] body, Seed[] seeds) {
 		this.body = body;
 		this.seeds = seeds;
-//                this.cost = cost;
+                this.Cur_cost = Cur_cost;
+                this.New_cost = New_cost;
                 this.temperature = temperature;
-                this.dwelltimes = dwelltimes;
-	}
+                this.Cur_state = Cur_state;
+                this.New_state = New_state;
+//                this.dwelltimes = Looper.seeds().;
+                        }
+
+    public double getNew_cost() {
+        return New_cost;
+    }
+
+    public void setNew_cost(double New_cost) {
+        this.New_cost = New_cost;
+    }
+    
+    public double getCur_cost() {
+        return Cur_cost;
+    }
+
+    public void setCur_cost(double Cur_cost) {
+        this.Cur_cost = Cur_cost;
+    }
+    
+    public Seed[] getNew_state() {
+        return New_state;
+    }
+
+    public void setNew_state(Seed[] New_state) {
+        this.New_state = New_state;
+    }
+
+    public Seed[] getCur_state() {
+        return Cur_state;
+    }
+    
+//    public String getState_String() {
+////        Cur_State[0].
+//                Cur_State[0].
+//        return ;
+//    }
+    
+    public void setCur_state(Seed[] Cur_state) {
+        this.Cur_state = Cur_state;
+    }
+    
+//    public void initState() {
+//        Looper.seeds.clone()
+//    }
     
     public static Seed[] getSeed()
 	{
@@ -53,58 +102,63 @@ public class Looper {
 	}
     /**
 	 * This method solves the optimization problem with simulated annealing
+         * It contains the metropolis loop
 	 */
     public void solveSA() {
-        Cur_cost = this.cost();
-        New_cost = this.cost();
+//        Cur_cost = this.cost();
+//        New_cost = this.cost();
         
-	for(int x=0;x<Config.NumberOfMetropolisRounds;x++) {    
-           if ((Cur_cost - New_cost)<0) {
-                    dwelltimes = Cur_state;
-                    
-                    return;
-//                } else if ( Math.exp((Cur_cost - New_cost)/temperature) )> RandGenerator.randDouble(0.01, 0.99) {
-               
+        LogTool.print("Initial State : A)" + Looper.seeds[0].getDurationMilliSec() + " B) " + seeds[1].getDurationMilliSec() + " C) " + seeds[2].getDurationMilliSec(),"notification");
+        LogTool.print("Initial State : A)" + Cur_state[0] + " B) " + seeds[1].getDurationMilliSec() + " C) " + seeds[2].getDurationMilliSec(),"notification");
+//        LogTool.print("Initial State : A)" + Looper.Cur_State[0].getDurationMilliSec() + " B) " + seeds[1].getDurationMilliSec() + " C) " + seeds[2].getDurationMilliSec(),"notification");
+        //[Newstate] with random dwelltimes
+        
+        //[Cur=New]
+        //[]
+        
+//        this.Cur_State = 
+        
+        /**
+            * MetropolisLoop - 
+	 */
+	for(int x=0;x<Config.NumberOfMetropolisRounds;x++) {   
+           if (true) {
+//                    dwelltimes = Cur_state;
+                    LogTool.print("SolveSA Iteration " + Cur_state + "","notification");
+                    LogTool.print("SolveSA Iteration " + x + "","notification");
+                } else if (Math.exp((Cur_cost - New_cost))> RandGenerator.randDouble(0.01, 0.99)) {
+//                    dwelltimes = null; 
                 }
- 
-        LogTool.print("It runs lol","notification");
+           temperature = temperature-1;
         }
+//        return New_Cost;
         
     }
     
-    public Seed NewState() {
-        return null;
-        
-    }
     
-    public Seed CurState() {
-        return null;
-        
-    }
+    
     public double cost() {
-//        double Energy = 0;
         double diff=0;
         double intensity=0;
         
+//        for(int x=Config.ptvXLow-10; x < Config.ptvXHigh+10; x++) {
+//			for(int y=Config.ptvYLow-10; y < Config.ptvYHigh+10; y++) {
+//				for(int z=Config.ptvZLow-10; z < Config.ptvZHigh+10; z++) {
+//
+//					Looper.body[x][y][z].setCurrentDosis(0);  //What does this line do ?
+//					for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+//						
+//						intensity = Looper.body[x][y][z].radiationIntensity(Looper.seeds[i].getCoordinate(), dwelltimes[i]);
+//						Looper.body[x][y][z].addCurrentDosis(intensity);
+//					}	
+//					diff += Math.pow((Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),2);		
+//				}	
+//			}
+//		}
+////        this.setFitnessValue(cost);
         
-        for(int x=Config.ptvXLow-10; x < Config.ptvXHigh+10; x++) {
-			
-			for(int y=Config.ptvYLow-10; y < Config.ptvYHigh+10; y++) {
-				
-				for(int z=Config.ptvZLow-10; z < Config.ptvZHigh+10; z++) {
-					
-					Solver.body[x][y][z].setCurrentDosis(0);  //What does this line do ?
-					for(int i=0; i<Config.numberOfSeeds;++i) { 
-						
-						intensity = Solver.body[x][y][z].radiationIntensity(Solver.seeds[i].getCoordinate(), dwelltimes[i]);
-						Solver.body[x][y][z].addCurrentDosis(intensity);
-					}	
-					diff += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2);		
-				}	
-			}
-		}
-//        this.setFitnessValue(cost);
         return Math.sqrt(diff);
+//        return Math.random();
     }
 
 //    private void setFitnessValue(double cost) {
