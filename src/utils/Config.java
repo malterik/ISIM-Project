@@ -33,6 +33,7 @@ public class Config {
         // Parameters for the Simulated Annealing algorithm
         
         public static final double NumberOfMetropolisRounds = 10;
+        public static final int SAnumberOfSeeds = 3;
         
 	// Parameters for the genetic algorithm
 	
