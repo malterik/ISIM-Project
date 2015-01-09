@@ -11,7 +11,6 @@ public class Solver {
 	
 	public static Voxel [][][] body;
 	public static Seed[] seeds = new Seed[Config.numberOfSeeds];
-	public static int[] dimensions;
 	
 	
 	/**
@@ -21,10 +20,9 @@ public class Solver {
 	 * @param seeds
 	 * The seeds which should be optimized
 	 */
-	public Solver(Voxel [][][] body, Seed[] seeds, int [] dimensions) {
-		Solver.body = body;
-		Solver.seeds = seeds;Solver.body = body;
-		Solver.dimensions = dimensions;
+	public Solver(Voxel [][][] body, Seed[] seeds) {
+		this.body = body;
+		this.seeds = seeds;
 	}
 	
 
@@ -64,7 +62,6 @@ public class Solver {
 				nonZeroCounter++;
 			}
 		}
-		/*
 		System.out.println("Non zero elements: " + nonZeroCounter);
 		System.out.println("tumorpoint 45-45-45 dose: " + LPTreatment.getBody()[45][45][45].getCurrentDosis());
 		System.out.println("Ecke");
@@ -75,12 +72,11 @@ public class Solver {
 		System.out.println("tumorpoint 42-50-50 dose: " + LPTreatment.getBody()[42][50][50].getCurrentDosis());
 		System.out.println("tumorpoint 41-50-50 dose: " + LPTreatment.getBody()[41][50][50].getCurrentDosis());
 		System.out.println("tumorpoint 40-50-50 dose: " + LPTreatment.getBody()[40][50][50].getCurrentDosis());
-		System.out.println("auï¿½en oben mitte");
+		System.out.println("außen oben mitte");
 		System.out.println("tumorpoint 47-47-47 dose: " + LPTreatment.getBody()[47][47][47].getCurrentDosis());
 		System.out.println("oben mitte zwischen rand und zentrum");
 		System.out.println("tumorpoint 50-50-50 dose: " + LPTreatment.getBody()[50][50][50].getCurrentDosis());
 		System.out.println("zentrum");
-		*/
 	}
 
 

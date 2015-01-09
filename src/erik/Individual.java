@@ -1,10 +1,15 @@
 package erik;
 
 import java.util.Random;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import utils.Config;
+import utils.Coordinate;
 import utils.RandGenerator;
-import utils.Seed;
 
 public class Individual
 {
@@ -21,7 +26,7 @@ public class Individual
 
     
     public void randGenes() {
-        Random rand = new Random();
+        //Random rand = new Random();
         for(int i=0; i<Config.numberOfSeeds; ++i) {
            this.setGene(i, RandGenerator.randDouble(0, MAX_DWELL_TIME));
         }
@@ -34,7 +39,39 @@ public class Individual
     }
 
     public double evaluate() {
-        double fitness = 0;
+    	double fitness = 0;
+    	ExecutorService threadPool = Executors.newFixedThreadPool(Config.numberOfThreads);
+    	CompletionService<Double> pool = new ExecutorCompletionService<Double>(threadPool);
+
+    	
+    	//TODO bound calculation
+    	// Create tasks and submit them to the pool
+    	for(int i = 0; i < Solver.dimensions[0]; i++){
+    	   pool.submit(new DoseEvaluator(Solver.dimensions, genes,i));
+    	}
+    	// The results will be stored here
+    	double[] partial_result = new double[Solver.dimensions[0]];
+    	
+    	for(int i = 0; i < Solver.dimensions[0]; i++){
+     	  try {
+			partial_result[i] = pool.take().get();
+			//System.out.println(i+" Threads finished;");
+			fitness += partial_result[i];
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+     	}
+     	
+    	
+    	fitness = Math.sqrt(fitness);
+    	this.setFitnessValue(fitness);
+    	return fitness;
+    	/*
+        
         double temp=0;
         double intensity=0;
         for(int x=Config.ptvXLow-10; x < Config.ptvXHigh+10; x++) {
@@ -59,9 +96,10 @@ public class Individual
 		}
         
         fitness = Math.sqrt(temp);
-        this.setFitnessValue(fitness);
+        
         
         return fitness;
+        */
     }
     
     
