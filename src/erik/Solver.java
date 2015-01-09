@@ -62,6 +62,7 @@ public class Solver {
 				nonZeroCounter++;
 			}
 		}
+		/*
 		System.out.println("Non zero elements: " + nonZeroCounter);
 		System.out.println("tumorpoint 45-45-45 dose: " + LPTreatment.getBody()[45][45][45].getCurrentDosis());
 		System.out.println("Ecke");
@@ -77,6 +78,7 @@ public class Solver {
 		System.out.println("oben mitte zwischen rand und zentrum");
 		System.out.println("tumorpoint 50-50-50 dose: " + LPTreatment.getBody()[50][50][50].getCurrentDosis());
 		System.out.println("zentrum");
+		*/
 	}
 
 
