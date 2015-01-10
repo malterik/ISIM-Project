@@ -202,7 +202,7 @@ public class LPTreatment {
 				for(int z = 0; z < Config.zDIM; z++)
 				{
 					//check state of world
-					
+					/*
 					if(body[x][y][z].getBodyType() == Config.tumorType)
 					{
 						for(int i = 0; i < Config.numberOfSeeds; i++)
@@ -227,7 +227,9 @@ public class LPTreatment {
 							}
 						}
 					}
-					/*
+					
+					*/
+					
 					switch(body[x][y][z].getBodyType())
 					{
 						case Config.normalType:
@@ -312,7 +314,7 @@ public class LPTreatment {
 							}
 							break;
 						}
-					}		*/				
+					}					
 				}
 			}
 		}
@@ -418,7 +420,7 @@ public class LPTreatment {
 				for(int z = 0; z < Config.zDIM; z++)
 				{
 					//check state of world
-					
+					/*
 					if(body[x][y][z].getBodyType() == Config.tumorType)
 					{
 						for(int i = 0; i < Config.numberOfSeeds; i++)
@@ -440,8 +442,9 @@ public class LPTreatment {
 						}
 						cplex.addLe(cplex.sum(dosepart), body[x][y][z].getGoalDosis());
 					}
+					*/
 					
-					/*
+					
 					switch(body[x][y][z].getBodyType())
 					{
 						case Config.normalType:
@@ -503,7 +506,7 @@ public class LPTreatment {
 							cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
 							break;
 						}
-					}		*/				
+					}					
 				}
 			}
 		}
