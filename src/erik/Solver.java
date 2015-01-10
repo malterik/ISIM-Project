@@ -12,6 +12,9 @@ public class Solver {
 	public static Voxel [][][] body;
 	public static Seed[] seeds = new Seed[Config.numberOfSeeds];
 	public static int[] dimensions;
+	static public int[] xBoundsTumor;
+	static public int[] yBoundsTumor;
+	static public int[] zBoundsTumor;
 	
 	
 	/**
@@ -25,6 +28,14 @@ public class Solver {
 		Solver.body = body;
 		Solver.seeds = seeds;
 		Solver.dimensions = dimensions;
+		
+		BodyAnalyzer ba = new BodyAnalyzer(body, dimensions);
+		Solver.xBoundsTumor = ba.getxBoundsTumor(2);
+		Solver.yBoundsTumor = ba.getyBoundsTumor(2);
+		Solver.zBoundsTumor = ba.getzBoundsTumor(2);
+		
+		
+		
 	}
 	
 

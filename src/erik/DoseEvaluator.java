@@ -28,9 +28,9 @@ public class DoseEvaluator implements Callable<Double> {
         double intensity=0;
         
 			
-		for(int y =0; y < dimensions[1] ; y++) {
+		for(int y =Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1] ; y+= Config.scaleFactor) {
 			
-			for(int z = 0; z < dimensions[2]; z++) {
+			for(int z = Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+=Config.scaleFactor) {
 				
 				Solver.body[x][y][z].setCurrentDosis(0);
 				for(int i=0; i<Config.numberOfSeeds;++i) {

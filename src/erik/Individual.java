@@ -46,13 +46,13 @@ public class Individual
     	
     	//TODO bound calculation
     	// Create tasks and submit them to the pool
-    	for(int i = 0; i < Solver.dimensions[0]; i++){
+    	for(int i = Solver.xBoundsTumor[0]; i < Solver.xBoundsTumor[1]; i++){
     	   pool.submit(new DoseEvaluator(Solver.dimensions, genes,i));
     	}
     	// The results will be stored here
-    	double[] partial_result = new double[Solver.dimensions[0]];
+    	double[] partial_result = new double[(Solver.xBoundsTumor[1] - Solver.xBoundsTumor[0])];
     	
-    	for(int i = 0; i < Solver.dimensions[0]; i++){
+    	for(int i = 0; i < (Solver.xBoundsTumor[1] - Solver.xBoundsTumor[0]) ; i++){
      	  try {
 			partial_result[i] = pool.take().get();
 			//System.out.println(i+" Threads finished;");

@@ -36,8 +36,8 @@ public class Config {
         
 	// Parameters for the genetic algorithm
 	
-	public static final int numberOfSeeds = 500;
-	public static final int numberOfIterations = 500;
+	public static final int numberOfSeeds = 50;
+	public static final int numberOfIterations = 10;
 	
 	// outputs
 	public static final boolean errors = true;
@@ -62,7 +62,10 @@ public class Config {
 	//Multithreading
 	
 	public static final int numberOfThreads = 4;
-	public static final int numberOfTasks = 2;
+	
+	public static final int treatmentRange = 10; // indicates the range in cm for the region around the tumor which shall be treated by radiation
+	
+	public static final int scaleFactor = 5;
 	
 	
 	

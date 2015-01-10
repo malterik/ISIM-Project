@@ -1,5 +1,9 @@
 package erik;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import sebastian.SimpleDB;
 import sebastian.TreatmentEntry;
 import utils.Config;
@@ -125,10 +129,12 @@ public class TreatmentPlanner {
 		long start = System.currentTimeMillis();
 		solver.solveGeneticAlg();
 		long end = System.currentTimeMillis();
-		
-		System.out.println("Genetic Algorithm runtime :"+ (end-start) +"ms");
+		Date date = new Date(end-start);
+		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
+		String dateFormatted = formatter.format(date);
+		System.out.println("Gen-Alg Runtime: "+dateFormatted);
 				
-		
+		System.exit(0);
 		// LP:
 		/*
 		try {

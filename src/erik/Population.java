@@ -6,9 +6,9 @@ import utils.Config;
 
 public class Population
 {
-    final static int ELITISM_K = 5;
+    final static int ELITISM_K =2;
     final static int POP_SIZE = 10 + ELITISM_K;  // population size
-    final static int MAX_ITER = 20;             // max number of iterations
+    final static int MAX_ITER = 200;             // max number of iterations
     final static double MUTATION_RATE = 0.55;     // probability of mutation
     final static double CROSSOVER_RATE = 0.8;     // probability of crossover
     

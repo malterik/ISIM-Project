@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Voxel implements Serializable {
 	private static final long serialVersionUID = 21L;
 	
-	private static final double GRID_RESOLUTION = 1;  // Distance between two voxel in cm
+	public static final double GRID_RESOLUTION = 0.2;  // Distance between two voxel in cm
 	private double maxDosis;
 	private double minDosis;
 	private double goalDosis;
