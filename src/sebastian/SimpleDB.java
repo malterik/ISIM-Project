@@ -17,76 +17,148 @@ import com.jmatio.types.MLArray;
 import com.jmatio.types.MLDouble;
 
 public class SimpleDB {
-  private static int id = 0;
+  File baseDir = new File (System.getProperty("user.dir") + "/datas");
   private static final String FILE_NAME = "isim.db";
-  ArrayList<TreatmentEntry> treatmentEntries = null;
-  
+  ArrayList<TreatmentEntry> treatments = null;
+  ArrayList<BodyEntry> bodies = null;
+    
   public SimpleDB () {
 	  File dbFile = new File (FILE_NAME);
-	  treatmentEntries = new ArrayList<TreatmentEntry> ();
+	  treatments = new ArrayList<TreatmentEntry> ();
+	  bodies = new ArrayList<BodyEntry> ();
 	  
 	  if (dbFile.exists() && dbFile.isFile()) {
 		  loadDB ();
 	  }
+  }
+  
+  /**
+   * Reads all matlab files and calculates the measurements. All already existing calculations will be kept
+   */
+  public void classifyAll () {
+	  // Read all missing bodies
+	  for (File folder: baseDir.listFiles()) {
+		  if (folder.isDirectory() && getTreatmentByName(folder.getName ()) == null) {
+			  // Only read non-existing bodies
+			  if (getBodyByName(folder.getName ()) == null) { 
+			    LogTool.print ("File read: " + folder, "debug");
+				readMatlabFile(folder); 
+			  }			  
+		  }
+		  else {
+			  LogTool.print ("Entry already exists: " + folder.getName (),"debug");
+		  }
+	  }
 	  
-	  checkForMatlabFiles ();
-  }
-  
-  public void addEntry (TreatmentEntry entry) {
-	  treatmentEntries.add(entry);	  
-  }
-  
-  public void print () {
-	  for (TreatmentEntry entry: treatmentEntries) {
-		  LogTool.print ("----------\nID: " + entry.getID() + "\n(x|y|z): " + entry.getDimensions()[0] + "|" + entry.getDimensions()[1] + "|" + entry.getDimensions()[2] + "\n", "debug");
+	  for (BodyEntry entry: bodies) {
+		  classify (entry);
 	  }
   }
   
-  public TreatmentEntry getEntry (int index) {
-	  for (int i = 0; i < treatmentEntries.size(); i++) {
-		  if (treatmentEntries.get(i).getID() == i) {
-			  return treatmentEntries.get(i);
+  private void classify (BodyEntry bEntry) {
+	  if (getTreatmentByName (bEntry.getName ()) != null) {
+		  LogTool.print ("Entry already exists: " + bEntry.getName(),"debug");
+		  return;
+	  }
+	  
+	  int[] typeCount = new int[bEntry.getMaxType () + 1];
+	  double[][] typeSum = new double[bEntry.getMaxType () + 1][3];
+	  
+	  // Measure stuff
+	  for(int i = 0; i < bEntry.getDimensions()[0]; i++) {
+		  for (int j = 0; j < bEntry.getDimensions ()[1]; j++) {
+			  for (int k = 0; k < bEntry.getDimensions ()[2]; k++) {
+				  // Plain count of each type
+				  typeCount[bEntry.getBodyArray()[i][j][k].getBodyType()]++;
+				  // Sum up for center of volume
+				  typeSum[bEntry.getBodyArray()[i][j][k].getBodyType ()][0] += bEntry.getBodyArray()[i][j][k].getCoordinate().getX();
+				  typeSum[bEntry.getBodyArray()[i][j][k].getBodyType ()][1] += bEntry.getBodyArray()[i][j][k].getCoordinate().getY();
+				  typeSum[bEntry.getBodyArray()[i][j][k].getBodyType ()][2] += bEntry.getBodyArray()[i][j][k].getCoordinate().getZ();
+			  }
+		  }
+	  }
+	  
+	  // Calculate center of volume
+	  for (int i = 0; i < typeSum.length; i++) {
+		  typeSum[i][0] = typeSum[i][0] / typeCount[i];
+		  typeSum[i][1] = typeSum[i][1] / typeCount[i];
+		  typeSum[i][2] = typeSum[i][2] / typeCount[i];
+	  }
+	  
+	  TreatmentEntry tEntry = new TreatmentEntry (bEntry.getName());
+	  tEntry.setVolumeCenters(typeSum);
+	  tEntry.setVolumeSizes(typeCount);
+	  addTreatmentEntry(tEntry);
+	  
+  }
+  
+  public void addTreatmentEntry (TreatmentEntry entry) {
+	  treatments.add(entry);	  
+  }
+  
+  
+  
+  public void printBodies () {
+	  for (BodyEntry entry: bodies) {
+		  LogTool.print (entry.toString(), "debug");
+	  }
+  }
+  
+  public void printTreatments () {
+	  for (TreatmentEntry entry: treatments) {
+		  LogTool.print (entry.toString(), "debug");
+	  }
+  }
+  
+  public TreatmentEntry getTreatmentByName (String name) {
+	  for (int i = 0; i < treatments.size (); i++) {
+		  if (treatments.get(i).getName().equals(name)) {
+			  return treatments.get(i);
 		  }
 	  }
 	  
 	  return null;
   }
   
-  public TreatmentEntry getEntryByName (String name) {
-	  for (int i = 0; i < treatmentEntries.size (); i++) {
-		  if (treatmentEntries.get(i).getName().equals(name)) {
-			  return treatmentEntries.get(i);
+  public BodyEntry getBodyByName (String name) {
+	  for (int i = 0; i < bodies.size (); i++) {
+		  if (bodies.get(i).getName().equals(name)) {
+			  return bodies.get(i);
 		  }
+	  }
+	  
+	  File search = new File (baseDir, name);
+	  if (search.exists() && search.isDirectory()) {
+	    readMatlabFile (search);
+	    return getBodyByName (name);
 	  }
 	  
 	  return null;
   }
-  
-  public int getSize () {
-	  return treatmentEntries.size ();
+    
+  public int getBodySize () {
+	  return bodies.size ();
   }
   
-  public static int getID () {
-	  id++;
-	  LogTool.print("Returning id " + (id - 1), "debug");
-	  return (id - 1) ;
+  public int getTreatmentSize () {
+	  return treatments.size ();
   }
-  
-  public void deleteEntry (int id) {
+    
+  public void deleteBody (String name) {
 	  int delIndex = -1;
 	  
-	  LogTool.print ("Deleting id " + id, "debug");
+	  LogTool.print ("Deleting body " + name, "debug");
 	  
-	  for (int i = 0; i < treatmentEntries.size(); i++) {
-		  if (treatmentEntries.get(i).getID () == id) {
+	  for (int i = 0; i < bodies.size(); i++) {
+		  if (bodies.get(i).getName ().equals (name)) {
 			  delIndex = i;
 			  break;
 		  }
 	  }
 	  
-	  LogTool.print("id " + id + " found: " + delIndex, "debug");
+	  LogTool.print("Body " + name + " found: " + delIndex, "debug");
 	  
-	  if (delIndex > -1) treatmentEntries.remove(delIndex);
+	  if (delIndex > -1) bodies.remove(delIndex);
   }
   
   private void loadDB () {
@@ -95,10 +167,9 @@ public class SimpleDB {
 	Object obj = null;
 	TreatmentEntry entry = null;
 	int objCount = 0;
-	int maxID = -1;
 	
 	LogTool.print("Reading database from file", "debug");
-	treatmentEntries.clear();
+	treatments.clear();
 	
 	try {
 		fiStr = new FileInputStream (FILE_NAME);
@@ -109,10 +180,8 @@ public class SimpleDB {
 		for (int i = 0; i < objCount; i++) {
 			obj = oiStr.readObject();
 			entry = (TreatmentEntry) obj;
-			treatmentEntries.add (entry);
-			if (maxID < entry.getID()) maxID = entry.getID ();
+			treatments.add (entry);
 		}
-		id = maxID + 1;
 		
 		oiStr.close();
 		fiStr.close();
@@ -145,11 +214,11 @@ public class SimpleDB {
 		foStr = new FileOutputStream (FILE_NAME);
 		ooStr = new ObjectOutputStream(foStr);
 		
-		ooStr.writeInt(treatmentEntries.size());
+		ooStr.writeInt(treatments.size());
 		
 		
-		for (int i = 0; i < treatmentEntries.size (); i++) {
-			if (treatmentEntries.get(i).doSave()) ooStr.writeObject(treatmentEntries.get(i));
+		for (int i = 0; i < treatments.size (); i++) {
+			ooStr.writeObject(treatments.get(i));
 		}
 		
 		ooStr.close();
@@ -167,8 +236,8 @@ public class SimpleDB {
    */
   public void close () {
 	  storeDB ();
-	  treatmentEntries = null;
-	  id = -1;	  
+	  treatments = null;
+	  bodies = null;
   }
   
   public void readMatlabFile (File mFolder) {
@@ -177,6 +246,7 @@ public class SimpleDB {
 	  MatFileReader mReader = null;
 	  Voxel[][][] bodyArray = null;
 	  int x, k = 0; int dims[] = null;
+	  int maxType = 0;
 	  
 	  x = mFolder.listFiles().length;
 	  for (File mFile: mFolder.listFiles()) {
@@ -196,6 +266,9 @@ public class SimpleDB {
 						for (int j = 0; j < dims[1]; j++) {
 							bodyArray[k - 1][i][j] = new Voxel(k - 1, i, j);
 							bodyArray[k - 1][i][j].setBodyType((int)(double) mlDouble.get(i, j));
+							if (maxType < bodyArray[k - 1][i][j].getBodyType()) {
+								maxType = bodyArray[k - 1][i][j].getBodyType();
+							}
 						}
 					}
 				}
@@ -206,22 +279,11 @@ public class SimpleDB {
 	  }
 	  
 	  dims = new int[]{x, dims[0], dims[1]};
-	  TreatmentEntry entry = new TreatmentEntry(bodyArray, dims, null, mFolder.getName ());
-	  entry.setSavePrevent(true);
-	  addEntry (entry);
+	  BodyEntry entry = new BodyEntry(mFolder.getName (), bodyArray, dims, maxType);
+	  addBody (entry);
   }
   
-  public void checkForMatlabFiles () {	  
-	  File folder = new File (System.getProperty("user.dir") + "/datas");
-	  File[] listOfFiles = folder.listFiles();
-	  	  
-	  if (listOfFiles != null) {
-		  for (File file: listOfFiles) {
-			  if (file.isDirectory ()) {
-				  LogTool.print ("Reading array " + file.getName(), "debug");
-				  readMatlabFile (file);
-			  }
-		  }
-	  }
+  private void addBody(BodyEntry entry) {
+	 bodies.add (entry);
   }
 }

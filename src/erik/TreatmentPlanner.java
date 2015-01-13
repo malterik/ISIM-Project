@@ -4,8 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import sebastian.BodyEntry;
 import sebastian.SimpleDB;
-import sebastian.TreatmentEntry;
 import utils.Config;
 import utils.LogTool;
 import utils.RandGenerator;
@@ -39,7 +39,7 @@ public class TreatmentPlanner {
 		
 		// Database test
 		SimpleDB db = new SimpleDB ();
-		TreatmentEntry entry = db.getEntryByName("data2593.4844");
+		BodyEntry entry = db.getBodyByName("data2593.4844");
 		Voxel [][][] body = null;
 		if (entry != null) {
 			//ScatterDisplay display = new ScatterDisplay(ChartType.BodyType);
@@ -146,7 +146,13 @@ public class TreatmentPlanner {
 		*/
 	}
 	
+	private static void createClassification () {
+		SimpleDB db = new SimpleDB();
+		db.classifyAll ();
+		db.close();
+	}
+	
 	public static void main(String[] args) {
-
+		createClassification ();
 	}
 }

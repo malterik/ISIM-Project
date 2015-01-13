@@ -30,6 +30,9 @@ public class Config {
 	public static final double pancreasGoalDose = 0;
 	public static final double tumorGoalDose = 50;
 	
+	// Parameters for classification
+	public static final double VOXEL_DIST = 1; // in cm
+	
         // Parameters for the Simulated Annealing algorithm
         
         public static final double NumberOfMetropolisRounds = 10;
