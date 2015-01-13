@@ -16,7 +16,7 @@ import utils.Voxel;
 
 public class TreatmentPlanner {
 
-	public static void main(String[] args) {
+	private void planTreatment () {
 		
 		
 		
@@ -144,5 +144,9 @@ public class TreatmentPlanner {
 			e.printStackTrace();
 		}
 		*/
+	}
+	
+	public static void main(String[] args) {
+
 	}
 }

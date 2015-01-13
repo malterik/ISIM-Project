@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 /**
