@@ -39,6 +39,7 @@ public class TreatmentPlanner {
 		
 		// Database test
 		SimpleDB db = new SimpleDB ();
+		db.loadBody("data2593.4844");
 		BodyEntry entry = db.getBodyByName("data2593.4844");
 		Voxel [][][] body = null;
 		if (entry != null) {

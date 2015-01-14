@@ -162,11 +162,17 @@ public class SimpleDB {
 	  return d;
   }
 
-public void addTreatmentEntry (TreatmentEntry entry) {
+  public void addTreatmentEntry (TreatmentEntry entry) {
 	  treatments.add(entry);	  
   }
   
-  
+  public void loadBody (String name) {
+	  File mFolder = new File (baseDir, name);
+	  
+	  if (getBodyByName(name) == null) {
+	    readMatlabFile(mFolder);
+	  }
+  }
   
   public void printBodies () {
 	  for (BodyEntry entry: bodies) {
