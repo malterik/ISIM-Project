@@ -1,5 +1,7 @@
 package dawid;
 
+import erik.Individual;
+import erik.Population;
 import ilog.concert.IloException;
 import thobi.LPTreatment;
 import utils.Config;
