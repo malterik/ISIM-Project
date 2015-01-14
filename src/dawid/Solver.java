@@ -1,4 +1,4 @@
-package erik;
+package dawid;
 
 import ilog.concert.IloException;
 import thobi.LPTreatment;
@@ -6,6 +6,8 @@ import utils.Config;
 import utils.LogTool;
 import utils.Seed;
 import utils.Voxel;
+import erik.Individual;
+import erik.Population;
 
 public class Solver {
 	

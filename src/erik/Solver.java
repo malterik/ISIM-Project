@@ -26,7 +26,8 @@ public class Solver {
 	 */
 	public Solver(Voxel [][][] body, Seed[] seeds, int [] dimensions) {
 		Solver.body = body;
-		Solver.seeds = seeds;Solver.body = body;
+		Solver.seeds = seeds;
+		Solver.body = body;
 		Solver.dimensions = dimensions;
 		
 		BodyAnalyzer ba = new BodyAnalyzer(body, dimensions);

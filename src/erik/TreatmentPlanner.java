@@ -55,7 +55,7 @@ public class TreatmentPlanner {
 				
 				for(int y = 0; y < entry.getDimensions()[1]; y++) {
 					
-					for(int z = 0; z < entry.getDimensions()[0]; z++) {
+					for(int z = 0; z < entry.getDimensions()[2]; z++) {
 						
 						body[x][y][z] = new Voxel(x, y, z);
 						
