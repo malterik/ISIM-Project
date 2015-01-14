@@ -3,6 +3,8 @@
 /bin/
 /lib/
 target/
+/datas/
+/temp/
  
 # OS Files #
 .DS_Store
