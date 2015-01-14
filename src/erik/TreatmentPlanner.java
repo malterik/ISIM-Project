@@ -16,7 +16,7 @@ import utils.Voxel;
 
 public class TreatmentPlanner {
 
-	private void planTreatment () {
+	private static void planTreatment() {
 		
 		
 		
@@ -56,7 +56,7 @@ public class TreatmentPlanner {
 				
 				for(int y = 0; y < entry.getDimensions()[1]; y++) {
 					
-					for(int z = 0; z < entry.getDimensions()[0]; z++) {
+					for(int z = 0; z < entry.getDimensions()[2]; z++) {
 						
 						body[x][y][z] = new Voxel(x, y, z);
 						
@@ -126,15 +126,20 @@ public class TreatmentPlanner {
 		
 		
 		Solver solver = new Solver(body,seeds, entry.getDimensions());			// The Solver implements the genetic Algorithm
+		
 		LogTool.print("Initialized Solver!","notification");
+		
 		long start = System.currentTimeMillis();
 		solver.solveGeneticAlg();
 		long end = System.currentTimeMillis();
+		
+		// runtime measurement
 		Date date = new Date(end-start);
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Gen-Alg Runtime: "+dateFormatted);
-				
+			
+		
 		System.exit(0);
 		// LP:
 		/*
@@ -161,6 +166,9 @@ public class TreatmentPlanner {
 	
 	public static void main(String[] args) {
 		printTreatmentData ();
+		planTreatment();
+		
+		
 		System.exit (0);
 	}
 }

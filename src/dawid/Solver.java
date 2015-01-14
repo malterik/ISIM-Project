@@ -8,6 +8,8 @@ import utils.Config;
 import utils.LogTool;
 import utils.Seed;
 import utils.Voxel;
+import erik.Individual;
+import erik.Population;
 
 public class Solver {
 	
