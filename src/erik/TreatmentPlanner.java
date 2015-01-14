@@ -160,5 +160,6 @@ public class TreatmentPlanner {
 	
 	public static void main(String[] args) {
 		printTreatmentData ();
+		System.exit (0);
 	}
 }
