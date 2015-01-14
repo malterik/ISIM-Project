@@ -9,6 +9,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import utils.Config;
+import utils.Coordinate;
 import utils.LogTool;
 import utils.Voxel;
 
@@ -43,16 +45,19 @@ public class SimpleDB {
 			  if (getBodyByName(folder.getName ()) == null) { 
 			    LogTool.print ("File read: " + folder, "debug");
 				readMatlabFile(folder); 
-			  }			  
+				classify(getBodyByName (folder.getName ()));
+				deleteBody(folder.getName ());
+			  }
+			  else
+			  {
+			    classify (getBodyByName (folder.getName ()));
+			    
+			  }
 		  }
 		  else {
 			  LogTool.print ("Entry already exists: " + folder.getName (),"debug");
 		  }
-	  }
-	  
-	  for (BodyEntry entry: bodies) {
-		  classify (entry);
-	  }
+	  }	  
   }
   
   private void classify (BodyEntry bEntry) {
@@ -61,10 +66,17 @@ public class SimpleDB {
 		  return;
 	  }
 	  
+	  LogTool.print ("Measuring entry " + bEntry.getName (), "debug");
+	  
 	  int[] typeCount = new int[bEntry.getMaxType () + 1];
+	  double[] tcoDists = new double[bEntry.getMaxType () +  1];
+	  double[] tclDists = new double[bEntry.getMaxType () + 1];
 	  double[][] typeSum = new double[bEntry.getMaxType () + 1][3];
+	  ArrayList<double[]> tumorVoxel = new ArrayList<double[]> ();
 	  
 	  // Measure stuff
+	  LogTool.print ("Counting voxel", "debug");
+	  Coordinate c = null;
 	  for(int i = 0; i < bEntry.getDimensions()[0]; i++) {
 		  for (int j = 0; j < bEntry.getDimensions ()[1]; j++) {
 			  for (int k = 0; k < bEntry.getDimensions ()[2]; k++) {
@@ -74,25 +86,83 @@ public class SimpleDB {
 				  typeSum[bEntry.getBodyArray()[i][j][k].getBodyType ()][0] += bEntry.getBodyArray()[i][j][k].getCoordinate().getX();
 				  typeSum[bEntry.getBodyArray()[i][j][k].getBodyType ()][1] += bEntry.getBodyArray()[i][j][k].getCoordinate().getY();
 				  typeSum[bEntry.getBodyArray()[i][j][k].getBodyType ()][2] += bEntry.getBodyArray()[i][j][k].getCoordinate().getZ();
+				  if (bEntry.getBodyArray()[i][j][k].getBodyType () == Config.TUMOR) {
+					  c = bEntry.getBodyArray() [i][j][k].getCoordinate();
+					  tumorVoxel.add(new double[] {c.getX(), c.getY (), c.getZ()});
+				  }
 			  }
 		  }
 	  }
 	  
 	  // Calculate center of volume
+	  LogTool.print ("Calculating volume center", "debug");
 	  for (int i = 0; i < typeSum.length; i++) {
 		  typeSum[i][0] = typeSum[i][0] / typeCount[i];
 		  typeSum[i][1] = typeSum[i][1] / typeCount[i];
 		  typeSum[i][2] = typeSum[i][2] / typeCount[i];
 	  }
 	  
+	  // Calculate distance between tumor center and other volumes center
+	  LogTool.print ("Calculating center distances", "debug");
+	  for (int i = 0; i < tcoDists.length; i++) {
+		  tcoDists[i] = getDistance (typeSum[Config.TUMOR], typeSum[i]);
+	  }
+	  
+	  // Calculate closest distance between tumor and other volumes
+	  LogTool.print ("Calculating closest distances", "debug");
+	  int type = -1;
+	  double dist = -1;
+	  for (int i = 0; i < tclDists.length; i++) {
+		  tclDists[i] = 50000;
+	  }
+	  for (int i = 0; i < bEntry.getDimensions()[0]; i++) {
+		  for (int j = 0; j < bEntry.getDimensions()[1]; j++) {
+			  for (int k = 0; k < bEntry.getDimensions()[2]; k++) {
+				  for (int l = 0; l < tumorVoxel.size(); l++) {
+					  type = bEntry.getBodyArray()[i][j][k].getBodyType();
+					  dist = getDistance (bEntry.getBodyArray()[i][j][k].getCoordinate(), tumorVoxel.get(l));
+					  if (tclDists[type] > dist) {
+						  tclDists[type] = dist;
+					  }
+				  }
+			  }
+		  }
+	  }
+	  
+	  
 	  TreatmentEntry tEntry = new TreatmentEntry (bEntry.getName());
 	  tEntry.setVolumeCenters(typeSum);
 	  tEntry.setVolumeSizes(typeCount);
+	  tEntry.setTumorCenterDistances (tcoDists);
+	  tEntry.setTumorClosestDistances(tclDists);
 	  addTreatmentEntry(tEntry);
+	  LogTool.print ("New entry:\n" + tEntry.toString(), "debug");
 	  
   }
   
-  public void addTreatmentEntry (TreatmentEntry entry) {
+  private double getDistance(Coordinate coordinate, double[] voxel2) {
+	double[] voxel1 = new double[] {coordinate.getX(), coordinate.getY(), coordinate.getZ()};
+	return getDistance (voxel1, voxel2);
+  }
+
+/**
+   * Calculates the distance between two volume centers (vc) by euclidian norm
+   * @param vc1 volume center 1
+   * @param vc2 volume center 2
+   * @return distance as double
+   */
+  private double getDistance(double[] vc1, double[] vc2) {
+	  double d = -1;
+	
+	  if (vc1.length == 3 && vc2.length == 3) {
+		  d = Math.sqrt ((vc1[0]-vc2[0])*(vc1[0]-vc2[0])+(vc1[1]-vc2[1])*(vc1[1]-vc2[1])+(vc1[2]-vc2[2])*(vc1[2]-vc2[2]));
+	  }
+	  
+	  
+	  return d;
+  }
+
+public void addTreatmentEntry (TreatmentEntry entry) {
 	  treatments.add(entry);	  
   }
   
@@ -125,12 +195,6 @@ public class SimpleDB {
 		  if (bodies.get(i).getName().equals(name)) {
 			  return bodies.get(i);
 		  }
-	  }
-	  
-	  File search = new File (baseDir, name);
-	  if (search.exists() && search.isDirectory()) {
-	    readMatlabFile (search);
-	    return getBodyByName (name);
 	  }
 	  
 	  return null;

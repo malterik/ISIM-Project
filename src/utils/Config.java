@@ -32,6 +32,7 @@ public class Config {
 	
 	// Parameters for classification
 	public static final double VOXEL_DIST = 1; // in cm
+	public static final int TUMOR = 5; // BodyType for Tumor
 	
         // Parameters for the Simulated Annealing algorithm
         

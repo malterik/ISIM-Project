@@ -152,7 +152,13 @@ public class TreatmentPlanner {
 		db.close();
 	}
 	
+	private static void printTreatmentData () {
+		SimpleDB db = new SimpleDB ();
+		db.printTreatments();
+		db.close ();
+	}
+	
 	public static void main(String[] args) {
-		createClassification ();
+		printTreatmentData ();
 	}
 }
