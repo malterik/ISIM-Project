@@ -35,38 +35,33 @@ public class Voxel implements Serializable {
 	
 	
 	
-	
+	/**
+	 * This method provides the value of radiation intensity
+	 * @param position
+	 * @param durationMilliSec
+	 * @return
+	 */
 	public double radiationIntensity(Coordinate position, double durationMilliSec){
 		double distance = distanceToVoxel(position);
-		double phi = angleToVoxelXY(position);
+		double phi = 90;  //TODO Magic number
 		double gp = 0;
 		double dose= 0;
 		
 		if(distance > 10) {
 			return 0.0;
 		}
-		double[] coeff = { 		//coefficents for the interpolationspolynom
-				0.000339677417477463,  
-				-0.00967651536238707,
-				0.101436431655208,
-				-0.466125245197087,
-				0.745586768135480,
-		        0.635278099796227 };
+		
 		
 		
 		//  Interpolation for dose function (point source)
-		int i,j=0;
-		for( i = 0,  j = 5 ; i < 6; i++,j--){
-			gp += coeff[i] * Math.pow(distance,j);
-			//System.out.println("koeffizient: "+ i+ " pow: "+gp);
-		}
+		
 		if(distance > 1) {
-			//System.out.println("dose: "+Config.GAMMA_BEST_INDUSTRIES * Config.SK * Math.pow((Config.R0/distance),2) * gp+ " distance: "+ distance+ " gp: "+ gp);
-			dose = (Config.LAMBDA * Config.SK * (GL(distance, phi)/Config.Gl_r0_phi0) ) * durationMilliSec ; //TODO: PHIan
+			
+			dose = (Config.LAMBDA * Config.SK * (GL(distance, phi)/Config.Gl_r0_phi0)* gl(distance) ) * durationMilliSec ; //TODO: Fr()
 		} else {
 			dose = Config.MAX_DOSE * durationMilliSec;
 		}
-		//System.out.println(dose);
+		
 		
 		
 		
@@ -74,9 +69,43 @@ public class Voxel implements Serializable {
 		return dose;
 	}
 	
+	public static void main(String args[]) {
+		Voxel v = new Voxel(0, 0, 0);
+		for(int i=0; i<10; i++) {
+			System.out.println(v.gl(i));
+		}
+		
+		System.exit(0);
+		
+	}
 	
 	/*  Mathematical help functions to calculate all partial resultes for the dose */ 
 	
+	
+	private double gl(double r) {
+		double gl = 0;
+		
+		double[] coeff = { 		//coefficents for the interpolationspolynom
+				7.093621846112430e-09,  
+				-7.781185037105809e-07,
+				2.447013834626613e-05,
+				-3.532001495663614e-04,
+				2.671000325534424e-03,
+				-1.080919296055047e-02,
+				2.067027695478220e-02,
+				-1.095883686414140e-02,
+				9.984496716251168e-01
+				};
+		
+		int i,j=0;
+		for( i = 0,  j = 8 ; i < 9; i++,j--){
+			gl += coeff[i] * Math.pow(r,j);
+			//System.out.println("koeffizient: "+ i+ " pow: "+gp);
+		}
+		
+		return gl;
+		
+	}
 	
 	private double GL(double r, double phi) {
 		double res = 0; 
@@ -97,17 +126,13 @@ public class Voxel implements Serializable {
 		double part_res1 = 0;
 		double part_res2 = 0;
 		
-		part_res1 = Math.acos( (r - (Config.L / (2* Math.cos(phi)) ) ) / (Math.sqrt( (Math.pow(Config.L,2)/4 )+ Math.pow(r,2)- Config.L * r * Math.cos(phi) )) )   ; 
-		part_res2 = Math.acos( (r + (Config.L / (2* Math.cos(phi)) ) ) / (Math.sqrt( (Math.pow(Config.L,2)/4 )+ Math.pow(r,2)+ Config.L * r * Math.cos(phi) )) )   ;
+		part_res1 = Math.acos( (r - (Config.L / 2) * Math.cos(phi) )  / (Math.sqrt( (Math.pow(Config.L,2)/4 )+ Math.pow(r,2)- Config.L * r * Math.cos(phi) )) )   ; 
+		part_res2 = Math.acos( (r + (Config.L / 2) * Math.cos(phi) )  / (Math.sqrt( (Math.pow(Config.L,2)/4 )+ Math.pow(r,2)+ Config.L * r * Math.cos(phi) )) )   ;
 		res = part_res1 + part_res2;
 		return res;
 	}
 	
-	private double angleToVoxelXY ( Coordinate position) {
-		
-		return ( Math.atan(position.getY()-this.getY() / position.getX()-this.getX()));
-		
-	}
+	
 	
 	/*public double doseFunction(Coordinate position){
 		double distance = distanceToVoxel(position);
