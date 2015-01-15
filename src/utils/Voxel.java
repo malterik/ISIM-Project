@@ -37,33 +37,54 @@ public class Voxel implements Serializable {
 	
 	/**
 	 * This method provides the value of radiation intensity
+	 * You have to use it as follows : <p>
+	 * Voxel bodyVoxel = new Voxel(0,0,0) <br>
+	 * Seed seed = new Seed(0,0,0,1)<br>
+	 * bodyVoxel.radiationIntensity(seed.getCoordinate());
+	 * always this way, because the formula needs the goaldose for the case that the distance is zero between seed and voxel
 	 * @param position
+	 * The postition where the seed is 
 	 * @param durationMilliSec
+	 * The time the seed radiates
 	 * @return
 	 */
 	public double radiationIntensity(Coordinate position, double durationMilliSec){
 		double distance = distanceToVoxel(position);
+		
 		double phi = 90;  //TODO Magic number
-		double gp = 0;
 		double dose= 0;
 		
 		if(distance > 10) {
 			return 0.0;
 		}
+
+		//  Interpolation for dose function 
 		
-		
-		
-		//  Interpolation for dose function (point source)
-		
-		if(distance > 1) {
-			
-			dose = (Config.LAMBDA * Config.SK * (GL(distance, phi)/Config.Gl_r0_phi0)* gl(distance) ) * durationMilliSec ; //TODO: Fr()
+		if(distance == 0) {
+			dose = this.getGoalDosis();
 		} else {
-			dose = Config.MAX_DOSE * durationMilliSec;
+			dose = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ) * durationMilliSec ; 
 		}
 		
+		return dose;
+	}
+	
+	public double radiationIntensity(double r, double durationMilliSec){
+		double distance = r;
 		
+		double phi = 90;  //TODO Magic number
+		double dose= 0;
 		
+		if(distance > 10) {
+			return 0.0;
+		}
+
+		//  Interpolation for dose function 
+		if(distance == 0) {
+			dose = this.getGoalDosis();
+		} else {
+			dose = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ) * durationMilliSec ; 
+		}
 		
 		
 		return dose;
@@ -71,9 +92,11 @@ public class Voxel implements Serializable {
 	
 	public static void main(String args[]) {
 		Voxel v = new Voxel(0, 0, 0);
-		for(int i=0; i<10; i++) {
-			System.out.println(v.gl(i));
-		}
+		
+		//for (double j = 0; j < 10; j+= 0.1) {
+			System.out.println( v.radiationIntensity(0,1));
+		//}
+			
 		
 		System.exit(0);
 		
@@ -81,6 +104,45 @@ public class Voxel implements Serializable {
 	
 	/*  Mathematical help functions to calculate all partial resultes for the dose */ 
 	
+	
+	private double F(double phi, double r) {
+		
+		
+		if(phi == 90) {
+			return 1.0;
+		}
+		
+		double F = 0.0;
+		double[] partials = new double[6];
+		
+		double[] coeff = {
+				
+				6.994621358157904e-01,	//p00
+				7.158516844452122e-03,	//p10
+				-5.954907267564410e-03,	//p01
+				-3.839824714237888e-05,	//p20
+				-1.279397989781352e-04,	//p11
+				1.839889087951225e-03	//p02
+		};
+		
+		// This implements the function f(phi,r) = p00 + p10*x + p01*y + p20*x^2 + p11*x*y + p02*y^2
+		
+		partials[0] = coeff[0];
+		partials[1] = coeff[1] * phi;
+		partials[2] = coeff[2] * r;
+		partials[3] = coeff[3] * Math.pow(phi, 2);
+		partials[4] = coeff[4] * phi * r;
+		partials[5] = coeff[5] * Math.pow(r,2);
+		
+		for(int i = 0; i < 6; i++) {
+			F += partials[i];
+		}
+
+		
+		
+		
+		return F;
+	}
 	
 	private double gl(double r) {
 		double gl = 0;
@@ -95,7 +157,7 @@ public class Voxel implements Serializable {
 				2.067027695478220e-02,
 				-1.095883686414140e-02,
 				9.984496716251168e-01
-				};
+		};
 		
 		int i,j=0;
 		for( i = 0,  j = 8 ; i < 9; i++,j--){
@@ -114,7 +176,7 @@ public class Voxel implements Serializable {
 			res = 1 / ( Math.pow(r,2) - (Math.pow( Config.L,2)/4 ) );
 			
 		} else {
-			res = beta(r, phi) / ( Config.L * r * Math.sin(phi));
+			res = beta(r, phi) / ( Config.L * r * Math.sin(Math.toRadians(phi)));
 		}
 		
 		return res;
@@ -126,8 +188,9 @@ public class Voxel implements Serializable {
 		double part_res1 = 0;
 		double part_res2 = 0;
 		
-		part_res1 = Math.acos( (r - (Config.L / 2) * Math.cos(phi) )  / (Math.sqrt( (Math.pow(Config.L,2)/4 )+ Math.pow(r,2)- Config.L * r * Math.cos(phi) )) )   ; 
-		part_res2 = Math.acos( (r + (Config.L / 2) * Math.cos(phi) )  / (Math.sqrt( (Math.pow(Config.L,2)/4 )+ Math.pow(r,2)+ Config.L * r * Math.cos(phi) )) )   ;
+		
+		part_res1 = Math.toDegrees(Math.acos( (r - ((Config.L / 2) * Math.cos(Math.toRadians(phi))) )  / Math.sqrt( Math.pow(Config.L,2)/4 + Math.pow(r,2)- Config.L * r * Math.cos(Math.toRadians(phi)) ) ))   ; 
+		part_res2 =Math.toDegrees(Math.acos( (r + ((Config.L / 2) * Math.cos(Math.toRadians(phi))) )  / Math.sqrt( Math.pow(Config.L,2)/4 + Math.pow(r,2)+ Config.L * r * Math.cos(Math.toRadians(phi)) ) ) )   ;
 		res = part_res1 + part_res2;
 		return res;
 	}
