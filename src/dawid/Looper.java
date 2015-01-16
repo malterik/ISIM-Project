@@ -12,7 +12,6 @@ import utils.RandGenerator;
 import utils.Seed;
 import utils.Voxel;
 import java.lang.Math;
-import com.rits.cloning.Cloner;
 
 /**
  *
@@ -27,14 +26,11 @@ public class Looper {
     
     public static Voxel [][][] body; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
     public static Seed[] seeds = new Seed[Config.SAnumberOfSeeds];
-    public double Zeit1,Zeit2,Zeit3;
 //    public static Seed[] Cur_state = new Seed[Config.SAnumberOfSeeds];
 //    public static Seed[] New_state = new Seed[Config.SAnumberOfSeeds];
     public double[] Cur_state = new double[Config.SAnumberOfSeeds];
     public double[] New_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
-    private double Cur_cost, New_cost, temperature; // Cost is a double...
-//    public Seed[] Cur_state = (Seed[]) seeds.clone();
-//    private Seed[] New_state = seeds; //Essentially a copy of seeds
+    private double Cur_cost, New_cost, temperature;
     
     /**
 	 * WHAT THIS DOES
@@ -45,6 +41,7 @@ public class Looper {
 	 */
 	
     public Looper(Voxel [][][] body, Seed[] seeds) {
+        this.temperature = Config.StartTemp;
 		this.body = body;
 		this.seeds = seeds;
                 this.Cur_cost = Cur_cost;
@@ -72,7 +69,7 @@ public class Looper {
 //                Zeit2 = this.seeds[1].getDurationMilliSec();
 //                Zeit3 = this.seeds[2].getDurationMilliSec();
 //                LogTool.print("Zeit 1 : " + Zeit1 + "Zeit 2 : " + Zeit2 + "Zeit 3 : " + Zeit3, "notification");
-                LogTool.print("Zeit " + ii + " : " + Cur_state[ii], "notification");
+//                LogTool.print("Dwelltime Seed  " + ii + " : " + Cur_state[ii], "notification");
 //                Cur_state[0] = Zeit1;
 //                Cur_state[1] = Zeit2;
 //                Cur_state[2] = Zeit3;
@@ -83,7 +80,8 @@ public class Looper {
          for(int iii=0; iii < Config.SAnumberOfSeeds; iii++)
             {
                 New_state[iii] = RandGenerator.randDouble(0, 10);
-                LogTool.print("Zeit " + iii + " : " + New_state[iii], "notification");
+//                LogTool.print("Dwelltime Seed  " + iii + " : " + Cur_state[iii], "notification");
+//                LogTool.print("Zeit " + iii + " : " + New_state[iii], "notification");
             }
     }
     
@@ -133,37 +131,44 @@ public class Looper {
          * It contains the metropolis loop
 	 */
     public void solveSA() {
-        Cur_cost = cost();
+        setCur_cost(cost());
+        LogTool.print("SolveSA: Cur Cost : " + Cur_cost,"notification");
 //        this.initState();
 //        LogTool.print("SolveSA: Initial State : A)" + Looper.seeds[0].getDurationMilliSec() + " B) " + seeds[1].getDurationMilliSec() + " C) " + seeds[2].getDurationMilliSec(),"notification");
         LogTool.print("SolveSA: Initial State : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
      //[Newstate] with random dwelltimes
         newState(); 
         LogTool.print("SolveSA: New State : A)" + New_state[0] + " B) " + New_state[1] + " C) " + New_state[2],"notification");
-        New_cost = cost();
-        LogTool.print("SolveSA: New Cost : A)" + New_cost,"notification");
-        
-
-        
-        //[Cur=New]
-        //[]
-        
-//        this.Cur_State = 
-        
+        setNew_cost(cost());
+        LogTool.print("SolveSA: New Cost : " + New_cost,"notification");
         /**
             * MetropolisLoop - 
 	 */
+        
 	for(int x=0;x<Config.NumberOfMetropolisRounds;x++) {   
-           if ((Cur_cost - New_cost)>0) { //Minimiert die Kosten
-                    Cur_state = New_state;
+//            LogTool.print("SolveSA Iteration " + x + " Curcost " + Cur_cost + " Newcost " + New_cost,"notification");
+           if ((Cur_cost - New_cost)>0) { // ? die Kosten
+//                    Cur_state = New_state;
 //                    LogTool.print("Cost CurisNull ? ->  " + Cur_state + "","notification");
-                    LogTool.print("SolveSA Iteration " + x + "","notification");
-                } else if (Math.exp((Cur_cost - New_cost)/temperature)> RandGenerator.randDouble(0.01, 0.99)) {
+                      LogTool.print("Fall 1","notification");
+                      LogTool.print("SolveSA: NewCost : " + this.getNew_cost(),"notification");
+                      LogTool.print("SolveSA: CurCost : " + this.getCur_cost(),"notification");
+                      LogTool.print("SolveSA Cost delta " + (Cur_cost - New_cost) + "","notification");
+                      Cur_state = New_state;
+                } else if (Math.exp(-(Cur_cost - New_cost)/temperature)> RandGenerator.randDouble(0.01, 0.99)) {
                     Cur_state = New_state; 
+                    LogTool.print("Fall 2: Zufallsgenerierter Zustand traegt hoehere Kosten als vorhergehender Zustand. Iteration: " + x,"notification");
                 }
            temperature = temperature-1;
+           if (temperature==0)  {
+               break;
+           }
+           newState();
+           setNew_cost(cost());
         }
         LogTool.print("SolveSA: Solution : A)" + this.getCur_state(),"notification");
+        LogTool.print("SolveSA: NewCost : " + this.getNew_cost(),"notification");
+        LogTool.print("SolveSA: CurCost : " + this.getNew_cost(),"notification");
         //
 //        return New_Cost;
         
@@ -173,22 +178,26 @@ public class Looper {
         double diff=0;
         double intensity=0;
         
-//        for(int x=Config.ptvXLow-10; x < Config.ptvXHigh+10; x++) {
-//			for(int y=Config.ptvYLow-10; y < Config.ptvYHigh+10; y++) {
-//				for(int z=Config.ptvZLow-10; z < Config.ptvZHigh+10; z++) {
-//
-//					Looper.body[x][y][z].setCurrentDosis(0);  //What does this line do ?
-//					for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
-//						
-//						intensity = Looper.body[x][y][z].radiationIntensity(Looper.seeds[i].getCoordinate(), dwelltimes[i]);
-//						Looper.body[x][y][z].addCurrentDosis(intensity);
-//					}	
-//					diff += Math.pow((Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),2);		
-//				}	
-//			}
-//		}
-//        return Math.sqrt(diff);
-        return Math.random();
+        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+			for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+				for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+
+					Looper.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+					for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+						// Calculate intensity based based on current dwelltime
+						intensity = Looper.body[x][y][z].radiationIntensity(Looper.seeds[i].getCoordinate(), Cur_state[i]);
+                                                if (intensity>0) {
+//                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
+                                                }
+						Looper.body[x][y][z].addCurrentDosis(intensity);
+					}	
+					diff += Math.pow((Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),2);
+//                                        LogTool.print(" diffdose " + (Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),"notification");
+				}	 
+			}
+		}
+        return Math.sqrt(diff);
+//        return Math.random();
     }
 
 //    private void setFitnessValue(double cost) {
