@@ -38,6 +38,9 @@ public class TreatmentAnalyzer {
 		irradiate();
 	}
 	
+	/**
+	 * Calculates all values needed for treatment evaluation.
+	 */
 	public void analyzeAll() {
 		double[] minDoses = new double[Config.tumorType];
 		double[] maxDoses = new double[Config.tumorType];
