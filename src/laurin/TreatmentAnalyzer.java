@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import utils.Config;
+import utils.LogTool;
 import utils.Seed;
 import utils.Voxel;
 
@@ -212,9 +213,9 @@ public class TreatmentAnalyzer {
 	public void printResults () {
 		for (int i = 0; i < anatomies.size(); i++)
 		{
-			System.out.println("Body type: " + i + ": minDose: " + minDoses[i] + ", maxDose: " + maxDoses[i] + ", avgDose: " + avgDoses[i]);
-			System.out.println("Tumor conformity index: " + conformityIndex);
-			System.out.println("Tumor homogenity index: " + homogenityIndex);
+			LogTool.print("Body type: " + i + ": minDose: " + minDoses[i] + ", maxDose: " + maxDoses[i] + ", avgDose: " + avgDoses[i],"notification");
+			LogTool.print("Tumor conformity index: " + conformityIndex, "notification");
+			LogTool.print("Tumor homogenity index: " + homogenityIndex, "notification");
 		}
 	}
 	
