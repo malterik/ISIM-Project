@@ -10,6 +10,12 @@ import utils.LogTool;
 import utils.Seed;
 import utils.Voxel;
 
+/**
+ * The TreatmentAnalyzer provides methods to analyze the treatment quality.
+ * 
+ * @author Laurin Mordhorst
+ */
+
 public class TreatmentAnalyzer {
 	
 	private Voxel[][][] body;
@@ -21,6 +27,7 @@ public class TreatmentAnalyzer {
 	private double[] avgDoses;
 	private double conformityIndex;
 	private double homogenityIndex;
+	private Histogram histogram;
 	
 	private ArrayList<Set<Voxel>> anatomies;
 	
@@ -37,31 +44,8 @@ public class TreatmentAnalyzer {
 		this.seeds = seeds;
 		splitBodyTypes();
 		irradiate();
+		analyzeAll();
 	}
-	
-	/**
-	 * Calculates all values needed for treatment evaluation.
-	 */
-	public void analyzeAll() {
-		double[] minDoses = new double[Config.tumorType];
-		double[] maxDoses = new double[Config.tumorType];
-		double[] avgDoses = new double[Config.tumorType];
-		
-		for (int i = 0; i < anatomies.size(); i++)
-		{
-			minDoses[i] = calcMinDose(i+1);
-			maxDoses[i] = calcMaxDose(i+1);
-			avgDoses[i] = calcAvgDose(i+1);
-		}
-		
-		setMinDoses(minDoses);
-		setMaxDoses(maxDoses);
-		setAvgDoses(avgDoses);
-		setHomogenityIndex(calcHomogenityIndex());
-		setConformityIndex(calcConformityIndex());
-	}
-	
-
 	
 	public double[] getMinDoses () {
 		return minDoses;
@@ -95,6 +79,16 @@ public class TreatmentAnalyzer {
 		this.avgDoses = avgDoses;
 	}
 	
+	public void setHistogram(Histogram histogram)
+	{
+		this.histogram = histogram;
+	}
+	
+	public Set<Voxel> getAnatomy(int bodyType)
+	{
+		return anatomies.get(bodyType-1);
+	}
+	
 	public void setHomogenityIndex(double homogenityIndex)
 	{
 		this.homogenityIndex = homogenityIndex;
@@ -105,6 +99,9 @@ public class TreatmentAnalyzer {
 		this.conformityIndex = conformityIndex;
 	}
 
+	/**
+	 * Creates sets of voxels for each body type
+	 */
 	private void splitBodyTypes () {
 		ArrayList<Set<Voxel>> anatomies = new ArrayList<Set<Voxel>>();
 		for (int i = Config.normalType; i <= Config.tumorType; i++)
@@ -123,6 +120,9 @@ public class TreatmentAnalyzer {
 		this.anatomies = anatomies;
 	}
 	
+	/**
+	 * Calculates dose for each voxel.
+	 */
 	private void irradiate() {
 		for(int x = 0; x < this.dimensions[0]; x++) {				
 			for(int y = 0; y < this.dimensions[1]; y++) {		
@@ -138,6 +138,12 @@ public class TreatmentAnalyzer {
 		}
 	}
 	
+	/**
+	 * Calculates average dose for specified body part
+	 * 
+	 * @param bodyType	body part
+	 * @return average dose for body part voxels
+	 */
 	private double calcAvgDose(int bodyType)
 	{
 		double averageDose = 0.0;
@@ -150,6 +156,12 @@ public class TreatmentAnalyzer {
 		return averageDose;
 	}
 	
+	/**
+	 * Finds minimum dose in specified body part
+	 * 
+	 * @param bodyType	body part
+	 * @return minimum dose occurred for body part voxels
+	 */
 	private double calcMinDose(int bodyType)
 	{
 		double minDose = Double.MAX_VALUE;
@@ -163,6 +175,12 @@ public class TreatmentAnalyzer {
 		return minDose;
 	}
 	
+	/**
+	 * Finds maximum dose in specified body part
+	 * 
+	 * @param bodyType	body part
+	 * @return maximum dose occurred for body part voxels
+	 */
 	private double calcMaxDose(int bodyType)
 	{
 		double maxDose = 0.0;
@@ -176,14 +194,14 @@ public class TreatmentAnalyzer {
 	}
 	
 	/**
-	 * Calculates homogenity index.
+	 * Calculates homogeneity index.
 	 * 
 	 * HI specified as maximum dose in tumor divided by goal dose.
-	 * Great homogenity results in values close to one.
+	 * Great homogeneity results in values close to one.
 	 * 
-	 * @return homogenity index
+	 * @return homogeneity index
 	 */
-	private double calcHomogenityIndex()
+	private double calcHomogeneityIndex()
 	{
 		return (this.maxDoses[Config.tumorType-1] / Config.tumorGoalDose);
 	}
@@ -194,7 +212,7 @@ public class TreatmentAnalyzer {
 	 * CI specified as fraction of voxels whose dose is equal to or higher than the goal dose.
 	 * CI will be between 0 and 1.
 	 * 
-	 * @return homogenity index
+	 * @return homogeneity index
 	 */
 	private double calcConformityIndex()
 	{
@@ -210,13 +228,48 @@ public class TreatmentAnalyzer {
 		return (counter / (double) tumorVoxels.size());
 	}
 	
-	public void printResults () {
+	/**
+	 * Calculates all values needed for treatment evaluation.
+	 */
+	public void analyzeAll() {
+		double[] minDoses = new double[Config.tumorType];
+		double[] maxDoses = new double[Config.tumorType];
+		double[] avgDoses = new double[Config.tumorType];
+		
+		for (int i = 0; i < anatomies.size(); i++)
+		{
+			minDoses[i] = calcMinDose(i+1);
+			maxDoses[i] = calcMaxDose(i+1);
+			avgDoses[i] = calcAvgDose(i+1);
+		}
+		
+		setMinDoses(minDoses);
+		setMaxDoses(maxDoses);
+		setAvgDoses(avgDoses);
+		setHomogenityIndex(calcHomogeneityIndex());
+		setConformityIndex(calcConformityIndex());
+		
+		Histogram histogram = new Histogram("Dose Volume Histogram");
+		histogram.addDataSet("Normal", this.getAnatomy(Config.normalType));
+		histogram.addDataSet("Spine", this.getAnatomy(Config.spineType));
+		histogram.addDataSet("Liver", this.getAnatomy(Config.liverType));
+		histogram.addDataSet("Pancreas", this.getAnatomy(Config.pancreasType));
+		histogram.addDataSet("Tumor", this.getAnatomy(Config.tumorType));
+		setHistogram(histogram);
+	}
+	
+	/**
+	 * Prints all results analyzed.
+	 */
+	public void printResults() {
 		for (int i = 0; i < anatomies.size(); i++)
 		{
 			LogTool.print("Body type: " + i + ": minDose: " + minDoses[i] + ", maxDose: " + maxDoses[i] + ", avgDose: " + avgDoses[i],"notification");
-			LogTool.print("Tumor conformity index: " + conformityIndex, "notification");
-			LogTool.print("Tumor homogenity index: " + homogenityIndex, "notification");
 		}
+		LogTool.print("Tumor conformity index: " + conformityIndex, "notification");
+		LogTool.print("Tumor homogenity index: " + homogenityIndex, "notification");
+		
+		histogram.display(1.0, 100);
 	}
 	
 }
