@@ -14,7 +14,7 @@ import utils.RandGenerator;
 public class Individual
 {
 	
-	public static final double MAX_DWELL_TIME = 500;
+	public static final double MAX_DWELL_TIME = 8;
     private double[] genes = new double[Config.numberOfSeeds];
     
     private double fitnessValue;
@@ -118,5 +118,4 @@ public class Individual
     public void setGene(int index, double gene) {
         this.genes[index] = gene;
     }
-    
 }

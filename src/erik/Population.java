@@ -8,7 +8,7 @@ public class Population
 {
     final static int ELITISM_K =2;
     final static int POP_SIZE = 10 + ELITISM_K;  // population size
-    final static int MAX_ITER = 500;             // max number of iterations
+    final static int MAX_ITER = 800;             // max number of iterations
     final static double MUTATION_RATE = 0.55;     // probability of mutation
     final static double CROSSOVER_RATE = 0.8;     // probability of crossover
     
@@ -110,6 +110,11 @@ public class Population
         Population pop = new Population();
         Individual[] newPop = new Individual[POP_SIZE];
         Individual[] indiv = new Individual[2];
+        double bestResult = Double.MAX_VALUE;
+        double bestResultOld = 0.0;
+        long counter = 0;
+        boolean done = true;
+        int iter = 0;
 
         // current population
         System.out.print("Total Fitness = " + pop.totalFitness);
@@ -118,8 +123,9 @@ public class Population
 
         // main loop
         int count;
-        for (int iter = 0; iter < MAX_ITER; iter++) {
+        while (done) {
             count = 0;
+            iter++;
 
             // Elitism
             for (int i=0; i<ELITISM_K; ++i) {
@@ -155,14 +161,32 @@ public class Population
             
             // reevaluate current population
             pop.evaluate();
-            System.out.print("Total Fitness = " + pop.totalFitness);
-            System.out.println(" ; Best Fitness = " +
-                pop.findBestIndividual().getFitnessValue()); 
+            System.out.print("Iteration : "+iter+" "+"Total Fitness = " + pop.totalFitness);
+            System.out.println(" ; Best Fitness = " + pop.findBestIndividual().getFitnessValue()); 
+            
+            if(pop.findBestIndividual().getFitnessValue() < bestResult) {
+            	bestResultOld = bestResult;
+            	bestResult =  pop.findBestIndividual().getFitnessValue();
+            }
+            
+            System.out.println("bestOld-best: "+Math.abs(bestResultOld-bestResult)+"counter= " + counter);
+            if(Math.abs(bestResultOld-bestResult) <= Config.cancelValue) {
+            	counter++;	
+            } else {
+            	counter = 0;
+            }
+            
+            if(counter > 5) {
+            	done = false;
+            }
             
         }
        
         // best indiv
         Individual bestIndiv = pop.findBestIndividual();
+        
+        	
         return bestIndiv;
     }
+
 }

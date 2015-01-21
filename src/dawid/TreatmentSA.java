@@ -18,39 +18,23 @@ import utils.Voxel;
  */
 public class TreatmentSA {
 
+        public static int[] dimensions;
+	static public int[] xBoundsTumor;
+	static public int[] yBoundsTumor;
+	static public int[] zBoundsTumor;
+	
 /**
  *
  * Creates classification 
  * @see #db
  * 
  */    
-    
-    private static void createClassification () {
-		SimpleDB db = new SimpleDB();
-		db.classifyAll ();
-		db.close();
-	}
-	
-	private static void printTreatmentData () {
-		SimpleDB db = new SimpleDB ();
-		db.printTreatments();
-		db.close ();
-	}
-    
-//    public static void db() {
-//        SimpleDB db = new SimpleDB ();
-//	db.printTreatments();
-////	db.close ();
-//        
-////        SimpleDB db = new SimpleDB();
-//		db.classifyAll ();
-//		db.close();
-//        
-//    }
-    
+        
     public static void main(String[] args) {
     
+        
         Voxel [][][] body = new Voxel[Config.xDIM][Config.yDIM][Config.zDIM];
+        
     
         int ptvSize = 0;
 	int oarSize = 0;
@@ -169,8 +153,7 @@ public class TreatmentSA {
         //Refactor: put these two in one for loop
             for(int i=0; i < Config.SAnumberOfSeeds; i++)
             {
-                LogTool.print(seeds[i].getX() + " " + seeds[i].getY() + " " + seeds[i].getZ(),"notification");
-                
+                LogTool.print(seeds[i].getX() + " " + seeds[i].getY() + " " + seeds[i].getZ(),"notification");    
             }
         }
         
@@ -182,10 +165,13 @@ public class TreatmentSA {
         // Dawid inslucde the verbose switch pls
         LogTool.print("Initialized Looper Object!","notification");
         LogTool.print("Beginning Annealing...","notification");
-//        LogTool.print("seeds, curstate,newstate" + looper.getCur_state() + " " + looper.getNew_state() + " ","notification");
-        
-        looper.solveSA();
+//        LogTool.print("seeds, curstate,newstate" + looper.getCur_state() + " " + looper.getNew_state() + " ","notification");    
+       // GlobalState GLS = looper.solveSA();
+//        GlobalState GLS = looper;
         LogTool.print("GLC: " + looper.getGlobal_lowest_cost()+ " CURC: " + looper.getCur_cost(),"notification");
+//        LogTool.print("FitnessGlobalLow: " + looper.+ " FitnessCURC: " + looper.getcurfitnessValue(),"notification");
+        //LogTool.print("GLS external: " + GLS.getGlobal_Lowest_state_string(),"notification");
+        LogTool.print("SolveSA: Global Current Best Solution : " + looper.getGlobal_Lowest_state_string(),"notification");
 //        looper.rausfindenWarumCUrCostsichnichtaendert();
 
 //        The looper needs to establish an initial solution and temperature

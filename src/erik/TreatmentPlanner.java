@@ -9,7 +9,6 @@ import sebastian.BodyEntry;
 import sebastian.ScatterDisplay;
 import sebastian.ScatterDisplay.ChartType;
 import sebastian.SimpleDB;
-import sebastian.TreatmentEntry;
 import utils.Config;
 import utils.Coordinate;
 import utils.LogTool;
@@ -103,7 +102,6 @@ public class TreatmentPlanner {
 					RandGenerator.randDouble(ba.getzBoundsTumor(1)[0], ba.getzBoundsTumor(1)[1]));
 			
 			if(body[(int)co.getX()][(int)co.getY()][(int)co.getZ()].getBodyType() == Config.tumorType) {
-				System.out.println("Coordinate"+ co.getX()+" "+co.getY()+" "+co.getZ());
 				seeds[i] = new Seed(co.getX(), co.getY(), co.getZ(), 0);
 				i++;
 			} 
@@ -112,17 +110,13 @@ public class TreatmentPlanner {
 
 		LogTool.print("Initialized Body Array!", "notification");
 
-		Solver solver = new Solver(body, seeds, entry.getDimensions()); // The
-																		// Solver
-																		// implements
-																		// the
-																		// genetic
-																		// Algorithm
+		Solver solver = new Solver(body, seeds, entry.getDimensions()); 
 
 		LogTool.print("Initialized Solver!", "notification");
 
 		long start = System.currentTimeMillis();
-		solver.solveGeneticAlg();
+//		solver.solveGeneticAlg();
+        //solver.solveSA();
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
@@ -133,7 +127,8 @@ public class TreatmentPlanner {
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Gen-Alg Runtime: " + dateFormatted);
-		ScatterDisplay display = new ScatterDisplay(ChartType.MaxDosis);
+		
+		/*ScatterDisplay display = new ScatterDisplay(ChartType.MaxDosis);
 		display.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
 				entry.getDimensions()[2]);
 		display.display();
@@ -151,9 +146,9 @@ public class TreatmentPlanner {
 		ScatterDisplay display4 = new ScatterDisplay(ChartType.BodyType);
 		display4.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
 				entry.getDimensions()[2]);
-		display4.display();
+		display4.display();*/
 		
-		ScatterDisplay display5 = new ScatterDisplay(ChartType.GoalDosis);
+		ScatterDisplay display5 = new ScatterDisplay(ChartType.BodyType);
 		display5.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
 				entry.getDimensions()[2]);
 		display5.display();
@@ -179,20 +174,11 @@ public class TreatmentPlanner {
 		db.close();
 	}
 
-	private static void testDB () {
-		SimpleDB db = new SimpleDB ();
-		db.printTreatments();
-		db.compareBody("data2593.4844");
-		db.close();
-		
-	}
-	
 	public static void main(String[] args) {
-		//printTreatmentData ();
-		//testDB ();		
-		//planTreatment();
 		printTreatmentData();
 		planTreatment();
 		while(true);
+		
 	}
 }
+
