@@ -25,8 +25,9 @@ public class TreatmentAnalyzer {
 	private double[] minDoses;
 	private double[] maxDoses;
 	private double[] avgDoses;
-	private double conformityIndex;
+	private double conformalityIndex;
 	private double homogenityIndex;
+	private double coverage;
 	private Histogram histogram;
 	
 	private ArrayList<Set<Voxel>> anatomies;
@@ -59,12 +60,16 @@ public class TreatmentAnalyzer {
 		return avgDoses;
 	}
 	
-	public double getConformityIndex() {
-		return conformityIndex;
+	public double getConformalityIndex() {
+		return conformalityIndex;
 	}
 	
 	public double getHomogenityIndex() {
 		return homogenityIndex;
+	}
+	
+	public double getCoverage() {
+		return coverage;
 	}
 	
 	public void setMinDoses(double[] minDoses) {
@@ -94,9 +99,14 @@ public class TreatmentAnalyzer {
 		this.homogenityIndex = homogenityIndex;
 	}
 	
-	public void setConformityIndex(double conformityIndex)
+	public void setConformalityIndex(double conformityIndex)
 	{
-		this.conformityIndex = conformityIndex;
+		this.conformalityIndex = conformityIndex;
+	}
+	
+	public void setCoverage(double coverage) 
+	{
+		this.coverage = coverage;
 	}
 
 	/**
@@ -130,7 +140,8 @@ public class TreatmentAnalyzer {
 					double dose = 0.0;
 					for (Seed seed : seeds)
 					{
-						dose += body[x][y][z].radiationIntensity(seed.getCoordinate(), seed.getDurationMilliSec());
+						//dose += body[x][y][z].radiationIntensity(seed.getCoordinate(), seed.getDurationMilliSec());
+						dose += body[x][y][z].radiationIntensityTwo(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
 					}
 					body[x][y][z].setCurrentDosis(dose);									
 				}
@@ -196,36 +207,71 @@ public class TreatmentAnalyzer {
 	/**
 	 * Calculates homogeneity index.
 	 * 
-	 * HI specified as maximum dose in tumor divided by goal dose.
+	 * HI specified as maximum dose in tumor divided by the minimum dose.
 	 * Great homogeneity results in values close to one.
 	 * 
 	 * @return homogeneity index
 	 */
 	private double calcHomogeneityIndex()
 	{
-		return (this.maxDoses[Config.tumorType-1] / Config.tumorGoalDose);
+		return (this.maxDoses[Config.tumorType-1] / this.minDoses[Config.tumorType-1]);
 	}
 	
 	/**
-	 * Calculates conformity index.
+	 * Calculates coverage.
 	 * 
-	 * CI specified as fraction of voxels whose dose is equal to or higher than the goal dose.
-	 * CI will be between 0 and 1.
+	 * Coverage specified as fraction of PTV voxels whose dose is equal to or higher than the goal dose.
+	 * Coverage will be between 0 and 1 and values close to 1 indicate greater coverage.
 	 * 
-	 * @return homogeneity index
+	 * @return coverage
 	 */
-	private double calcConformityIndex()
+	private double calcCoverage()
 	{
+		/* count PTV-voxels whose dose is equal or greater to the prescribed dose */
 		int counter = 0;
 		Set<Voxel> tumorVoxels = anatomies.get(Config.tumorType - 1);
-		
 		for (Voxel voxel : tumorVoxels)
 		{
 			if (voxel.getCurrentDosis() >= voxel.getGoalDosis())
 				counter++;
 		}
 		
-		return (counter / (double) tumorVoxels.size());
+		return (counter / ((double) tumorVoxels.size()));
+	}
+	
+	/**
+	 * Calculates conformality index.
+	 * 
+	 * CI specified as total volume that received at least PTV goal dose over 
+	 * PTV volume that received at least the goal dose.
+	 * CI close to 1 indicates greater conformality.
+	 * 
+	 * @return conformality index
+	 */
+	private double calcConformalityIndex()
+	{
+		/* count non-PTV voxels whose dose is equal or greater to the prescribed dose */
+		int nonPTVCounter = 0;
+		for (int i = 0; i < (Config.tumorType - 1); i++)
+		{
+			Set<Voxel> nonPTVVoxels = anatomies.get(i);
+			for (Voxel voxel : nonPTVVoxels)
+			{
+				if (voxel.getCurrentDosis() >= Config.tumorGoalDose)
+					nonPTVCounter++;
+			}
+		}
+		
+		/* count PTV-voxels whose dose is equal or greater to the prescribed dose */
+		int pTVCounter = 0;
+		Set<Voxel> tumorVoxels = anatomies.get(Config.tumorType - 1);
+		for (Voxel voxel : tumorVoxels)
+		{
+			if (voxel.getCurrentDosis() >= Config.tumorGoalDose)
+				pTVCounter++;
+		}
+		
+		return ((nonPTVCounter + pTVCounter) / ((double) pTVCounter));
 	}
 	
 	/**
@@ -236,19 +282,25 @@ public class TreatmentAnalyzer {
 		double[] maxDoses = new double[Config.tumorType];
 		double[] avgDoses = new double[Config.tumorType];
 		
+		LogTool.print("Calculating min, max and avg dose", "Notification");
 		for (int i = 0; i < anatomies.size(); i++)
 		{
 			minDoses[i] = calcMinDose(i+1);
 			maxDoses[i] = calcMaxDose(i+1);
 			avgDoses[i] = calcAvgDose(i+1);
 		}
-		
 		setMinDoses(minDoses);
 		setMaxDoses(maxDoses);
 		setAvgDoses(avgDoses);
-		setHomogenityIndex(calcHomogeneityIndex());
-		setConformityIndex(calcConformityIndex());
 		
+		LogTool.print("Calculating homogeneity index", "Notification");
+		setHomogenityIndex(calcHomogeneityIndex());
+		LogTool.print("Calculating conformity index", "Notification");
+		setConformalityIndex(calcConformalityIndex());
+		LogTool.print("Calculating coverage", "Notification");
+		setCoverage(calcCoverage());
+		
+		LogTool.print("Adding histogram data", "Notification");
 		Histogram histogram = new Histogram("Dose Volume Histogram");
 		histogram.addDataSet("Normal", this.getAnatomy(Config.normalType));
 		histogram.addDataSet("Spine", this.getAnatomy(Config.spineType));
@@ -266,9 +318,11 @@ public class TreatmentAnalyzer {
 		{
 			LogTool.print("Body type: " + i + ": minDose: " + minDoses[i] + ", maxDose: " + maxDoses[i] + ", avgDose: " + avgDoses[i],"notification");
 		}
-		LogTool.print("Tumor conformity index: " + conformityIndex, "notification");
+		LogTool.print("Tumor conformality index: " + conformalityIndex, "notification");
 		LogTool.print("Tumor homogenity index: " + homogenityIndex, "notification");
+		LogTool.print("Tumor coverage: " + coverage, "notification");
 		
+		LogTool.print("Calculating histogram", "Notification");
 		histogram.display(1.0, 100);
 	}
 	
