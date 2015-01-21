@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import utils.Config;
 import utils.Coordinate;
 import utils.LogTool;
+import utils.Seed;
 import utils.Voxel;
 
 import com.jmatio.io.MatFileReader;
@@ -32,6 +33,44 @@ public class SimpleDB {
 	  if (dbFile.exists() && dbFile.isFile()) {
 		  loadDB ();
 	  }
+  }
+  
+  public ArrayList<Coordinate> compareBody (String name) {
+	  ArrayList<Coordinate> seeds = null;
+	  BodyEntry bEntry = null;
+	  TreatmentEntry tEntry = null;
+	  String nName = "";
+	  double current = 10, next = 0;
+	  
+	  // Check for body, and load
+	  if (getBodyByName(name) == null) {
+		  loadBody(name);
+	  }
+	  bEntry = getBodyByName (name);
+	  
+	  // Check for treatment, and calculate
+	  if (getTreatmentByName(name) == null) {
+		  classify(bEntry);		  
+	  }
+	  tEntry = getTreatmentByName(name);
+	  
+	  // Check for existence
+	  if (bEntry == null || tEntry == null) {
+		  return seeds;
+	  }
+	  
+	  // Get closest entry
+	  for (TreatmentEntry entry: treatments) {
+		  next = tEntry.compare (entry);
+		  if (tEntry.compare (entry) < current) {
+			  nName = entry.getName();
+			  current = next;
+		  }
+	  }
+	  LogTool.print(String.format ("Closest entry: %s, error: %f", nName, current), "debug");
+	  seeds = getTreatmentByName(nName).getSeeds();
+	  
+	  return seeds;
   }
   
   /**
@@ -58,6 +97,17 @@ public class SimpleDB {
 			  LogTool.print ("Entry already exists: " + folder.getName (),"debug");
 		  }
 	  }	  
+  }
+  
+  public void updateSeeds (String name, ArrayList<Coordinate> seeds) {
+	  TreatmentEntry entry = getTreatmentByName(name);
+	  
+	  if (entry != null) {
+		  entry.setSeeds(seeds);
+	  }
+	  else {
+		  LogTool.print ("Unable to update seeds for " + name, "error");
+	  }
   }
   
   private void classify (BodyEntry bEntry) {
@@ -116,6 +166,7 @@ public class SimpleDB {
 		  tclDists[i] = 50000;
 	  }
 	  for (int i = 0; i < bEntry.getDimensions()[0]; i++) {
+		  System.out.println ("" + i);
 		  for (int j = 0; j < bEntry.getDimensions()[1]; j++) {
 			  for (int k = 0; k < bEntry.getDimensions()[2]; k++) {
 				  for (int l = 0; l < tumorVoxel.size(); l++) {
@@ -229,6 +280,23 @@ public class SimpleDB {
 	  LogTool.print("Body " + name + " found: " + delIndex, "debug");
 	  
 	  if (delIndex > -1) bodies.remove(delIndex);
+  }
+  
+  public void deleteTreatment (String name) {
+	  int delIndex = -1;
+	  
+	  LogTool.print ("Deleting treatment " + name, "debug");
+	  
+	  for (int i = 0; i < treatments.size(); i++) {
+		  if (treatments.get(i).getName ().equals (name)) {
+			  delIndex = i;
+			  break;
+		  }
+	  }
+	  
+	  LogTool.print("Treatment " + name + " found: " + delIndex, "debug");
+	  
+	  if (delIndex > -1) treatments.remove(delIndex);
   }
   
   private void loadDB () {

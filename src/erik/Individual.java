@@ -118,5 +118,4 @@ public class Individual
     public void setGene(int index, double gene) {
         this.genes[index] = gene;
     }
-    
 }
