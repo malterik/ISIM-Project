@@ -116,7 +116,8 @@ public class TreatmentPlanner {
 		LogTool.print("Initialized Solver!", "notification");
 
 		long start = System.currentTimeMillis();
-		solver.solveGeneticAlg();
+//		solver.solveGeneticAlg();
+                solver.solveSA();
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
