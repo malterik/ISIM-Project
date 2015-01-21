@@ -61,7 +61,7 @@ public class Config {
 	public static final double SK = 47;
 	public static final double LAMBDA = 63.52;
 	public static final double Gl_r0_phi0 = 53.71;
-	public static final double L = 0.35;
+	public static final double L = 35;
 	public static final double R0 = 1;
 	public static final double MAX_DOSE = 55;
 	

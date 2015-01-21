@@ -83,7 +83,7 @@ public class Voxel implements Serializable {
 		if(distance == 0) {
 			dose = this.getGoalDosis();
 		} else {
-			dose = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ) * durationMilliSec ; 
+			dose = ( (1.12 * GL(1,90)/100) * Config.SK  * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ) * durationMilliSec ; 
 		}
 		
 		
@@ -93,9 +93,9 @@ public class Voxel implements Serializable {
 	public static void main(String args[]) {
 		Voxel v = new Voxel(0, 0, 0);
 		
-		//for (double j = 0; j < 10; j+= 0.1) {
-			System.out.println( v.radiationIntensity(0,1));
-		//}
+		for (double j = 0; j < 10; j+= 0.01) {
+			System.out.println( v.radiationIntensity(j,1));
+		}
 			
 		
 		System.exit(0);
@@ -197,36 +197,7 @@ public class Voxel implements Serializable {
 	
 	
 	
-	/*public double doseFunction(Coordinate position){
-		double distance = distanceToVoxel(position);
-		double gp = 0;
-		
-		if(distance > 10) {
-			return 0.0;
-		}
-		double[] coeff = { 		//coefficents for the interpolationspolynom
-				  4.889e-06,  
-		         -0.0002256,
-		          0.00439,
-		         -0.04693,
-		          0.3003,
-		         -1.178,
-		          2.793,
-		         -3.806,
-		          2.544,
-		          0.3994 };
-		
-		//  Interpolation for dose function (point source)
-		for(int i = -1; i >= 0; i--){
-			gp += coeff[i] * Math.pow(distance, i);
-		}
-		if(distance > 1) {
-			System.out.println(Config.LAMBDA * Config.SK * Math.pow((Config.R0/distance),2) * gp);
-			return (Config.LAMBDA * Config.SK * Math.pow((Config.R0/distance),2) * gp); //TODO: PHIan
-		} else {
-			return Config.MAX_DOSE;
-		}
-	}*/
+
 	
 	
 	
