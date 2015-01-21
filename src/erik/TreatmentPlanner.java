@@ -6,6 +6,7 @@ import java.util.Date;
 
 import sebastian.BodyEntry;
 import sebastian.SimpleDB;
+import sebastian.TreatmentEntry;
 import utils.Config;
 import utils.LogTool;
 import utils.RandGenerator;
@@ -164,11 +165,17 @@ public class TreatmentPlanner {
 		db.close ();
 	}
 	
+	private static void testDB () {
+		SimpleDB db = new SimpleDB ();
+		db.printTreatments();
+		db.compareBody("data2593.4844");
+		db.close();
+		
+	}
+	
 	public static void main(String[] args) {
-		printTreatmentData ();
-		planTreatment();
-		
-		
-		System.exit (0);
+		//printTreatmentData ();
+		testDB ();		
+		//planTreatment();
 	}
 }
