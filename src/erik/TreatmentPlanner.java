@@ -111,12 +111,7 @@ public class TreatmentPlanner {
 
 		LogTool.print("Initialized Body Array!", "notification");
 
-		Solver solver = new Solver(body, seeds, entry.getDimensions()); // The
-																		// Solver
-																		// implements
-																		// the
-																		// genetic
-																		// Algorithm
+		Solver solver = new Solver(body, seeds, entry.getDimensions()); 
 
 		LogTool.print("Initialized Solver!", "notification");
 
@@ -132,7 +127,8 @@ public class TreatmentPlanner {
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Gen-Alg Runtime: " + dateFormatted);
-		ScatterDisplay display = new ScatterDisplay(ChartType.MaxDosis);
+		
+		/*ScatterDisplay display = new ScatterDisplay(ChartType.MaxDosis);
 		display.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
 				entry.getDimensions()[2]);
 		display.display();
@@ -150,7 +146,7 @@ public class TreatmentPlanner {
 		ScatterDisplay display4 = new ScatterDisplay(ChartType.BodyType);
 		display4.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
 				entry.getDimensions()[2]);
-		display4.display();
+		display4.display();*/
 		
 		ScatterDisplay display5 = new ScatterDisplay(ChartType.GoalDosis);
 		display5.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],

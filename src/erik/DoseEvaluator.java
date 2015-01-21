@@ -11,7 +11,6 @@ public class DoseEvaluator implements Callable<Double> {
 
 	private int x;
 	private int[] dimensions;
-	
 	 private double[] genes = new double[Config.numberOfSeeds];
 	
 	public DoseEvaluator(int[] dimensions, double[] genes, int x) {

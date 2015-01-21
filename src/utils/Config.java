@@ -81,6 +81,8 @@ public class Config {
 	
 	public static final int scaleFactor = 5;
 	
+	public static final double cancelValue = 1;
+	
 	
 	
 	
