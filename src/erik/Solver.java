@@ -1,6 +1,5 @@
 package erik;
 
-import dawid.GlobalState;
 import dawid.Looper;
 import ilog.concert.IloException;
 import thobi.LPTreatment;
@@ -70,6 +69,11 @@ public class Solver {
 //        LogTool.print("FitnessGlobalLow: " + looper.+ " FitnessCURC: " + looper.getcurfitnessValue(),"notification");
 //        LogTool.print("GLS external: " + GLS.getGlobal_Lowest_state_string(),"notification");
         LogTool.print("SolveSA: Global Current Best Solution : " + looper.getGlobal_Lowest_state_string(),"notification");
+        
+        for(int i=0; i<Config.SAnumberOfSeeds;i++) {
+			Solver.seeds[i].setDurationMilliSec(looper.getGlobal_Lowest_state()[i]);
+			System.out.println("Verweildauer: "+ Solver.seeds[i].getDurationMilliSec() );
+		}
         }
 	
 	public void solveLP() throws IloException

@@ -35,8 +35,8 @@ public class Looper {
  * @see         Image
  */
     
-    public static Voxel [][][] body; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
-    public static Seed[] seeds = new Seed[Config.SAnumberOfSeeds];
+    private  Voxel [][][] body; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
+    private  Seed[] seeds = new Seed[Config.SAnumberOfSeeds];
     public double[] Cur_state = new double[Config.SAnumberOfSeeds];
     public double[] New_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
     public double[] Global_Lowest_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
@@ -193,7 +193,7 @@ public class Looper {
  * 
  * @return The Seed[] of seeds
  */
-    public static Seed[] getSeed()
+    public Seed[] getSeed()
 	{
 		return seeds;
 	}
@@ -202,7 +202,7 @@ public class Looper {
 	 * This method solves the optimization problem with simulated annealing
          * It contains the metropolis loop
 	 */
-    public GlobalState solveSA() {
+    public void solveSA() {
         
         for (int ab = 0; ab < Config.NumberOfMetropolisResets; ab++) {
             LogTool.print("==================== START CALC FOR OUTER ROUND " + ab + "=========================","notification");
@@ -222,32 +222,32 @@ public class Looper {
             // if randomnumber above or equal to metropolis probability -> accept "next" random state else ignore
             // Is this
             
-            if (Config.SAverboselvl==1) {
+            if (Config.SAverboselvl>1) {
                 LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
                 LogTool.print("Debug: GLS get 1: " + this.getGlobal_Lowest_state_string(),"notification");
             }
             
-            if (ab==0){
+            /*if (ab==0){
                 this.initState();
             
-                if (Config.SAverboselvl==1) {
+                if (Config.SAverboselvl>1) {
                     LogTool.print("SolveSA: Cur_state after Initstate : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
                 }
-            }
+            }*/
             
             setCur_cost(cost());
 //            setcurfitnessValue(evaluate());
 
             /* [Newstate] with random dwelltimes */
             newState(); 
-            if (Config.SAverboselvl==1) {
+            if (Config.SAverboselvl>1) {
                 LogTool.print("SolveSA: New State before Metropolis: A)" + New_state[0] + " B) " + New_state[1] + " C) " + New_state[2],"notification");
             }
             
             setNew_cost(cost());
 //            setnewFitnessValue(evaluate());
             
-            if (Config.SAverboselvl==1) {
+            if (Config.SAverboselvl>1) {
                 LogTool.print("SolveSA: New Cost : " + New_cost,"notification");
             }
             
@@ -324,7 +324,7 @@ public class Looper {
             LogTool.print("SolveSA: NewCost : " + this.getNew_cost(),"notification");
             LogTool.print("SolveSA: CurCost : " + this.getCur_cost(),"notification");        
         }
-        return GLowestState;
+       // return GLowestState;
     }
 /**
  * Sets the irradiation of the Tumor volume by iterating over its volume.
@@ -342,16 +342,16 @@ public class Looper {
 //				for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
                 for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
 
-					Looper.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+					this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
 					for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
 						// Calculate intensity based based on current dwelltime
-						intensity = Looper.body[x][y][z].radiationIntensity(Looper.seeds[i].getCoordinate(), Cur_state[i]);
+						intensity = this.body[x][y][z].radiationIntensity(this.seeds[i].getCoordinate(), Cur_state[i]);
                                                 if (intensity>0) {
 //                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
                                                 }
-						Looper.body[x][y][z].addCurrentDosis(intensity);
+						this.body[x][y][z].addCurrentDosis(intensity);
 					}	
-					diff += Math.pow((Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),2);
+					diff += Math.pow((this.body[x][y][z].getGoalDosis()-this.body[x][y][z].getCurrentDosis()),2);
 //                                        LogTool.print(" diffdose " + (Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),"notification");
 				}	 
 			}
@@ -392,20 +392,6 @@ public class Looper {
     	return fitness;
     }
     
-    public void rausfindenWarumCUrCostsichnichtaendert() {
-        LogTool.print("SolveSA: Initial State : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
-        LogTool.print("SolveSA: Cur Cost : " + Cur_cost + " should be " + cost(),"notification");
-        initState();
-        LogTool.print("SolveSA: Next Initial State : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
-        LogTool.print("SolveSA: Cur Cost : " + Cur_cost + " should be " + cost(),"notification");
-        
-        LogTool.print("SolveSA: Initial State : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
-        newState(); 
-        LogTool.print("SolveSA: New State : A)" + New_state[0] + " B) " + New_state[1] + " C) " + New_state[2],"notification");
-        setNew_cost(cost());
-        LogTool.print("SolveSA: New Cost : " + New_cost,"notification");
-        /* [Newstate] with random dwelltimes */        
-    }
 
     private void setnewFitnessValue(double fitnessValue) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

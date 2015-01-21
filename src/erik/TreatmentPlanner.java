@@ -102,7 +102,6 @@ public class TreatmentPlanner {
 					RandGenerator.randDouble(ba.getzBoundsTumor(1)[0], ba.getzBoundsTumor(1)[1]));
 			
 			if(body[(int)co.getX()][(int)co.getY()][(int)co.getZ()].getBodyType() == Config.tumorType) {
-				System.out.println("Coordinate"+ co.getX()+" "+co.getY()+" "+co.getZ());
 				seeds[i] = new Seed(co.getX(), co.getY(), co.getZ(), 0);
 				i++;
 			} 
@@ -117,7 +116,7 @@ public class TreatmentPlanner {
 
 		long start = System.currentTimeMillis();
 //		solver.solveGeneticAlg();
-                solver.solveSA();
+        //solver.solveSA();
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
@@ -149,7 +148,7 @@ public class TreatmentPlanner {
 				entry.getDimensions()[2]);
 		display4.display();*/
 		
-		ScatterDisplay display5 = new ScatterDisplay(ChartType.GoalDosis);
+		ScatterDisplay display5 = new ScatterDisplay(ChartType.BodyType);
 		display5.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
 				entry.getDimensions()[2]);
 		display5.display();

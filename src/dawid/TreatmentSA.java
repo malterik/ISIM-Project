@@ -166,11 +166,11 @@ public class TreatmentSA {
         LogTool.print("Initialized Looper Object!","notification");
         LogTool.print("Beginning Annealing...","notification");
 //        LogTool.print("seeds, curstate,newstate" + looper.getCur_state() + " " + looper.getNew_state() + " ","notification");    
-        GlobalState GLS = looper.solveSA();
+       // GlobalState GLS = looper.solveSA();
 //        GlobalState GLS = looper;
         LogTool.print("GLC: " + looper.getGlobal_lowest_cost()+ " CURC: " + looper.getCur_cost(),"notification");
 //        LogTool.print("FitnessGlobalLow: " + looper.+ " FitnessCURC: " + looper.getcurfitnessValue(),"notification");
-        LogTool.print("GLS external: " + GLS.getGlobal_Lowest_state_string(),"notification");
+        //LogTool.print("GLS external: " + GLS.getGlobal_Lowest_state_string(),"notification");
         LogTool.print("SolveSA: Global Current Best Solution : " + looper.getGlobal_Lowest_state_string(),"notification");
 //        looper.rausfindenWarumCUrCostsichnichtaendert();
 

@@ -25,6 +25,12 @@ public class DoseEvaluator implements Callable<Double> {
 	public double evaluate() {
         double temp=0;
         double intensity=0;
+        double[] weightingFactor = new double[5];
+        weightingFactor[0] = 1;
+        weightingFactor[1] = 50;
+        weightingFactor[2] = 1;
+        weightingFactor[3] = 50;
+        weightingFactor[4] = 1;
         
 			
 		for(int y =Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1] ; y+= Config.scaleFactor) {
@@ -39,7 +45,7 @@ public class DoseEvaluator implements Callable<Double> {
 					Solver.body[x][y][z].addCurrentDosis(intensity);
 					
 				}	
-				temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2);
+				temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2) * weightingFactor[Solver.body[x][y][z].getBodyType()-1];
 				
 				
 			}	

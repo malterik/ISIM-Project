@@ -170,7 +170,7 @@ public class Population
             }
             
             System.out.println("bestOld-best: "+Math.abs(bestResultOld-bestResult)+"counter= " + counter);
-            if(Math.abs(bestResultOld-bestResult) < Config.cancelValue) {
+            if(Math.abs(bestResultOld-bestResult) <= Config.cancelValue) {
             	counter++;	
             } else {
             	counter = 0;
