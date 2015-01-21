@@ -140,8 +140,7 @@ public class TreatmentAnalyzer {
 					double dose = 0.0;
 					for (Seed seed : seeds)
 					{
-						//dose += body[x][y][z].radiationIntensity(seed.getCoordinate(), seed.getDurationMilliSec());
-						dose += body[x][y][z].radiationIntensityTwo(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
+						dose += body[x][y][z].radiationIntensity(seed.getCoordinate(), seed.getDurationMilliSec());
 					}
 					body[x][y][z].setCurrentDosis(dose);									
 				}
