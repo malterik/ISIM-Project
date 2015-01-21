@@ -40,7 +40,7 @@ public class Config {
         public static final int NumberOfMetropolisResets = 10;
         public static final int NumberOfMetropolisRounds = 100;
         public static final double StartTemp = NumberOfMetropolisRounds;
-        public static final int SAnumberOfSeeds = 3;
+        public static final int SAnumberOfSeeds = 50;
         public static final boolean SAdebug = false;
         public static final boolean SAdebugkoords = false;
         public static final boolean SAdebugbody = false;
