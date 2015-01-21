@@ -42,7 +42,9 @@ public class Solver {
 		
 		for(int i=0; i<Config.numberOfSeeds;i++) {
 			System.out.println("Verweildauer: "+test.getGene(i));
+			
 		}
+		
 	}
 	
 	public void solveLP() throws IloException

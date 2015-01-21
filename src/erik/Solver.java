@@ -51,7 +51,8 @@ public class Solver {
 		Individual test = Population.solve();
 		
 		for(int i=0; i<Config.numberOfSeeds;i++) {
-			System.out.println("Verweildauer: "+test.getGene(i));
+			Solver.seeds[i].setDurationMilliSec(test.getGene(i));
+			System.out.println("Verweildauer: "+ Solver.seeds[i].getDurationMilliSec() );
 		}
 	}
 	

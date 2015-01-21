@@ -77,7 +77,7 @@ public class Config {
 	
 	public static final int numberOfThreads = 4;
 	
-	public static final int treatmentRange = 10; // indicates the range in cm for the region around the tumor which shall be treated by radiation
+	public static final int treatmentRange = 8; // indicates the range in cm for the region around the tumor which shall be treated by radiation
 	
 	public static final int scaleFactor = 5;
 	
