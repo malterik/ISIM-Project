@@ -189,11 +189,10 @@ public class TreatmentPlanner {
 	
 	public static void main(String[] args) {
 		//printTreatmentData ();
-		testDB ();		
+		//testDB ();		
 		//planTreatment();
 		printTreatmentData();
 		planTreatment();
 		while(true);
-		
 	}
 }
