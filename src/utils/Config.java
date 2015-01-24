@@ -24,11 +24,11 @@ public class Config {
 	public static final double oarMaxDose = 3;
 	public static final double oarGoalDose = 30;
 	
-	public static final double normalGoalDose = 20; //TODO evaluate
-	public static final double spineGoalDose = 0;
-	public static final double liverGoalDose = 30;
-	public static final double pancreasGoalDose = 0;
-	public static final double tumorGoalDose = 50;
+	public static final double normalGoalDose = 10; 	//max
+	public static final double spineGoalDose = 0; 		//max
+	public static final double liverGoalDose = 30; 		//max
+	public static final double pancreasGoalDose = 0; 	//max
+	public static final double tumorGoalDose = 50; 		//min
 	
 	// Parameters for classification
 	public static final double VOXEL_DIST = 1; // in cm
