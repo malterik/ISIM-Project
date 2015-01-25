@@ -1,5 +1,6 @@
 package laurin;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import java.util.HashSet;
@@ -21,6 +22,7 @@ public class TreatmentAnalyzer {
 	private Voxel[][][] body;
 	private int[] dimensions;
 	private Seed[] seeds;
+	private String title;
 	
 	private double[] minDoses;
 	private double[] maxDoses;
@@ -38,11 +40,18 @@ public class TreatmentAnalyzer {
 	 * @param body			 body to be analyzed
 	 * @param dimensions	 x,y and z dimensions of the body
 	 */
-	public TreatmentAnalyzer(Voxel[][][] body, int[] dimensions, Seed[] seeds) {
-		
+	public TreatmentAnalyzer(Voxel[][][] body, int[] dimensions, Seed[] seeds) 
+	{
+		this(body, dimensions, seeds, "");
+	}
+	
+	public TreatmentAnalyzer (Voxel[][][] body, int[] dimensions, Seed[] seeds, String title)
+	{
 		this.body = body;
 		this.dimensions = dimensions;
 		this.seeds = seeds;
+		this.title = title;
+		
 		splitBodyTypes();
 		irradiate();
 		analyzeAll();
@@ -70,6 +79,10 @@ public class TreatmentAnalyzer {
 	
 	public double getCoverage() {
 		return coverage;
+	}
+	
+	public String getTitle() {
+		return title;
 	}
 	
 	public void setMinDoses(double[] minDoses) {
@@ -139,8 +152,8 @@ public class TreatmentAnalyzer {
 				for(int z = 0; z < this.dimensions[2]; z++) {
 					double dose = 0.0;
 					for (Seed seed : seeds)
-					{
-						dose += body[x][y][z].radiationIntensity(seed.getCoordinate(), seed.getDurationMilliSec());
+					{;
+						dose += seed.radiationIntensity(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
 					}
 					body[x][y][z].setCurrentDosis(dose);									
 				}
@@ -270,7 +283,10 @@ public class TreatmentAnalyzer {
 				pTVCounter++;
 		}
 		
-		return ((nonPTVCounter + pTVCounter) / ((double) pTVCounter));
+		if (pTVCounter == 0)
+			return 0;
+		else
+			return ((nonPTVCounter + pTVCounter) / ((double) pTVCounter));
 	}
 	
 	/**
@@ -300,7 +316,7 @@ public class TreatmentAnalyzer {
 		setCoverage(calcCoverage());
 		
 		LogTool.print("Adding histogram data", "Notification");
-		Histogram histogram = new Histogram("Dose Volume Histogram");
+		Histogram histogram = new Histogram(this.title);
 		histogram.addDataSet("Normal", this.getAnatomy(Config.normalType));
 		histogram.addDataSet("Spine", this.getAnatomy(Config.spineType));
 		histogram.addDataSet("Liver", this.getAnatomy(Config.liverType));
@@ -322,7 +338,77 @@ public class TreatmentAnalyzer {
 		LogTool.print("Tumor coverage: " + coverage, "notification");
 		
 		LogTool.print("Calculating histogram", "Notification");
-		histogram.display(1.0, 100);
+		histogram.display(1.0, 5000);
+	}
+	
+	/**
+	 * Print tabular comparison of multiple treatments
+	 * 
+	 * @param treatmentAnalyzers
+	 */
+	public static void printTreatmentComparison(ArrayList<TreatmentAnalyzer> treatmentAnalyzers)
+	{
+		String spacing = String.format("%5s","");
+		String headLine = String.format("%-15s%s", "Treatment", spacing);
+		String minLines[] = new String[Config.tumorType];
+		String maxLines[] = new String[Config.tumorType];
+		String avgLines[] = new String[Config.tumorType];
+		String conformalityLine = String.format("%-15s%s", "Conformality", spacing);
+		String homogeinityLine = String.format("%-15s%s", "Homogeinity", spacing);
+		String coverageLine = String.format("%-15s%s", "Coverage", spacing);
+		DecimalFormat decimalFormat = new DecimalFormat("#####0.0000");
+		
+		for(int i = 0; i < Config.tumorType; i++)
+		{
+			minLines[i] = "";
+			maxLines[i] = "";
+			avgLines[i] = "";
+		}
+		
+		for(int i = 0; i < Config.tumorType; i++)
+		{
+			minLines[i] += String.format("%-15s%s", Config.bodyTypeDescriptions[i], spacing);
+			maxLines[i] += String.format("%-15s%s", Config.bodyTypeDescriptions[i], spacing); 
+			avgLines[i] += String.format("%-15s%s", Config.bodyTypeDescriptions[i], spacing); 
+		}
+		
+		for (TreatmentAnalyzer ta : treatmentAnalyzers)
+		{
+			headLine += String.format("%15s%s", ta.getTitle(), spacing);	
+			for(int i = 0; i < Config.tumorType; i++)
+			{
+				minLines[i] += String.format("%15s%s", decimalFormat.format(ta.getMinDoses()[i]), spacing);
+				maxLines[i] += String.format("%15s%s", decimalFormat.format(ta.getMinDoses()[i]), spacing); 
+				avgLines[i] += String.format("%15s%s", decimalFormat.format(ta.getAvgDoses()[i]), spacing);			
+			}
+			conformalityLine += String.format("%15s%s", decimalFormat.format(ta.getConformalityIndex()), spacing);
+			homogeinityLine += String.format("%15s%s", decimalFormat.format(ta.getHomogenityIndex()), spacing);
+			coverageLine += String.format("%15s%s", decimalFormat.format(ta.getCoverage()), spacing);
+		}
+		
+		
+		System.out.println(headLine);
+		System.out.println();
+		
+		System.out.println("Min doses:");
+		for(int i = 0; i < Config.tumorType; i++)
+			System.out.println(minLines[i]);
+		System.out.println();
+		
+		System.out.println("Max doses:");
+		for(int i = 0; i < Config.tumorType; i++)
+			System.out.println(maxLines[i]);
+		System.out.println();
+		
+		System.out.println("Avg doses:");
+		for(int i = 0; i < Config.tumorType; i++)
+			System.out.println(avgLines[i]);
+		System.out.println();
+		
+		System.out.println(conformalityLine);
+		System.out.println(homogeinityLine);
+		System.out.println(coverageLine);
+		System.out.println();
 	}
 	
 }
