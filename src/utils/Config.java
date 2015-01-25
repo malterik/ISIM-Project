@@ -29,7 +29,7 @@ public class Config {
 	public static final double liverGoalDose = 30; 		//max
 	public static final double pancreasGoalDose = 0; 	//max
 	public static final double tumorGoalDose = 50; 		//min
-	
+	public static final double relaxDose = 5;
 	// Parameters for classification
 	public static final double VOXEL_DIST = 1; // in cm
 	public static final int TUMOR = 5; // BodyType for Tumor

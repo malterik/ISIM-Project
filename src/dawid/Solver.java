@@ -50,7 +50,7 @@ public class Solver {
 	public void solveLP() throws IloException
 	{
 		int nonZeroCounter = 0;
-		new LPTreatment(body, seeds);
+		//new LPTreatment(body, seeds);
 		//LPTreatment.solveLP();
 		//LPTreatment.solveLPMin();
 		LPTreatment.solveLPIT();

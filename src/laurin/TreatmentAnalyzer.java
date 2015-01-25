@@ -315,7 +315,7 @@ public class TreatmentAnalyzer {
 	public void printResults() {
 		for (int i = 0; i < anatomies.size(); i++)
 		{
-			LogTool.print("Body type: " + i + ": minDose: " + minDoses[i] + ", maxDose: " + maxDoses[i] + ", avgDose: " + avgDoses[i],"notification");
+			LogTool.print("Body type " + i + ": minDose: " + minDoses[i] + ", maxDose: " + maxDoses[i] + ", avgDose: " + avgDoses[i],"notification");
 		}
 		LogTool.print("Tumor conformality index: " + conformalityIndex, "notification");
 		LogTool.print("Tumor homogenity index: " + homogenityIndex, "notification");
