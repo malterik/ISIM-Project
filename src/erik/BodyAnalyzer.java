@@ -1,5 +1,9 @@
 package erik;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import utils.Config;
 import utils.Voxel;
 
@@ -266,5 +270,89 @@ public class BodyAnalyzer {
 	public void setVoxelCountTumor(int voxelCountTumor) {
 		this.voxelCountTumor = voxelCountTumor;
 	}
-
+	
+	/**
+	 * Creates sets of voxels that share the same body type.
+	 * 
+	 * @param body array of body voxels
+	 * 
+	 * @return ArrayList of sets of voxels that share a body type
+	 */
+	public static ArrayList<Set<Voxel>> splitBodyTypes (Voxel[][][] body) {
+		ArrayList<Set<Voxel>> anatomies = new ArrayList<Set<Voxel>>();
+		for (int i = Config.normalType; i <= Config.tumorType; i++)
+		{
+			anatomies.add(new HashSet<Voxel>());
+		}
+		
+		for(int x = 0; x < body.length; x++) {				
+			for(int y = 0; y < body[0].length; y++) {		
+				for(int z = 0; z < body[0][0].length; z++) {		
+					anatomies.get(body[x][y][z].getBodyType()-1).add(body[x][y][z]);									
+				}
+			}	
+		}	
+		return anatomies;
+	}
+	
+	/**
+	 * Checks if voxel is outter voxel.
+	 * An outter voxel is a voxel that has at least one neighboring pixel (in 6-neighborhood) that either
+	 * 		- exceeds global body dimensions
+	 * 		- is of another body type
+	 * 
+	 * @return true if voxel is outter voxel,
+	 * 		   false otherwise
+	 **/
+	private static boolean isOutterVoxel(Voxel[][][] body, Voxel voxel)
+	{
+		int x = (int) voxel.getX();
+		int y = (int) voxel.getY();
+		int z = (int) voxel.getZ();
+		int bodyType = voxel.getBodyType();
+		
+		// voxel is outter body pixel
+		if (x-1 < 0 
+				|| x+1 > body.length
+				|| y-1 < 0
+				|| y+1 > body[0].length
+				|| z-1 < 0
+				|| z+1 > body[0][0].length)
+		{
+			return true;
+		}
+		
+		// voxel is on body part surface
+		if (body[x-1][y][z].getBodyType() != bodyType
+				|| body[x+1][y][z].getBodyType() != bodyType
+				|| body[x][y-1][z].getBodyType() != bodyType
+				|| body[x][y+1][z].getBodyType() != bodyType
+				|| body[x][y][z-1].getBodyType() != bodyType
+				|| body[x][y][z+1].getBodyType() != bodyType)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Finds the outter voxels of a given body part.
+	 * 
+	 * @param body		array of body voxels
+	 * @param voxels 	set of voxels of ONE body part
+	 * 
+	 * @return			outter voxels of body part
+	 */
+	public static Voxel[] getOutterVoxels(Voxel[][][]body, Set<Voxel> voxels) {
+		Set<Voxel> outterVoxels = new HashSet<Voxel>();
+		for (Voxel voxel : voxels)
+		{
+			if (isOutterVoxel(body, voxel))
+			{
+				outterVoxels.add(voxel);
+			}
+		}
+		return (outterVoxels.toArray(new Voxel[outterVoxels.size()]));
+	}
 }
