@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import erik.BodyAnalyzer;
+
 import utils.Config;
 import utils.LogTool;
 import utils.Seed;
@@ -52,7 +54,7 @@ public class TreatmentAnalyzer {
 		this.seeds = seeds;
 		this.title = title;
 		
-		splitBodyTypes();
+		this.anatomies = BodyAnalyzer.splitBodyTypes(body);
 		irradiate();
 		analyzeAll();
 	}
@@ -120,27 +122,6 @@ public class TreatmentAnalyzer {
 	public void setCoverage(double coverage) 
 	{
 		this.coverage = coverage;
-	}
-
-	/**
-	 * Creates sets of voxels for each body type
-	 */
-	private void splitBodyTypes () {
-		ArrayList<Set<Voxel>> anatomies = new ArrayList<Set<Voxel>>();
-		for (int i = Config.normalType; i <= Config.tumorType; i++)
-		{
-			anatomies.add(new HashSet<Voxel>());
-		}
-		
-		for(int x = 0; x < this.dimensions[0]; x++) {				
-			for(int y = 0; y < this.dimensions[1]; y++) {		
-				for(int z = 0; z < this.dimensions[2]; z++) {		
-					anatomies.get(this.body[x][y][z].getBodyType()-1).add(body[x][y][z]);									
-				}
-			}	
-		}
-		
-		this.anatomies = anatomies;
 	}
 	
 	/**
