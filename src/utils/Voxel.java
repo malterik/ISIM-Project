@@ -43,12 +43,13 @@ public class Voxel implements Serializable {
 	 * The postition where the seed is 
 	 * @param durationMilliSec
 	 * The time the seed radiates
+	 * @param phi
+	 * angle phi 
 	 * @return
 	 */
-	public double radiationIntensity(Coordinate position, double durationMilliSec){
+	public double radiationIntensity(Coordinate position, double durationMilliSec, double phi){
 		double distance = distanceToVoxel(position);
 		
-		double phi = 90;  //TODO Magic number
 		double dose= 0;
 		
 		if(distance > 10) {
@@ -64,6 +65,10 @@ public class Voxel implements Serializable {
 		}
 		
 		return dose;
+	}
+	
+	public double radiationIntensity(Coordinate position, double durationMilliSec){
+		return radiationIntensity(position, durationMilliSec, 90);
 	}
 	
 	public double radiationIntensity(double r, double durationMilliSec){

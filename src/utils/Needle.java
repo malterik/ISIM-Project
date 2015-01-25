@@ -2,25 +2,26 @@ package utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import erik.BodyAnalyzer;
 
 public class Needle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Set<Seed> seeds;
+	private ArrayList<Seed> seeds;
 	
 	public Needle()
 	{
-		seeds = new HashSet<Seed>();
+		seeds = new ArrayList<Seed>();
 	}
 	
-	public Set<Seed> getSeeds()
+	public ArrayList<Seed> getSeeds()
 	{
 		return seeds;
 	}
@@ -33,6 +34,22 @@ public class Needle implements Serializable {
 	public int getSize()
 	{
 		return this.seeds.size();
+	}
+	
+	/**
+	 * Calculates direction of needle as difference between second and first seeds' coordinates.
+	 * 
+	 * @return direction of needle
+	 */
+	public Vector3D getDirection()
+	{
+		if (this.getSize() < 2)
+			return null;
+		else
+		{
+			// subtract second coordinate from first
+			return (seeds.get(1).getCoordinate().ToVector()).subtract(seeds.get(0).getCoordinate().ToVector());
+		}
 	}
 	
 	/**

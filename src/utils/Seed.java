@@ -142,5 +142,26 @@ public class Seed extends Voxel {
 		
 		return rearrangedSeeds.toArray(new Seed[rearrangedSeeds.size()]);
 	}
+	
+	
+	/**
+	 * Calculates the angle (phi) for dose calculation
+	 * 
+	 * The angle can only be calculated if the seed is assigned to a needle.
+	 * 
+	 * @param voxel		voxel for which angle shall be determined
+	 * @return			angle in degrees
+	 */
+	public double getPhi(Voxel voxel)
+	{
+		if (this.needle == null)
+			return 90;
+		else
+		{
+			Vector3D vNeedle = needle.getDirection();
+			Vector3D vLineSeedToVoxel = (voxel.getCoordinate().ToVector()).subtract(this.getCoordinate().ToVector());
+			return (Vector3D.angle(vNeedle, vLineSeedToVoxel) * 180 * Math.PI);
+		}
+	}
 
 }
