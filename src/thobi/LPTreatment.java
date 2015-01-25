@@ -336,7 +336,6 @@ public class LPTreatment {
 		//expressions
 		IloLinearNumExpr objective = cplex.linearNumExpr();
 		int tumor = 0;
-		//iterate over world
 		System.out.println("Adding constraints...");
 		for(int x = xBoundsTumor[0]; x < xBoundsTumor[1]; x++)
 		{
