@@ -2,11 +2,14 @@ package utils;
 
 import java.io.Serializable;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 public class Coordinate implements Serializable {
 	private static final long serialVersionUID = 12L;
 	private double x;
 	private double y;
 	private double z;
+	public static final double GRID_RESOLUTION = 0.2;  // Distance between two voxel in cm
 	
 	public Coordinate(double x, double y , double z) {
 		this.x = x;
@@ -34,5 +37,36 @@ public class Coordinate implements Serializable {
 	public void setZ(double z) {
 		this.z = z;
 	}
-
+	
+	/**
+	 * Calculates coordinate on line through base and other.
+	 * 
+	 * @param base		start point
+	 * @param other		other point that defines line
+	 * @param t			distance to start point in direction of other
+	 * 
+	 * @return	point on line
+	 */
+	public static Coordinate getPointOnLine(Coordinate base, Coordinate other, double t)
+	{
+		Vector3D vBase = base.ToVector();
+		Vector3D vOther = other.ToVector();
+		Vector3D vPoint = vBase.add(vOther.subtract(vBase).scalarMultiply(t));
+		return vectorToCoordinate(vPoint);
+	}
+	
+	public static Coordinate vectorToCoordinate(Vector3D vector)
+	{
+		return new Coordinate(vector.getX(), vector.getY(), vector.getZ());
+	}
+	
+	public Vector3D ToVector()
+	{
+		return new Vector3D(this.getX(), this.getY(), this.getZ());
+	}
+	
+	public double distanceToCoordiante(Coordinate position) {
+		
+	    return(( Math.sqrt( Math.pow(this.getX()-position.getX(), 2) + Math.pow(this.getY()-position.getY(), 2) + Math.pow(this.getZ()-position.getZ(), 2) ) ) * GRID_RESOLUTION);
+	}
 }
