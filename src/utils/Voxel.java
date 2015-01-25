@@ -254,6 +254,17 @@ public class Voxel implements Serializable {
 	public double getGoalDosis() {
 		return goalDosis;
 	}
+	
+	public double getRelaxedGoalDosis() {
+		if(goalDosis == 0)
+		{
+			return Config.relaxDose;
+		}
+		else
+		{
+			return goalDosis;
+		}
+	}
 
 	public void setGoalDosis(double goalDosis) {
 		this.goalDosis = goalDosis;

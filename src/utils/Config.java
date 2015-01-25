@@ -30,6 +30,8 @@ public class Config {
 	public static final double pancreasGoalDose = 0; 	//max
 	public static final double tumorGoalDose = 50; 		//min
 	
+	public static final double relaxDose = 5;
+	
 	public static final double normalMinDose = 0;
 	public static final double spineMinDose = 0;
 	public static final double liverMinDose = 0;
