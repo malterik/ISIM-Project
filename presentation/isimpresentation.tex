@@ -1,6 +1,7 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage{mathtools}
+\usepackage[]{algorithm2e}
 \usetheme{Warsaw}
 \useoutertheme{infolines}
 \usepackage{tikz}
@@ -62,7 +63,7 @@
  \begin{equation}
  \label{eq:individual}
  Individual \ \ i := \begin{pmatrix}
- t_{0} \\ . \\ . \\ . \\ t_{n-1} 	
+ t_{0} \\ \vdots \\ t_{n-1} 	
 \end{pmatrix}   
  \end{equation}
  \end{frame}
@@ -74,7 +75,7 @@
  \begin{equation}
  \label{eq:population}
  Population \ \ p := \begin{pmatrix}
- i_{0} \\ . \\ . \\ . \\ i_{k-1} 	
+ i_{0} \\ \vdots \\ i_{k-1} 	
 \end{pmatrix}   
  \end{equation}
  \end{frame}
@@ -90,7 +91,39 @@
  \begin{equation}
  f(individual) = \sum_{body}w_{bodytype}(GD-CD)^2
  \end{equation}
-
+ \end{frame}
+ 
+ 
+ \subsubsection{Optimisation}
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Optimisation}
+ \begin{algorithm}[H]
+ $temp=0$\;
+ \For{x=0; x $\textless$ body.xDim; x++}{
+ 	\For{y=0; y $\textless$ body.yDim; y++}{
+ 		\For{z=0; z $\textless$ body.zDim; z++}{
+ 			\For{j=0; j $\textless$ numberOfSeeds; j++} {
+				 	$temp\ \ = temp+  w_{bodytype}(GD-CD)^2$\;		
+ 			}
+  		}
+  	}
+  }
+ $fitnessvalue = \sqrt{temp}$\;
+ \Return{fitnessvalue}\;
+ \caption{Calculation of the fitnessvalue}
+\end{algorithm}
+This causes a very high runtime...
+ \end{frame}
+ 
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Optimisation}
+ Solutions to reduce the runtime:
+ \begin{enumerate}
+ \item Multithreading
+ \item Evaluation only in a specific region around the tumor
+ \item "Jump" in the for loop
+ \end{enumerate}
+ 
  \end{frame}
  
  
