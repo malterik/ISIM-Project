@@ -77,3 +77,7 @@ local.properties
 /data2701.1875.mxt
 /data2764.8125.mxt
 /datas/
+presentation/*
+!presentation/isimpresentation.tex
+src/tex/*
+!src/tex/main.tex
