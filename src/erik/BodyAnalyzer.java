@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import utils.Config;
+import utils.Coordinate;
 import utils.Voxel;
 
 /**
@@ -147,8 +148,8 @@ public class BodyAnalyzer {
 			return xBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = xBoundsTumor[0] - (int) (Config.treatmentRange/Voxel.GRID_RESOLUTION);
-			upperBound = xBoundsTumor[1] + (int) (Config.treatmentRange/Voxel.GRID_RESOLUTION);
+			lowerBound = xBoundsTumor[0] - (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
+			upperBound = xBoundsTumor[1] + (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
@@ -192,8 +193,8 @@ public class BodyAnalyzer {
 			return yBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = yBoundsTumor[0] - (int) (Config.treatmentRange/Voxel.GRID_RESOLUTION);
-			upperBound = yBoundsTumor[1] + (int) (Config.treatmentRange/Voxel.GRID_RESOLUTION);
+			lowerBound = yBoundsTumor[0] - (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
+			upperBound = yBoundsTumor[1] + (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
@@ -236,8 +237,8 @@ public class BodyAnalyzer {
 			return zBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = zBoundsTumor[0] - (int) (Config.treatmentRange/Voxel.GRID_RESOLUTION);
-			upperBound = zBoundsTumor[1] + (int) (Config.treatmentRange/Voxel.GRID_RESOLUTION);
+			lowerBound = zBoundsTumor[0] - (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
+			upperBound = zBoundsTumor[1] + (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
