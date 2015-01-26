@@ -1,5 +1,6 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
+\usepackage{mathtools}
 \usetheme{Warsaw}
 \useoutertheme{infolines}
 \usepackage{tikz}
@@ -50,9 +51,51 @@
 \titlepage
 \end{frame}
 \frame{\tableofcontents}
-\section{Algortihms}
-\subsection{Genetig Algorithm}
+
+\section{Algorithms}
+\subsection{Genetic Algorithm}
+\subsubsection{Individual}
+
  \begin{frame}
- \frametitle{Genetic Algorithm}
+ \frametitle{Genetic Algorithm: Individual}
+ The dwelltimes of the seeds are encoded in the individuals. Equation \eqref{eq:individual} shows one individual for $n  $ Seeds.
+ \begin{equation}
+ \label{eq:individual}
+ Individual \ \ i := \begin{pmatrix}
+ t_{0} \\ . \\ . \\ . \\ t_{n-1} 	
+\end{pmatrix}   
+ \end{equation}
  \end{frame}
+ 
+\subsubsection{Population}
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Population}
+ A population consists of a certain number of individuals given by the constant $ k $.
+ \begin{equation}
+ \label{eq:population}
+ Population \ \ p := \begin{pmatrix}
+ i_{0} \\ . \\ . \\ . \\ i_{k-1} 	
+\end{pmatrix}   
+ \end{equation}
+ \end{frame}
+ 
+ \subsubsection{Fitness-Function}
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Fitness-Function}
+ The Fitness-Function calculates the squared differnce between the goaldose and the current dose within the whole body.
+ \begin{equation}
+ f(individual) = \sum_{body}(GD-CD)^2
+ \end{equation}
+ For further adjustment and prioritisation the Fitness-Function is extended by an weighting factor, which holds a specifig weight for any bodytype (tumor, liver, spine,...).
+ \begin{equation}
+ f(individual) = \sum_{body}w_{bodytype}(GD-CD)^2
+ \end{equation}
+
+ \end{frame}
+ 
+ 
+ 
+ 
+ 
+ 
 \end{document}
