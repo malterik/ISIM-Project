@@ -30,6 +30,23 @@ public class Config {
 	public static final double pancreasGoalDose = 0; 	//max
 	public static final double tumorGoalDose = 50; 		//min
 	
+	public static final double relaxDose = 5;
+	
+	public static final double normalMinDose = 0;
+	public static final double spineMinDose = 0;
+	public static final double liverMinDose = 0;
+	public static final double pancreasMinDose = 0;
+	public static final double tumorMinDose = 30;
+	
+	public static final double normalMaxDose = 40;
+	public static final double spineMaxDose = 30;
+	public static final double liverMaxDose = 50;
+	public static final double pancreasMaxDose = 30;
+	public static final double tumorMaxDose = 70;
+	
+	public static final String[] bodyTypeDescriptions = {"Normal", "Spine", "Liver", "Pancreas", "Tumor"};
+	
+	
 	// Parameters for classification
 	public static final double VOXEL_DIST = 1; // in cm
 	public static final int TUMOR = 5; // BodyType for Tumor
@@ -37,8 +54,8 @@ public class Config {
         // Parameters for the Simulated Annealing algorithm
         
         public static final boolean SAResets = false;
-        public static final int NumberOfMetropolisResets = 10;
-        public static final int NumberOfMetropolisRounds = 100;
+        public static final int NumberOfMetropolisResets = 100;
+        public static final int NumberOfMetropolisRounds = 1000;
         public static final double StartTemp = NumberOfMetropolisRounds;
         public static final int SAnumberOfSeeds = 50;
         public static final boolean SAdebug = true;

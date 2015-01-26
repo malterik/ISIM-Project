@@ -13,13 +13,21 @@ public class LPTreatment {
 	
 	static Voxel[][][] body;
 	static Seed[] seed;
+	static int[] xBoundsTumor;
+	static int[] yBoundsTumor;
+	static int[] zBoundsTumor;
+	static int[] dim;
 	
 	static boolean[] seedUsed = new boolean[Config.numberOfSeeds];
 	
-	public LPTreatment(Voxel[][][] body, Seed[] seed)
+	public LPTreatment(Voxel[][][] body, Seed[] seed, int[] x, int[] y, int[] z, int[] dim)
 	{
 		LPTreatment.body = body;
 		LPTreatment.seed = seed;
+		LPTreatment.xBoundsTumor = x;
+		LPTreatment.yBoundsTumor = y;
+		LPTreatment.zBoundsTumor = z;
+		LPTreatment.dim = dim;
 	}
 	
 	public static Seed[] getSeed()
@@ -174,6 +182,7 @@ public class LPTreatment {
 		IloCplex cplex = new IloCplex();
 		
 		IloNumExpr dosepart[] = new IloNumExpr[Config.numberOfSeeds];
+		
 		for(int i = 0; i < Config.numberOfSeeds; i++)
 		{
 			dosepart[i] = cplex.constant(0);
@@ -195,14 +204,14 @@ public class LPTreatment {
 		
 		//iterate over world
 		System.out.println("Adding constraints...");
-		for(int x = 0; x < Config.xDIM; x++)
+		for(int x = xBoundsTumor[0]; x < xBoundsTumor[1]; x++)
 		{
-			for(int y = 0; y < Config.yDIM; y++)
+			for(int y = yBoundsTumor[0]; y < yBoundsTumor[1]; y++)
 			{
-				for(int z = 0; z < Config.zDIM; z++)
+				for(int z = zBoundsTumor[0]; z < zBoundsTumor[1]; z++)
 				{
 					//check state of world
-					/*
+					
 					if(body[x][y][z].getBodyType() == Config.tumorType)
 					{
 						for(int i = 0; i < Config.numberOfSeeds; i++)
@@ -227,94 +236,6 @@ public class LPTreatment {
 							}
 						}
 					}
-					
-					*/
-					
-					switch(body[x][y][z].getBodyType())
-					{
-						case Config.normalType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								if(seedUsed[i])
-								{
-									if(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1) > 0)
-									{
-										objective.addTerm(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);							
-									}		
-								}
-							}
-							break;
-						}
-						case Config.spineType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								if(seedUsed[i])
-								{
-									if(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1) > 0)
-									{
-										objective.addTerm(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);							
-									}		
-								}
-							}
-							break;
-						}
-						case Config.liverType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								if(seedUsed[i])
-								{
-									if(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1) > 0)
-									{
-										objective.addTerm(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);							
-									}		
-								}
-							}
-							break;
-						}
-						case Config.pancreasType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								if(seedUsed[i])
-								{
-									if(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1) > 0)
-									{
-										objective.addTerm(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);							
-									}		
-								}
-							}
-							break;
-						}
-						case Config.tumorType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								if(seedUsed[i])
-								{
-									dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
-								}
-							}
-							cplex.addGe(cplex.sum(dosepart), (Config.tumorGoalDose));
-							break;
-						}
-						default:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								if(seedUsed[i])
-								{
-									if(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1) > 0)
-									{
-										objective.addTerm(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);							
-									}		
-								}
-							}
-							break;
-						}
-					}					
 				}
 			}
 		}
@@ -339,11 +260,11 @@ public class LPTreatment {
 			double dose_eval = 0;
 			double time_eval = 0;
 			
-			for(int x = 0; x < Config.xDIM; x++)
+			for(int x = 0; x < dim[0]; x++)
 			{
-				for(int y = 0; y < Config.yDIM; y++)
+				for(int y = 0; y < dim[1]; y++)
 				{
-					for(int z = 0; z < Config.zDIM; z++)
+					for(int z = 0; z < dim[2]; z++)
 					{
 						for(int i = 0; i < Config.numberOfSeeds; i++)
 						{
@@ -392,10 +313,14 @@ public class LPTreatment {
 		IloCplex cplex = new IloCplex();
 		
 		IloNumExpr dosepart[] = new IloNumExpr[Config.numberOfSeeds];
+		
+		
+
 		for(int i = 0; i < Config.numberOfSeeds; i++)
 		{
 			dosepart[i] = cplex.constant(0);
 		}
+		
 		
 		
 		//variables
@@ -410,17 +335,16 @@ public class LPTreatment {
 		
 		//expressions
 		IloLinearNumExpr objective = cplex.linearNumExpr();
-		
-		//iterate over world
+		int tumor = 0;
 		System.out.println("Adding constraints...");
-		for(int x = 0; x < Config.xDIM; x++)
+		for(int x = xBoundsTumor[0]; x < xBoundsTumor[1]; x++)
 		{
-			for(int y = 0; y < Config.yDIM; y++)
+			for(int y = yBoundsTumor[0]; y < yBoundsTumor[1]; y++)
 			{
-				for(int z = 0; z < Config.zDIM; z++)
+				for(int z = zBoundsTumor[0]; z < zBoundsTumor[1]; z++)
 				{
 					//check state of world
-					/*
+					
 					if(body[x][y][z].getBodyType() == Config.tumorType)
 					{
 						for(int i = 0; i < Config.numberOfSeeds; i++)
@@ -440,76 +364,12 @@ public class LPTreatment {
 								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
 							}
 						}
-						cplex.addLe(cplex.sum(dosepart), body[x][y][z].getGoalDosis());
+						cplex.addLe(cplex.sum(dosepart), body[x][y][z].getRelaxedGoalDosis());
 					}
-					*/
-					
-					
-					switch(body[x][y][z].getBodyType())
-					{
-						case Config.normalType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								if(seedUsed[i])
-								{
-									dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
-								}
-							}
-							cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
-							break;
-						}
-						case Config.spineType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
-							}
-							cplex.addLe(cplex.sum(dosepart), Config.spineGoalDose);
-							break;
-						}
-						case Config.liverType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
-							}
-							cplex.addLe(cplex.sum(dosepart), Config.liverGoalDose);
-							break;
-						}
-						case Config.pancreasType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
-							}
-							cplex.addLe(cplex.sum(dosepart), Config.pancreasGoalDose);
-							break;
-						}
-						case Config.tumorType:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								if(seedUsed[i])
-								{
-									objective.addTerm(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);							
-								}
-							}
-							break;
-						}
-						default:
-						{
-							for(int i = 0; i < Config.numberOfSeeds; i++)
-							{
-								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
-							}
-							cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
-							break;
-						}
-					}					
 				}
 			}
 		}
+		
 		
 		cplex.addMaximize(objective);
 		System.out.println("Solving...");
@@ -531,11 +391,11 @@ public class LPTreatment {
 			double dose_eval = 0;
 			double time_eval = 0;
 			
-			for(int x = 0; x < Config.xDIM; x++)
+			for(int x = 0; x < dim[0]; x++)
 			{
-				for(int y = 0; y < Config.yDIM; y++)
+				for(int y = 0; y < dim[1]; y++)
 				{
-					for(int z = 0; z < Config.zDIM; z++)
+					for(int z = 0; z < dim[2]; z++)
 					{
 						for(int i = 0; i < Config.numberOfSeeds; i++)
 						{
@@ -557,6 +417,7 @@ public class LPTreatment {
 		}
 		
 		System.out.println("Computing dose.....");
+		System.out.println("tumor: " +tumor);
 		int useCounter = 0;
 		for(int i = 0; i < Config.numberOfSeeds; i++)
 		{
@@ -584,6 +445,7 @@ public class LPTreatment {
 		}
 		solveLPMax();
 		solveLPMin();
+		
 	}
 
 }

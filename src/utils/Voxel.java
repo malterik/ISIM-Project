@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class Voxel implements Serializable {
 	private static final long serialVersionUID = 21L;
 	
-	public static final double GRID_RESOLUTION = 0.2;  // Distance between two voxel in cm
 	private double maxDosis;
 	private double minDosis;
 	private double goalDosis;
@@ -28,9 +27,7 @@ public class Voxel implements Serializable {
 	 * The distance to the voxel
 	 */
 	public double distanceToVoxel (Coordinate position) {
-		
-	    return(( Math.sqrt( Math.pow(this.getCoordinate().getX()-position.getX(), 2) + Math.pow(this.getCoordinate().getY()-position.getY(), 2) + Math.pow(this.getCoordinate().getZ()-position.getZ(), 2) ) ) * GRID_RESOLUTION);
-				
+	    return this.getCoordinate().distanceToCoordiante(position);
 	}
 	
 	
@@ -46,12 +43,13 @@ public class Voxel implements Serializable {
 	 * The postition where the seed is 
 	 * @param durationMilliSec
 	 * The time the seed radiates
+	 * @param phi
+	 * angle phi 
 	 * @return
 	 */
-	public double radiationIntensity(Coordinate position, double durationMilliSec){
+	public double radiationIntensity(Coordinate position, double durationMilliSec, double phi){
 		double distance = distanceToVoxel(position);
 		
-		double phi = 90;  //TODO Magic number
 		double dose= 0;
 		
 		if(distance > 10) {
@@ -67,6 +65,10 @@ public class Voxel implements Serializable {
 		}
 		
 		return dose;
+	}
+	
+	public double radiationIntensity(Coordinate position, double durationMilliSec){
+		return radiationIntensity(position, durationMilliSec, 90);
 	}
 	
 	public double radiationIntensity(double r, double durationMilliSec){
@@ -253,6 +255,17 @@ public class Voxel implements Serializable {
 
 	public double getGoalDosis() {
 		return goalDosis;
+	}
+	
+	public double getRelaxedGoalDosis() {
+		if(goalDosis == 0)
+		{
+			return Config.relaxDose;
+		}
+		else
+		{
+			return goalDosis;
+		}
 	}
 
 	public void setGoalDosis(double goalDosis) {

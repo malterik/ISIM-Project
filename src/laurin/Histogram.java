@@ -29,10 +29,12 @@ import utils.Voxel;
 public class Histogram extends JFrame {
 	
 	private HashMap<String,double[]> dataSets;
+	private String title;
 	
 	public Histogram (String title)
 	{
 		super(title);
+		this.title = title;
 		dataSets = new HashMap<String, double[]>();
 	}
 	
@@ -99,7 +101,7 @@ public class Histogram extends JFrame {
 		
 		/* create chart from series collection and show frame */
 		final JFreeChart chart = ChartFactory.createXYLineChart(
-	                "Dose Volume Histogram",  // chart title
+	                "Dose Volume Histogram (" + this.title + ")",  // chart title
 	                "Dose [Gy]",                     // domain axis label
 	                "Volume [%]",                     // range axis label
 	                xySeriesCollection,                // data

@@ -1,5 +1,7 @@
 package erik;
 
+import ilog.concert.IloException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,7 +20,7 @@ import utils.Voxel;
 
 public class TreatmentPlanner {
 
-	private static void planTreatment() {
+	private static void planTreatment() throws IloException {
 
 		/*
 		 * // Start visualization Voxel[][][] testData = new Voxel[1][1][5];
@@ -116,7 +118,8 @@ public class TreatmentPlanner {
 
 		long start = System.currentTimeMillis();
 //		solver.solveGeneticAlg();
-        solver.solveSA();
+        //solver.solveSA();
+		solver.solveLP();
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
@@ -126,7 +129,7 @@ public class TreatmentPlanner {
 		Date date = new Date(end - start);
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
-		System.out.println("Gen-Alg Runtime: " + dateFormatted);
+		System.out.println("Runtime: " + dateFormatted);
 		
 		/*ScatterDisplay display = new ScatterDisplay(ChartType.MaxDosis);
 		display.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
@@ -174,7 +177,7 @@ public class TreatmentPlanner {
 		db.close();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IloException {
 		printTreatmentData();
 		planTreatment();
 		while(true);
