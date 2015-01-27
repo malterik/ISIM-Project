@@ -179,7 +179,7 @@ public class SimpleDB {
 		  tclDists[i] = 50000;
 	  }
 	  for (int i = 0; i < bEntry.getDimensions()[0]; i++) {
-		  System.out.println ("" + i);
+		  System.out.println(String.format("Measuring done: %f", (float) i / (float) bEntry.getDimensions ()[0]));
 		  for (int j = 0; j < bEntry.getDimensions()[1]; j++) {
 			  for (int k = 0; k < bEntry.getDimensions()[2]; k++) {
 				  for (int l = 0; l < tumorVoxel.size(); l++) {

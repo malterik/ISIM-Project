@@ -21,7 +21,9 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
+import javax.swing.filechooser.FileFilter;
 
 import utils.Config;
 import utils.Coordinate;
@@ -47,6 +49,11 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 	private JPanel panel = null;
 	private SimpleDB db = null;
 	private Seed[] seeds = null;
+	private JTextArea out = null;
+	
+	public void appendText (String text) {
+		out.append (text);
+	}
 	
 	private void updateBodies () {
 		bodies.removeAll();
@@ -71,6 +78,7 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 	}
 	
 	private void init () {
+		out = new JTextArea ();
 		panel = new JPanel ();
 		loadBody = new JButton ("Load Body");
 		measureBody = new JButton ("Measure Body");
@@ -81,16 +89,13 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		solveSA = new JButton ("Simulated Annealing");
 		solveGA = new JButton ("Generic Algorithm");
 		bodies = new JList<String> ();
-		treatments = new JList<String> ();
+		treatments = new JList<String> ();		
 		
 		bodies.addMouseListener(this);
 		bodies.setToolTipText("Bodies");
 		treatments.addMouseListener(this);
 		treatments.setToolTipText("Treatments");
-		
-		updateBodies ();
-		updateTreatments ();
-		
+				
 		loadBody.addActionListener(this);
 		loadBody.setActionCommand("loadBody");
 		measureBody.addActionListener(this);
@@ -140,18 +145,23 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		tmp4.add (new JScrollPane (bodies));
 		tmp4.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));		
 		panel.add (tmp4, BorderLayout.WEST);
+		
+		panel.add(new JScrollPane (out), BorderLayout.CENTER);
 	}
 	
 	public PlannerGUI () {
 		super ("Treatment Planning");
-		db = new SimpleDB ();
+		LogTool.addGUI (this);
 		Runtime.getRuntime().addShutdownHook(new Thread () {
 			public void run () {
 				db.close();
 			}
 		});
 		init ();
-		build ();		
+		build ();
+		db = new SimpleDB ();
+		updateBodies ();
+		updateTreatments ();
 		this.setContentPane(panel);
 		this.setSize (800, 600);
 		this.setResizable(true);
@@ -171,10 +181,10 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		jfc.setMultiSelectionEnabled(true);
 		jfc.showDialog(this, "Load");
 		jfc.setMultiSelectionEnabled(true);
+		
 		for (File file: jfc.getSelectedFiles()) {
 			LogTool.print ("Loading file " + file.getName (), "debug");
 			db.loadBody (file);
-			System.out.println ("Bodie loaded: " + file);
 		}
 		updateBodies();
 		JOptionPane.showMessageDialog(this, "Done!");
@@ -212,6 +222,7 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		try {
 			solver.solveLP();
 			db.updateTreatment (entry.getName(), solver.seeds);
+			printSeeds (solver.seeds);
 			JOptionPane.showMessageDialog(this, "Done!");
 		} catch (IloException iloExc) {
 			LogTool.print ("Error solving lp: " + iloExc, "error");
@@ -233,12 +244,12 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		Solver solver = new Solver (entry.getBodyArray(), seeds, entry.getDimensions());		
 	    solver.solveSA();
 	    db.updateTreatment (entry.getName(), solver.seeds);
+	    printSeeds (solver.seeds);
 	    JOptionPane.showMessageDialog(this, "Done!");
 	}
 
 	private void solveGA () {
 		BodyEntry entry = null;
-		Voxel[][][] body = null;
 		if (bodies.isSelectionEmpty()) {
 			JOptionPane.showMessageDialog(this, "No body selected!");
 			return;
@@ -251,7 +262,27 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		Solver solver = new Solver (entry.getBodyArray(), seeds, entry.getDimensions());		
 	    solver.solveGeneticAlg();
 	    db.updateTreatment (entry.getName(), solver.seeds);
+	    printSeeds (solver.seeds);
 	    JOptionPane.showMessageDialog(this, "Done!");
+	}
+	
+	private String printSeed (Seed seed) {
+		return String.format ("%.2f, %.2f, %.2f", seed.getX (), seed.getY (), seed.getZ ());
+	}
+	
+	private String printSeeds (Seed[] seeds) {
+		String str = "[";
+		
+		if (seeds != null) {
+			if (seeds.length > 0) {
+				str += printSeed(seeds[0]);
+				for (int i = 1; i < seeds.length; i++) {
+					str += "|" + printSeed(seeds[i]);
+				}
+			}
+		}
+		
+		return str + "]";
 	}
 	
 	private void getClosestSeeds () {
@@ -261,13 +292,14 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 			return;
 		}
 		entry = db.getTreatmentByName(bodies.getSelectedValue());
-		if (entry.getSeeds() == null || entry.getSeeds().length == 0) {
+		if (entry == null || entry.getSeeds() == null || entry.getSeeds().length == 0) {
 			JOptionPane.showMessageDialog(this, "No seeds stored! Using random seeds");
 			getRandomSeeds ();
 		}
 		else  {
 			this.seeds = entry.getSeeds();
 			JOptionPane.showMessageDialog(this, "Done!");
+			LogTool.print(printSeeds (this.seeds), "debug");
 		}
 	}
 	
@@ -295,6 +327,7 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 			
 		}
 		JOptionPane.showMessageDialog(this, "Random seeds done!");
+		LogTool.print(printSeeds (this.seeds), "debug");
 	}
 	
 	@Override
