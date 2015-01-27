@@ -3,6 +3,7 @@ package erik;
 import java.util.Random;
 
 import utils.Config;
+import utils.LogTool;
 
 public class Population
 {
@@ -161,15 +162,17 @@ public class Population
             
             // reevaluate current population
             pop.evaluate();
-            System.out.print("Iteration : "+iter+" "+"Total Fitness = " + pop.totalFitness);
-            System.out.println(" ; Best Fitness = " + pop.findBestIndividual().getFitnessValue()); 
+           // System.out.print("Iteration : "+iter+" "+"Total Fitness = " + pop.totalFitness);
+           // System.out.println(" ; Best Fitness = " + pop.findBestIndividual().getFitnessValue()); 
+           
+            LogTool.print("Iteration : "+iter, "notification");
+            LogTool.print("Improvement: "+Math.abs(bestResultOld-bestResult)+" Cancel counter= " + counter, "debug");
             
             if(pop.findBestIndividual().getFitnessValue() < bestResult) {
             	bestResultOld = bestResult;
             	bestResult =  pop.findBestIndividual().getFitnessValue();
             }
             
-            System.out.println("bestOld-best: "+Math.abs(bestResultOld-bestResult)+"counter= " + counter);
             if(Math.abs(bestResultOld-bestResult) <= Config.cancelValue) {
             	counter++;	
             } else {

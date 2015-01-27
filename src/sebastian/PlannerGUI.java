@@ -28,6 +28,7 @@ import utils.Coordinate;
 import utils.LogTool;
 import utils.RandGenerator;
 import utils.Seed;
+import utils.Voxel;
 import erik.BodyAnalyzer;
 import erik.Solver;
 
@@ -237,6 +238,7 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 
 	private void solveGA () {
 		BodyEntry entry = null;
+		Voxel[][][] body = null;
 		if (bodies.isSelectionEmpty()) {
 			JOptionPane.showMessageDialog(this, "No body selected!");
 			return;
