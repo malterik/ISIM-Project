@@ -25,17 +25,62 @@ public class Solver {
 	 * @param seeds
 	 * The seeds which should be optimized
 	 */
-	public Solver(Voxel [][][] body, Seed[] seeds, int [] dimensions) {
-		Solver.body = body;
+	public Solver(Voxel [][][] entryBody, Seed[] seeds, int [] dimensions) {
 		Solver.seeds = seeds;
-		Solver.body = body;
 		Solver.dimensions = dimensions;
+		Solver.body = new Voxel[dimensions[0]][dimensions[1]][dimensions[2]];
+		
+		for (int x = 0; x < dimensions[0]; x++) {
+
+			for (int y = 0; y < dimensions[1]; y++) {
+
+				for (int z = 0; z < dimensions[2]; z++) {
+
+					Solver.body[x][y][z] = new Voxel(x, y, z);
+
+					switch (entryBody[x][y][z].getBodyType()) {
+						case Config.normalType: {
+							Solver.body[x][y][z].setGoalDosis(Config.normalGoalDose);
+							Solver.body[x][y][z].setBodyType(Config.normalType);
+							break;
+						}
+						case Config.spineType: {
+							Solver.body[x][y][z].setGoalDosis(Config.spineGoalDose);
+							Solver.body[x][y][z].setBodyType(Config.spineType);
+							break;
+						}
+						case Config.liverType: {
+							Solver.body[x][y][z].setGoalDosis(Config.liverGoalDose);
+							Solver.body[x][y][z].setBodyType(Config.liverType);
+							break;
+						}
+						case Config.pancreasType: {
+							Solver.body[x][y][z].setGoalDosis(Config.pancreasGoalDose);
+							Solver.body[x][y][z].setBodyType(Config.pancreasType);
+							break;
+						}
+						case Config.tumorType: {
+							Solver.body[x][y][z].setGoalDosis(Config.tumorGoalDose);
+							Solver.body[x][y][z].setBodyType(Config.tumorType);
+							break;
+						}
+						default: {
+							Solver.body[x][y][z].setGoalDosis(Config.normalGoalDose);
+							Solver.body[x][y][z].setBodyType(Config.normalType);
+							break;
+						}
+					
+					}
+
+				}
+			}
+		}
 		
 		BodyAnalyzer ba = new BodyAnalyzer(body, dimensions);
 		Solver.xBoundsTumor = ba.getxBoundsTumor(2);
 		Solver.yBoundsTumor = ba.getyBoundsTumor(2);
 		Solver.zBoundsTumor = ba.getzBoundsTumor(2);
-		
+		LogTool.print("Solver initialized", "notification");
 		
 		
 	}

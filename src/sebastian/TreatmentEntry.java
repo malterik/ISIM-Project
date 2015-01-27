@@ -1,10 +1,9 @@
 package sebastian;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
-import utils.Coordinate;
 import utils.LogTool;
+import utils.Seed;
 
 public class TreatmentEntry implements Serializable {
 	/* Weights for different body type influences
@@ -22,7 +21,7 @@ public class TreatmentEntry implements Serializable {
   //  4: tumor closest distances -> absolute
   private static final double[] errors = new double[] {0.1, 0.2, 0.2, 0.5};
   private static final long serialVersionUID = 42L;
-  private ArrayList<Coordinate> seedPositions = null;
+  private Seed[] seedPositions = null;
   private String name = "";
   private int[] volumeSizes = null;
   private double[][] volumeCenters = null;
@@ -30,7 +29,6 @@ public class TreatmentEntry implements Serializable {
   private double[] tumorClosestDistances = null;
   
   public TreatmentEntry (String name) {
-	seedPositions = new ArrayList<Coordinate> ();
 	this.name = name;
   }
   
@@ -79,7 +77,7 @@ public class TreatmentEntry implements Serializable {
 	  this.volumeCenters = volumeCenters;
   }
   
-  public void setSeeds (ArrayList<Coordinate> seedPositions) {
+  public void setSeeds (Seed[] seedPositions) {
 	  this.seedPositions = seedPositions;
   }
   
@@ -95,7 +93,7 @@ public class TreatmentEntry implements Serializable {
 	  return name;
   }
     
-  public ArrayList<Coordinate> getSeeds () {
+  public Seed[] getSeeds () {
 	  return seedPositions;
   }
 

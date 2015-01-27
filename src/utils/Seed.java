@@ -57,10 +57,11 @@ public class Seed extends Voxel {
 	 * 	
      * @return seeds in rearranged positions
 	 */
-	public static Seed[] rearrangeSeeds(Seed[] seeds, int numberOfNeedles, double maxDistanceToLine, Set<Needle> needles)
+	public static ArrayList<Needle> rearrangeSeeds(Seed[] seeds, int numberOfNeedles, double maxDistanceToLine)
 	{
 		ArrayList<Seed> rearrangedSeeds = new ArrayList<Seed>();
 		ArrayList<Seed> originalSeeds = new ArrayList<Seed>(Arrays.asList(seeds));
+		ArrayList<Needle> needles = new ArrayList<Needle>();
 		
 		// remove seeds with zero dwell time
 		for (Iterator<Seed> iterator = originalSeeds.iterator(); iterator.hasNext(); ) {
@@ -85,7 +86,6 @@ public class Seed extends Voxel {
 		// create needles until no are seeds left or maximum needle number reached
 		while (originalSeeds.size() > 0 && needleCounter < numberOfNeedles)
 		{
-			System.out.println(originalSeeds.size());
 			Needle needle = new Needle();
 			if (originalSeeds.size() > 1)
 			{
@@ -140,7 +140,7 @@ public class Seed extends Voxel {
 			needleCounter++;
 		}
 		
-		return rearrangedSeeds.toArray(new Seed[rearrangedSeeds.size()]);
+		return needles;
 	}
 	
 	
@@ -165,3 +165,4 @@ public class Seed extends Voxel {
 	}
 
 }
+

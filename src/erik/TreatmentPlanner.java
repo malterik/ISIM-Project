@@ -117,9 +117,9 @@ public class TreatmentPlanner {
 		LogTool.print("Initialized Solver!", "notification");
 
 		long start = System.currentTimeMillis();
-//		solver.solveGeneticAlg();
+		solver.solveGeneticAlg();
         //solver.solveSA();
-		solver.solveLP();
+		//solver.solveLP();
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
@@ -130,27 +130,7 @@ public class TreatmentPlanner {
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Runtime: " + dateFormatted);
-		
-		/*ScatterDisplay display = new ScatterDisplay(ChartType.MaxDosis);
-		display.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
-				entry.getDimensions()[2]);
-		display.display();
-		
-		ScatterDisplay display2 = new ScatterDisplay(ChartType.MinDosis);
-		display2.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
-				entry.getDimensions()[2]);
-		display2.display();
-		
-		ScatterDisplay display3 = new ScatterDisplay(ChartType.CurrentDosis);
-		display3.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
-				entry.getDimensions()[2]);
-		display3.display();
-		
-		ScatterDisplay display4 = new ScatterDisplay(ChartType.BodyType);
-		display4.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
-				entry.getDimensions()[2]);
-		display4.display();*/
-		
+
 		ScatterDisplay display5 = new ScatterDisplay(ChartType.BodyType);
 		display5.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
 				entry.getDimensions()[2]);

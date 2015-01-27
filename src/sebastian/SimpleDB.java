@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import utils.Config;
 import utils.Coordinate;
@@ -35,8 +36,8 @@ public class SimpleDB {
 	  }
   }
   
-  public ArrayList<Coordinate> compareBody (String name) {
-	  ArrayList<Coordinate> seeds = null;
+  public Seed[] compareBody (String name) {
+	  Seed[] seeds = null;
 	  BodyEntry bEntry = null;
 	  TreatmentEntry tEntry = null;
 	  String nName = "";
@@ -99,7 +100,7 @@ public class SimpleDB {
 	  }	  
   }
   
-  public void updateSeeds (String name, ArrayList<Coordinate> seeds) {
+  public void updateTreatment (String name, Seed[] seeds) {
 	  TreatmentEntry entry = getTreatmentByName(name);
 	  
 	  if (entry != null) {
@@ -107,6 +108,18 @@ public class SimpleDB {
 	  }
 	  else {
 		  LogTool.print ("Unable to update seeds for " + name, "error");
+	  }
+  }
+  
+  public void classify (String name) {
+	  BodyEntry bEntry = getBodyByName(name);
+	  
+	  if (bEntry == null) {
+		  loadBody(name);
+		  classify (getBodyByName (name));
+	  }
+	  else {
+		  classify (bEntry);
 	  }
   }
   
@@ -222,6 +235,36 @@ public class SimpleDB {
 	  
 	  if (getBodyByName(name) == null) {
 	    readMatlabFile(mFolder);
+	  }
+  }
+  
+  public Vector<String> getBodies () {
+	  Vector<String> ret = new Vector<String> ();
+	  
+	  if (bodies != null && bodies.size() > 0) {
+		  for (int i = 0; i < bodies.size (); i++) {
+			  ret.add(bodies.get(i).getName());
+		  }
+	  }
+	  
+	  return ret;
+  }
+  
+  public Vector<String> getTreatments () {
+	  Vector<String> ret = new Vector<String> ();
+	  
+	  if (treatments != null && treatments.size() > 0) {
+		  for (int i = 0; i < treatments.size (); i++) {
+			  ret.add(treatments.get(i).getName());
+		  }
+	  }
+	  
+	  return ret;
+  }
+  
+  public void loadBody (File mFolder) {
+	  if (getBodyByName(mFolder.getName()) == null) {
+		  readMatlabFile(mFolder);
 	  }
   }
   

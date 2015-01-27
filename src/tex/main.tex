@@ -2,7 +2,7 @@
 %2345678901234567890123456789012345678901234567890123456789012345678901234567890
 %        1         2         3         4         5         6         7         8
 
-\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out
+\documentclass[letterpaper, 10 pt, conference]{IEEEconf}  % Comment this line out
                                                           % if you need a4paper
 %\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4
                                                           % paper
@@ -29,7 +29,7 @@
 
 
 \title{\LARGE \bf
-	Object tracking with the Universal Robots\texttrademark \ UR5
+	Object tracking with the Universal Robots\texttrademark \ UR5  
 }
 
 %\author{ \parbox{3 in}{\centering Huibert Kwakernaak*
@@ -111,7 +111,7 @@ The image is aquired directly from the camera so that the image data can be used
 {\setlength\itemindent{25pt} \begin{enumerate}\item{If circular shape is found, find its centroid's coordinates}\item{Else If more than one connected area present, compute coordinates of the \textbf{center of mass} of all objects adn return $x_{pixel},y_{pixel}$} \item{Return coordinates on the image plane as $x_{pixel},y_{pixel}$ in pixel units}\end{enumerate}} 
 \end{enumerate}
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{daniel_suksuk.jpg}
+%\includegraphics[width=0.5\textwidth]{daniel_suksuk.jpg}
 \caption*{\label{fig:center of mass}Last step in image processing. In this case, the center of mass of all white connected areas would be computed.}
 \end{figure}
 
@@ -120,7 +120,7 @@ The image is aquired directly from the camera so that the image data can be used
 
 The position of the red object in world coordinates is defined by the ray of the object intersecting with the principal point of the camera(see Fig.2). The direction of the negative part of the ray is given by the pixel coordinates $x_{pixel},y_{pixel}$ that were identified as the localization of the objects' centroid in the image plane. The distance of the principal point to the camera center, shown also in Fig.2. This length is the value of the focal length and can easily be extracted from the intrinsic camera parameters obtained though camera calibration. The pose of the principal point in world coordinates can be determined by the current pose of the end effector - given by the current joint parameters - and the matrix of the hand-to-eye calibration (Hcam2endeff). It is defined by: $pose*(Hcam2endeff)^{⁻1}$. Taking the principal point as the origin and going in the defined direction the $x_{world}$ and $y_{world}$ coordinates of the object can be computed with the condition that the object will always be at $z=0$.  
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{DaniLLL.jpg}
+%\includegraphics[width=0.5\textwidth]{DaniLLL.jpg}
 \caption*{\label{fig:finding target position}ray of object on image plane}
 \end{figure}
 

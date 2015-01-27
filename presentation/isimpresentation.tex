@@ -1,0 +1,134 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage[]{algorithm2e}
+\usetheme{Warsaw}
+\useoutertheme{infolines}
+\usepackage{tikz}
+\newcommand\RBox[1]{%
+  \tikz\node[draw,rounded corners,align=center,] {#1};%
+}  
+\author[Elm S. \& Karthe T. \& Golebiewski D. \& Schröder M.E.]
+{%
+   \texorpdfstring{
+        \begin{columns}
+            \column{.45\linewidth}
+            \centering
+            \RBox{Elm S.\\
+            \href{mailto:subhamsoni0049@pec.edu}{subhamsoni0049@pec.edu}}
+            \column{.45\linewidth}
+            \centering
+            \RBox{Karthe T.\\
+            \href{mailto:subhamsoni0049@pec.edu}{subhamsoni0049@pec.edu}}
+        \end{columns}
+        \vspace{0.5cm}
+        \begin{columns}
+            \column{.45\linewidth}
+            \centering
+            \RBox{Golebiewski D.\\
+            \href{mailto:subhamsoni0049@pec.edu}{subhamsoni0049@pec.edu}}
+            \column{.45\linewidth}
+            \centering
+            \RBox{Schröder M.E.\\
+            \href{mailto:malte.schroeder@tuhh.de}{malte.schroeder@tuhh.de}}
+        \end{columns}
+        \vspace{-0.3cm}
+        \begin{columns}
+          \column{0.3\linewidth}
+          \raggedleft
+            \vspace{-4.8cm}
+            \column{0.6\linewidth}
+            \raggedright
+            Institute of Medical Technology\\[1.1ex]
+            TUHH
+            \vspace{-4.8cm}
+        \end{columns}
+   }
+   {John Doe \& Jane Doe}
+}
+\title{Treatment planning tool for HDR Brachytherapy}
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+\frame{\tableofcontents}
+
+\section{Algorithms}
+\subsection{Genetic Algorithm}
+\subsubsection{Individual}
+
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Individual}
+ The dwelltimes of the seeds are encoded in the individuals. Equation \eqref{eq:individual} shows one individual for $n  $ Seeds.
+ \begin{equation}
+ \label{eq:individual}
+ Individual \ \ i := \begin{pmatrix}
+ t_{0} \\ \vdots \\ t_{n-1} 	
+\end{pmatrix}   
+ \end{equation}
+ \end{frame}
+ 
+\subsubsection{Population}
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Population}
+ A population consists of a certain number of individuals given by the constant $ k $.
+ \begin{equation}
+ \label{eq:population}
+ Population \ \ p := \begin{pmatrix}
+ i_{0} \\ \vdots \\ i_{k-1} 	
+\end{pmatrix}   
+ \end{equation}
+ \end{frame}
+ 
+ \subsubsection{Fitness-Function}
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Fitness-Function}
+ The Fitness-Function calculates the squared differnce between the goaldose and the current dose within the whole body.
+ \begin{equation}
+ f(individual) = \sum_{body}(GD-CD)^2
+ \end{equation}
+ For further adjustment and prioritisation the Fitness-Function is extended by an weighting factor, which holds a specifig weight for any bodytype (tumor, liver, spine,...).
+ \begin{equation}
+ f(individual) = \sum_{body}w_{bodytype}(GD-CD)^2
+ \end{equation}
+ \end{frame}
+ 
+ 
+ \subsubsection{Optimisation}
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Optimisation}
+ \begin{algorithm}[H]
+ $temp=0$\;
+ \For{x=0; x $\textless$ body.xDim; x++}{
+ 	\For{y=0; y $\textless$ body.yDim; y++}{
+ 		\For{z=0; z $\textless$ body.zDim; z++}{
+ 			\For{j=0; j $\textless$ numberOfSeeds; j++} {
+				 	$temp\ \ = temp+  w_{bodytype}(GD-CD)^2$\;		
+ 			}
+  		}
+  	}
+  }
+ $fitnessvalue = \sqrt{temp}$\;
+ \Return{fitnessvalue}\;
+ \caption{Calculation of the fitnessvalue}
+\end{algorithm}
+This causes a very high runtime...
+ \end{frame}
+ 
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Optimisation}
+ Solutions to reduce the runtime:
+ \begin{enumerate}
+ \item Multithreading
+ \item Evaluation only in a specific region around the tumor
+ \item "Jump" in the for loop
+ \end{enumerate}
+ 
+ \end{frame}
+ 
+ 
+ 
+ 
+ 
+ 
+\end{document}

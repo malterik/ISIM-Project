@@ -44,18 +44,15 @@ public class Individual
     	CompletionService<Double> pool = new ExecutorCompletionService<Double>(threadPool);
 
     	
-    	//TODO bound calculation
     	// Create tasks and submit them to the pool
     	for(int i = Solver.xBoundsTumor[0]; i < Solver.xBoundsTumor[1]; i++){
     	   pool.submit(new DoseEvaluator(Solver.dimensions, genes,i));
     	}
     	// The results will be stored here
     	double[] partial_result = new double[(Solver.xBoundsTumor[1] - Solver.xBoundsTumor[0])];
-    	
     	for(int i = 0; i < (Solver.xBoundsTumor[1] - Solver.xBoundsTumor[0]) ; i++){
      	  try {
-			partial_result[i] = pool.take().get();
-			//System.out.println(i+" Threads finished;");
+			partial_result[i]= pool.take().get();
 			fitness += partial_result[i];
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -70,36 +67,6 @@ public class Individual
     	fitness = Math.sqrt(fitness);
     	this.setFitnessValue(fitness);
     	return fitness;
-    	/*
-        
-        double temp=0;
-        double intensity=0;
-        for(int x=Config.ptvXLow-10; x < Config.ptvXHigh+10; x++) {
-			
-			for(int y=Config.ptvYLow-10; y < Config.ptvYHigh+10; y++) {
-				
-				for(int z=Config.ptvZLow-10; z < Config.ptvZHigh+10; z++) {
-					
-					Solver.body[x][y][z].setCurrentDosis(0);
-					for(int i=0; i<Config.numberOfSeeds;++i) {
-						
-						
-						intensity = Solver.body[x][y][z].radiationIntensity(Solver.seeds[i].getCoordinate(), genes[i]);
-						Solver.body[x][y][z].addCurrentDosis(intensity);
-						
-					}	
-					temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2);
-					
-					
-				}	
-			}
-		}
-        
-        fitness = Math.sqrt(temp);
-        
-        
-        return fitness;
-        */
     }
     
     
