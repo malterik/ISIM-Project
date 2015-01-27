@@ -15,6 +15,7 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -44,12 +45,17 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 	private JButton solveLP = null;
 	private JButton solveSA = null;
 	private JButton solveGA = null;
+	private JButton trainWeights = null;
+	private JButton display = null;
+	private JComboBox<ScatterDisplay.ChartType> dispType = null;
 	private JList<String> bodies = null;
 	private JList<String> treatments = null;
 	private JPanel panel = null;
 	private SimpleDB db = null;
 	private Seed[] seeds = null;
 	private JTextArea out = null;
+	private Voxel[][][] optBody = null;
+	private int[] optDims = null;
 	
 	public void appendText (String text) {
 		out.append (text);
@@ -89,13 +95,20 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		solveSA = new JButton ("Simulated Annealing");
 		solveGA = new JButton ("Generic Algorithm");
 		bodies = new JList<String> ();
-		treatments = new JList<String> ();		
-		
+		treatments = new JList<String> ();
+		trainWeights = new JButton ("Train Weights");
+		display = new JButton ("Show Display");
+		dispType = new JComboBox<ScatterDisplay.ChartType>(ScatterDisplay.ChartType.values());
+				
 		bodies.addMouseListener(this);
 		bodies.setToolTipText("Bodies");
 		treatments.addMouseListener(this);
 		treatments.setToolTipText("Treatments");
 				
+		trainWeights.addActionListener (this);
+		trainWeights.setActionCommand("trainWeights");
+		display.addActionListener(this);
+		display.setActionCommand("display");
 		loadBody.addActionListener(this);
 		loadBody.setActionCommand("loadBody");
 		measureBody.addActionListener(this);
@@ -132,11 +145,17 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		tmp2.add(solveLP);
 		tmp2.add(solveSA);
 		tmp2.add(solveGA);
+		tmp2.add(display);
+		tmp2.add(dispType);
+		tmp2.add(new JPanel ());
+		tmp2.add(new JPanel ());
+		tmp2.add(new JPanel ());
 		tmp2.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		panel.add (tmp2, BorderLayout.EAST);
 		
 		tmp3.add (closestSeeds);
 		tmp3.add (randomSeeds);
+		tmp3.add(trainWeights);
 		tmp3.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		panel.add (tmp3, BorderLayout.SOUTH);
 		
@@ -223,6 +242,8 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 			solver.solveLP();
 			db.updateTreatment (entry.getName(), solver.seeds);
 			printSeeds (solver.seeds);
+			this.optBody = solver.body;
+		    this.optDims = solver.dimensions;
 			JOptionPane.showMessageDialog(this, "Done!");
 		} catch (IloException iloExc) {
 			LogTool.print ("Error solving lp: " + iloExc, "error");
@@ -244,6 +265,8 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		Solver solver = new Solver (entry.getBodyArray(), seeds, entry.getDimensions());		
 	    solver.solveSA();
 	    db.updateTreatment (entry.getName(), solver.seeds);
+	    this.optBody = solver.body;
+	    this.optDims = solver.dimensions;
 	    printSeeds (solver.seeds);
 	    JOptionPane.showMessageDialog(this, "Done!");
 	}
@@ -261,6 +284,8 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		
 		Solver solver = new Solver (entry.getBodyArray(), seeds, entry.getDimensions());		
 	    solver.solveGeneticAlg();
+	    this.optBody = solver.body;
+	    this.optDims = solver.dimensions;
 	    db.updateTreatment (entry.getName(), solver.seeds);
 	    printSeeds (solver.seeds);
 	    JOptionPane.showMessageDialog(this, "Done!");
@@ -330,6 +355,18 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		LogTool.print(printSeeds (this.seeds), "debug");
 	}
 	
+	private void display () {
+		if (optBody != null && optDims != null) {
+			ScatterDisplay disp = new ScatterDisplay ((ScatterDisplay.ChartType) dispType.getSelectedItem());
+			disp.fill(optBody, optDims[0], optDims[1], optDims[2]);
+			disp.display();
+		}
+	}
+	
+	private void trainWeights () {
+		JOptionPane.showMessageDialog(this, "Work in progress!");
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent aEvt) {
 		switch (aEvt.getActionCommand()) {
@@ -356,6 +393,12 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 			break;
 		case "randomSeeds":
 			getRandomSeeds ();
+			break;
+		case "display":
+			display ();
+			break;
+		case "trainWeights":
+			trainWeights ();
 			break;
 		default:
 		}
