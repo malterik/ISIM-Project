@@ -1,7 +1,12 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage{mathtools}
-\usepackage[linesnumbered]{algorithm2e}
+\usepackage{xcolor}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\newcommand\mycommfont[1]{\footnotesize\ttfamily\textcolor{blue}{#1}}
+\SetCommentSty{mycommfont}
+
+
 \usetheme{Warsaw}
 \useoutertheme{infolines}
 \usepackage{tikz}
@@ -58,7 +63,7 @@
 \subsubsection{Individual}
 
  \begin{frame}
- \frametitle{Genetic Algorithm: Individual}
+ \frametitle{Individual}
  The dwelltimes of the seeds are encoded in the individuals. Equation \eqref{eq:individual} shows one individual for $n  $ Seeds.
  \begin{equation}
  \label{eq:individual}
@@ -70,7 +75,7 @@
  
 \subsubsection{Population}
  \begin{frame}
- \frametitle{Genetic Algorithm: Population}
+ \frametitle{Population}
  A population consists of a certain number of individuals given by the constant $ k $.
  \begin{equation}
  \label{eq:population}
@@ -82,7 +87,7 @@
  
  \subsubsection{Fitness-Function}
  \begin{frame}
- \frametitle{Genetic Algorithm: Fitness-Function}
+ \frametitle{Fitness-Function}
  The Fitness-Function calculates the squared differnce between the goaldose and the current dose within the whole body.
  \begin{equation}
  f(individual) = \sum_{body}(GD-CD)^2
@@ -96,7 +101,7 @@
  
  \subsubsection{Optimisation}
  \begin{frame}
- \frametitle{Genetic Algorithm: Optimisation}
+ \frametitle{Optimisation}
  \IncMargin{1em}
  \begin{algorithm}[H]
  $temp=0$\;
@@ -118,7 +123,7 @@
  \end{frame}
  
  \begin{frame}
- \frametitle{Genetic Algorithm: Optimisation Strategies}
+ \frametitle{Optimisation Strategies}
  Solutions to reduce the runtime:
  \begin{enumerate}
  \item Multithreading
@@ -129,7 +134,7 @@
  \end{frame}
  
  \begin{frame}
- \frametitle{Genetic Algorithm: Optimised Algorithm}
+ \frametitle{Optimised Algorithm}
  \IncMargin{1em}
  \begin{algorithm}[H]
  \SetKwFunction{cb}{CalculateBounds}
@@ -163,10 +168,45 @@
 \begin{frame}
 
 \subsubsection{Elitism}
-\frametitle{Genetic Algorithm: Elitism}
+\frametitle{Elitism}
 The idea of elitism is to take in every iteration the best individuals into the next iteration without any cross-over or mutation. 
 \end{frame}
+\subsubsection{Stop-Criterion}
+\begin{frame}
+\frametitle{Stop-Criterion}
+The Stop-Criterion for the genetic algorithm is implemented as follows:
+\IncMargin{1em}
+\begin{algorithm}[H]
+\SetKwFunction{iter}{GeneticAlgIteration}
+$bestIndividual \leftarrow \infty $ \tcp*{FitnessValue of the best individual}  
+$bestIndividualOld,currentIndividual \leftarrow 0$\;
+$stop \leftarrow false$\;
+$counter \leftarrow 0$\;
+\While{! stop} {
+ \tcc{Returns the best fitness value from the current iteration}
+	$currentIndividual \leftarrow $\iter{}\;
+	\If{$currentIndividual \ \   \textless \ \ bestIndividual$} {
+	
+		$ bestIndividual \ \   \leftarrow \ \ currentIndividual $\;
+	
+	}
+	\If{$\left|bestIndividualOld-bestIndividual \right| \ \ \textless \ \ 1$} {
+		\emph{counter++}
+	} 
+	\If{$counter \geq 5$} {
+		$done \leftarrow true$
+	}  
+	
+	
+	
+	
+	}
+	 
 
+\caption{Stop-Criterion}
+\end{algorithm}\DecMargin{1em}
+
+\end{frame}
 
 \subsubsection{Parameter}
 \begin{frame}
@@ -190,7 +230,76 @@ The idea of elitism is to take in every iteration the best individuals into the 
  
 \end{frame}
 
-\subsubsection{Implementation}
+\begin{frame}
+\frametitle{Parameter Overview}
+\textcolor{red}{parameter with influence on runtime} \\
+ \textcolor{blue}{parameter with impact on optimisation quality}  
+	\begin{itemize}
+	\item Optimisation Paramter:
+		\begin{itemize}
+		\item \textcolor{red}{Treatment}\textcolor{blue}{-Range}
+		\item \textcolor{red}{Scale}\textcolor{blue}{factor}
+		\end{itemize}
+	\item Genetic Algorithm Parameter:
+		\begin{itemize}
+		\item \textcolor{red}{Population} \textcolor{blue}{size $k$}
+		\item \textcolor{blue}{Weighting facors $w_{bodytype}$}
+		\item \textcolor{blue}{Mutation Probability $P_{mutation}$}
+		\item \textcolor{blue}{Crossover Probability $P_{crossover}$}
+		\item \textcolor{blue}{Number of elite individuals}
+		\end{itemize}
+	\end{itemize}
+ 
+ 
+\end{frame}
+
+\begin{frame}
+\frametitle{Runtime}
+
+\begin{itemize}
+\item Multithreading \textcolor{red}{off}
+\item $k = 12$
+\item $Elitism = 2$
+\item $Scalefactor = 1$
+\item $Treatmentrange = 10 \ cm$
+\end{itemize}
+
+ \textbf{$\Rightarrow \ \sim $20h Runtime} 
+ 
+
+
+\end{frame}
+
+\begin{frame}
+
+Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-3570K CPU @ 4x3.40Ghz}
+\begin{columns}[T] % align columns
+\begin{column}{.48\textwidth}
+\begin{itemize}
+\item Multithreading \textcolor{red}{off}
+\item $k = 12$
+\item $Elitism = 2$
+\item $Scalefactor = 1$
+\item $Treatmentrange = 10 \ cm$
+\end{itemize}
+
+ \textbf{$\Rightarrow \ \sim $20h Runtime}
+\end{column}%
+\hfill%
+
+\begin{column}{.48\textwidth}
+\begin{itemize}
+\item Multithreading \textcolor{green}{on}
+\item $k = 12$
+\item $Elitism = 2$
+\item $Scalefactor = 5$
+\item $Treatmentrange = 8 \ cm$
+\end{itemize}
+
+ \textbf{$\Rightarrow \ \sim $10min Runtime}
+\end{column}%
+\end{columns}
+\end{frame}
  
  
  

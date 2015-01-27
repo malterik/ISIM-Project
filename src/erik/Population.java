@@ -1,5 +1,8 @@
 package erik;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 import utils.Config;
@@ -125,6 +128,7 @@ public class Population
         // main loop
         int count;
         while (done) {
+        	long start = System.currentTimeMillis();
             count = 0;
             iter++;
 
@@ -162,11 +166,11 @@ public class Population
             
             // reevaluate current population
             pop.evaluate();
-           // System.out.print("Iteration : "+iter+" "+"Total Fitness = " + pop.totalFitness);
-           // System.out.println(" ; Best Fitness = " + pop.findBestIndividual().getFitnessValue()); 
+            System.out.print("Iteration : "+iter+" "+"Total Fitness = " + pop.totalFitness);
+            System.out.println(" ; Best Fitness = " + pop.findBestIndividual().getFitnessValue()); 
            
-            LogTool.print("Iteration : "+iter, "notification");
-            LogTool.print("Improvement: "+Math.abs(bestResultOld-bestResult)+" Cancel counter= " + counter, "debug");
+            //LogTool.print("Iteration : "+iter, "notification");
+            //LogTool.print("Improvement: "+Math.abs(bestResultOld-bestResult)+" Cancel counter= " + counter, "debug");
             
             if(pop.findBestIndividual().getFitnessValue() < bestResult) {
             	bestResultOld = bestResult;
@@ -182,6 +186,11 @@ public class Population
             if(counter > 5) {
             	done = false;
             }
+            long end = System.currentTimeMillis();
+            Date date = new Date(end - start);
+    		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
+    		String dateFormatted = formatter.format(date);
+    		System.out.println("Iteration Runtime: " + dateFormatted);
             
         }
        

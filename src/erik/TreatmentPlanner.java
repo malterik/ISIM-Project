@@ -126,11 +126,13 @@ public class TreatmentPlanner {
 		ta.analyzeAll();
 		ta.printResults();
 		// runtime measurement
+		
 		Date date = new Date(end - start);
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Runtime: " + dateFormatted);
 
+		
 		ScatterDisplay display5 = new ScatterDisplay(ChartType.BodyType);
 		display5.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
 				entry.getDimensions()[2]);
