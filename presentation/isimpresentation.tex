@@ -1,7 +1,7 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage{mathtools}
-\usepackage[]{algorithm2e}
+\usepackage[linesnumbered]{algorithm2e}
 \usetheme{Warsaw}
 \useoutertheme{infolines}
 \usepackage{tikz}
@@ -97,6 +97,7 @@
  \subsubsection{Optimisation}
  \begin{frame}
  \frametitle{Genetic Algorithm: Optimisation}
+ \IncMargin{1em}
  \begin{algorithm}[H]
  $temp=0$\;
  \For{x=0; x $\textless$ body.xDim; x++}{
@@ -111,12 +112,13 @@
  $fitnessvalue = \sqrt{temp}$\;
  \Return{fitnessvalue}\;
  \caption{Calculation of the fitnessvalue}
-\end{algorithm}
-This causes a very high runtime...
+ \end{algorithm}
+ \DecMargin{1em}
+ \color{red}This causes a very high runtime...
  \end{frame}
  
  \begin{frame}
- \frametitle{Genetic Algorithm: Optimisation}
+ \frametitle{Genetic Algorithm: Optimisation Strategies}
  Solutions to reduce the runtime:
  \begin{enumerate}
  \item Multithreading
@@ -126,8 +128,69 @@ This causes a very high runtime...
  
  \end{frame}
  
+ \begin{frame}
+ \frametitle{Genetic Algorithm: Optimised Algorithm}
+ \IncMargin{1em}
+ \begin{algorithm}[H]
+ \SetKwFunction{cb}{CalculateBounds}
+ \SetKwFunction{thread}{ThreadedFitnessFunction}
+
+ \emph{x-roi,y-roi,z-roi $\leftarrow$} \cb{body}  \;
+ \For{x-roi}{
+ 	\thread{x,y-roi,z-roi}
+ }
+ \caption{Multithreaded Fitness-Function}
+ \end{algorithm}
+ \DecMargin{1em}
+ 
+ \IncMargin{1em}
+ \begin{algorithm}[H]
+
+
+ \For{y=y-roi.min; y $\textless$ y-rio.max; y$\leftarrow$y+Scalefactor}{
+ 		\For{z=z-roi.min; z $\textless$ z-rio.max; z$\leftarrow$z+Scalefactor}{
+ 			\For{j=0; j $\textless$ numberOfSeeds; j++} {
+				 	$temp\ \ = temp+  w_{bodytype}(GD-CD)^2$\;		
+ 			}
+  		}
+  	}
+ \caption{Optimised Fitness-Function}
+ \end{algorithm}
+ \DecMargin{1em}
+ 
+\end{frame}
+ 
+\begin{frame}
+
+\subsubsection{Elitism}
+\frametitle{Genetic Algorithm: Elitism}
+The idea of elitism is to take in every iteration the best individuals into the next iteration without any cross-over or mutation. 
+\end{frame}
+
+
+\subsubsection{Parameter}
+\begin{frame}
+\frametitle{Parameter Overview}
+	\begin{itemize}
+	\item Optimisation Paramter:
+		\begin{itemize}
+		\item Treatment-Range
+		\item Scalefactor
+		\end{itemize}
+	\item Genetic Algorithm Parameter:
+		\begin{itemize}
+		\item Population size $k$
+		\item Weighting facors $w_{bodytype}$
+		\item Mutation Probability $P_{mutation}$
+		\item Crossover Probability $P_{crossover}$
+		\item Number of elite individuals
+		\end{itemize}
+	\end{itemize}
  
  
+\end{frame}
+
+\subsubsection{Implementation}
  
  
  
