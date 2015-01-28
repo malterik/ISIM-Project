@@ -133,10 +133,10 @@ public class TreatmentPlanner {
 		System.out.println("Runtime: " + dateFormatted);
 
 		
-		ScatterDisplay display5 = new ScatterDisplay(ChartType.BodyType);
+		/*ScatterDisplay display5 = new ScatterDisplay(ChartType.BodyType);
 		display5.fill(Solver.body, entry.getDimensions()[0], entry.getDimensions()[1],
 				entry.getDimensions()[2]);
-		display5.display();
+		display5.display();/*
 
 		
 		// System.exit(0);
