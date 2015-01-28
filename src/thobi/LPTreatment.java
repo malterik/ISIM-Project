@@ -443,9 +443,9 @@ public class LPTreatment {
 		{
 			seedUsed[i] = true;
 		}
-		solveLPMax();
-		solveLPMin();
 		
+		solveLPMin();
+		//solveLPMax();
 	}
 
 }

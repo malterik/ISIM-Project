@@ -24,7 +24,7 @@
             \column{.45\linewidth}
             \centering
             \RBox{Karthe T.\\
-            \href{mailto:subhamsoni0049@pec.edu}{subhamsoni0049@pec.edu}}
+            \href{mailto:thobias.karthe@tuhh.de}{thobias.karthe@tuhh.de}}
         \end{columns}
         \vspace{0.5cm}
         \begin{columns}
@@ -60,6 +60,7 @@
 
 \section{Algorithms}
 \subsection{Genetic Algorithm}
+\frame{\tableofcontents[currentsubsection]}
 \subsubsection{Individual}
 
  \begin{frame}
@@ -301,6 +302,141 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 \end{columns}
 \end{frame}
  
+ \subsection{Linear Programming}
+ \frame{\tableofcontents[currentsubsection]}
+ \subsubsection{Genral Idea}
+ \begin{frame}
+ \frametitle{General Idea}
+ \begin{figure}[h] 
+  \centering
+     \includegraphics[width=1\textwidth]{LPexample.JPG}
+  \caption{LP-Example [Intelligent Systems in Medicine - Schlaefer]}
+  \label{fig:LPE}
+\end{figure}
+ \end{frame}
+ 
+ \subsubsection{Objective Function - Minimize}
+ \begin{frame}
+ \frametitle{Objective Function - Minimize}
+ The time-variable t is multiplied with the dose of the matching seed in every body fragment. The tumor is not considered.
+ \begin{equation}
+ \label{eq:lp}
+ objective \ function: \ \ f(t_{1}, t_{2}, ... ,t_{n}) = 
+ \sum_{x,y,z}^N \sum_{i=1}^n dose_{i}(body_{x,y,z}) \cdot t_{i}
+ \end{equation}
+ The objective function has to be minimized.
+ \end{frame}
+ 
+ \subsubsection{Constraints - Tumor}
+ \begin{frame}
+ \frametitle{Constraints - Tumor}
+ The dose in the tumor must not fall under the defined GoalDose.
+ \begin{equation}
+ \label{eq:constr}
+ constraints: \ \ \sum_{x,y,z}^N \sum_{i=1}^n dose_{i}(tumor_{x,y,z}) \cdot t_{i} \ge GoalDose(tumor)
+ \end{equation}
+ \end{frame}
+ 
+ \subsubsection{Objective Function - Maximize}
+ \begin{frame}
+ \frametitle{Objective Function - Maximize}
+ The time-variable t is multiplied with the dose of the matching seed in every tumor fragment. The healthy body is not considered.
+ \begin{equation}
+ \label{eq:lp2}
+ objective \ function: \ \ f(t_{1}, t_{2}, ... ,t_{n}) = 
+ \sum_{x,y,z}^N \sum_{i=1}^n dose_{i}(tumor_{x,y,z}) \cdot t_{i}
+ \end{equation}
+ The objective function has to be maximized.
+ \end{frame}
+ 
+ \subsubsection{Constraints - Body}
+ \begin{frame}
+ \frametitle{Constraints - Body}
+ The dose in the healthy body must be higher then the defined GoalDose.
+ \begin{equation}
+ \label{eq:constr2}
+ constraints: \ \ \sum_{x,y,z}^N \sum_{i=1}^n dose_{i}(body_{x,y,z}) \cdot t_{i} \le GoalDose(body_{i})
+ \end{equation}
+ 
+ Using a combination of both leads to to strong constraints. In that case the problem is not solvable.
+ \end{frame}
+ 
+ \subsubsection{Comparison}
+ \begin{frame}
+ \frametitle{Comparison}
+ \begin{tabbing}
+    only Min:....... \=blalalala \kill
+    only Min: \> good tumor coverage, no modelling of body \\
+    only Max: \> bad tumor coverage, good modelling of body \\
+    Min-Max: \> results comparable to Max \\
+    Max-Min: \> results comparable to Min, less seeds used \\
+  \end{tabbing}
+ \end{frame}
+ 
+ 
+ \subsubsection{Using CPlex}
+ \begin{frame}
+ \frametitle{Using CPlex}
+ 
+ \IncMargin{1em}
+ \begin{algorithm}[H]
+ $IloNumExpr \ dosepart[] \gets new \ IloNumExpr[numberOfSeeds]$\;
+ $IloNumVar[] \ time \gets new \ IloNumVar[numberOfSeeds]$\;
+ $IloLinearNumExpr \ objective \gets cplex.linearNumExpr()$\;
+
+ \caption{CPlex setup}
+ \end{algorithm}
+ \DecMargin{1em} 
+ 
+ \end{frame}
+ 
+ \subsubsection*{Using CPlex}
+ \begin{frame}
+ \frametitle{Using CPlex}
+ 
+ \IncMargin{1em}
+ \begin{algorithm}[H]
+ \For{x=0; x $\textless$ body.xDim; x++}{
+ 	\For{y=0; y $\textless$ body.yDim; y++}{
+ 		\For{z=0; z $\textless$ body.zDim; z++}{
+			\If{$body[x][y][z].getBodyType() == Config.tumorType$} {
+				\For{i=0; i $\textless$ numberOfSeeds; i++}{
+					$dosepart[i] \gets cplex.prod(dose(x,y,z,i),time[i])$	
+				}
+				$cplex.addGe(cplex.sum(dosepart),goalDosis(x,y,z));$
+				}
+			\Else{\For{i=0; i $\textless$ numberOfSeeds; i++}{
+					$objective.addTerm(dose(x,y,z,i),time[i]);$	
+				}
+				
+				
+				}
+ 			
+  		}
+  	}
+  }
+  $cplex.addMinimize(objective);$
+  $cplex.solve();$
+ \caption{CPlex}
+ \end{algorithm}
+ \DecMargin{1em} 
+ 
+ \end{frame}
+ 
+ \subsubsection*{Runtime}
+ \begin{frame}
+ \frametitle{Runtime}
+ Runtime with different problem sizes\footnote{Intel\textregistered  Core i5-4690 CPU @ 4x3.50Ghz}
+ 
+ 
+\begin{itemize}
+\item $numberOfSeeds = 50 \Rightarrow \ \sim $1min Runtime
+\item $numberOfSeeds = 500 \Rightarrow \ \sim $1h Runtime
+\end{itemize}  
+ 
+ The results have no significant difference.
+ 
+ \end{frame}
  
  
 \end{document}
