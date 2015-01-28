@@ -112,16 +112,16 @@ public class ScatterDisplay{
         		color = new Color (0.8f, 0.8f, 0.8f, 0f);
         		break;
         	case 2: // spine
-        		color = new Color (1f, 1f, 0, 1f);
+        		color = new Color (1f, 1f, 0, 0.2f);
         		break;
         	case 3: // liver
-        		color = new Color (0f, 1f, 0f, 1f);
+        		color = new Color (0f, 1f, 0f, 0.2f);
         		break;
         	case 4: // pancreas
-        		color = new Color (0f, 0f, 0f, 1f);
+        		color = new Color (0f, 0f, 0f, 0.2f);
         		break;
         	case 5: // tumor
-        		color = new Color (1f, 0f, 0f, 1f);
+        		color = new Color (1f, 0f, 0f, 0.2f);
         		break;
     		default:
     			color = new Color (0f, 0f, 0f, 0f);

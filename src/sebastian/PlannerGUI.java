@@ -170,7 +170,6 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 	
 	public PlannerGUI () {
 		super ("Treatment Planning");
-		LogTool.addGUI (this);
 		Runtime.getRuntime().addShutdownHook(new Thread () {
 			public void run () {
 				db.close();
@@ -214,6 +213,7 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 			JOptionPane.showMessageDialog(this, "No body selected!");
 			return;
 		}
+		
 		
 		db.classify (bodies.getSelectedValue());
 		updateTreatments ();
@@ -360,6 +360,22 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 			ScatterDisplay disp = new ScatterDisplay ((ScatterDisplay.ChartType) dispType.getSelectedItem());
 			disp.fill(optBody, optDims[0], optDims[1], optDims[2]);
 			disp.display();
+		}
+		else {
+			if (bodies.isSelectionEmpty()) {
+				JOptionPane.showMessageDialog (this, "No optimized data stored");
+			}
+			else {
+				BodyEntry entry = db.getBodyByName(bodies.getSelectedValue());
+				if (entry != null) {
+					ScatterDisplay disp = new ScatterDisplay (ScatterDisplay.ChartType.BodyType);
+					disp.fill(entry.getBodyArray(), entry.getDimensions()[0], entry.getDimensions()[1], entry.getDimensions()[2]);
+					disp.display ();
+				}
+				else {
+					JOptionPane.showMessageDialog (this, "No body selected!");
+				}
+			}
 		}
 	}
 	

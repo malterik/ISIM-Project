@@ -9,6 +9,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import utils.Config;
 import utils.Coordinate;
@@ -93,6 +98,7 @@ public class SimpleDB {
 			    classify (getBodyByName (folder.getName ()));
 			    
 			  }
+			  storeDB();
 		  }
 		  else {
 			  LogTool.print ("Entry already exists: " + folder.getName (),"debug");
@@ -173,13 +179,42 @@ public class SimpleDB {
 	  
 	  // Calculate closest distance between tumor and other volumes
 	  LogTool.print ("Calculating closest distances", "debug");
+	  ExecutorService threadPool = Executors.newFixedThreadPool(Config.numberOfThreads);
+  	  CompletionService<double[]> pool = new ExecutorCompletionService<double[]>(threadPool);
+  	
+  	  for (int i = 0; i < tclDists.length; i++) {
+		  tclDists[i] = 50000;
+	  }
+  	  
+  	  // Create tasks
+  	  for (int i = 0; i < bEntry.getDimensions()[2]; i++) {
+  		  pool.submit (new CrossDistanceCalculator(bEntry, i, bEntry.getDimensions()[2], tumorVoxel));
+  	  }
+  	  
+  	  // Gather results
+  	  double[] partRes = null;
+  	  for (int i = 0; i < bEntry.getDimensions()[2]; i++) {
+  		  try {
+			partRes = pool.take().get();
+			for (int j = 0; j < partRes.length; j++) {
+				if (partRes[j] < tclDists[j]) {
+					tclDists[j] = partRes[j];
+				}
+			}
+		} catch (InterruptedException e) {
+			LogTool.print("Error retreiving result: " + e, "error");
+		} catch (ExecutionException e) {
+			LogTool.print("Error accessing result: " + e, "error");
+		}
+  	  }
+  	  /*
 	  int type = -1;
 	  double dist = -1;
 	  for (int i = 0; i < tclDists.length; i++) {
 		  tclDists[i] = 50000;
 	  }
 	  for (int i = 0; i < bEntry.getDimensions()[0]; i++) {
-		  System.out.println(String.format("Measuring done: %f", (float) i / (float) bEntry.getDimensions ()[0]));
+		  System.out.println ("" + i);
 		  for (int j = 0; j < bEntry.getDimensions()[1]; j++) {
 			  for (int k = 0; k < bEntry.getDimensions()[2]; k++) {
 				  for (int l = 0; l < tumorVoxel.size(); l++) {
@@ -191,7 +226,7 @@ public class SimpleDB {
 				  }
 			  }
 		  }
-	  }
+	  }*/
 	  
 	  
 	  TreatmentEntry tEntry = new TreatmentEntry (bEntry.getName());

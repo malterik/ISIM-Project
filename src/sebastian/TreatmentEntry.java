@@ -27,6 +27,7 @@ public class TreatmentEntry implements Serializable {
   private double[][] volumeCenters = null;
   private double[] tumorCenterDistances = null;
   private double[] tumorClosestDistances = null;
+  private double[] coverage = null;
   
   public TreatmentEntry (String name) {
 	this.name = name;
