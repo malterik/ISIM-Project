@@ -10,6 +10,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -24,8 +27,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
-import javax.swing.filechooser.FileFilter;
 
+import laurin.TreatmentAnalyzer;
+import sebastian.ScatterDisplay.ChartType;
 import utils.Config;
 import utils.Coordinate;
 import utils.LogTool;
@@ -40,8 +44,9 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 	private JButton loadBody = null;
 	private JButton measureBody = null;
 	private JButton measureAll = null;
-	private JButton closestSeeds = null;
+	private JButton storedSeeds = null;
 	private JButton randomSeeds = null;
+	private JButton closestSeeds = null;
 	private JButton solveLP = null;
 	private JButton solveSA = null;
 	private JButton solveGA = null;
@@ -56,10 +61,6 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 	private JTextArea out = null;
 	private Voxel[][][] optBody = null;
 	private int[] optDims = null;
-	
-	public void appendText (String text) {
-		out.append (text);
-	}
 	
 	private void updateBodies () {
 		bodies.removeAll();
@@ -90,6 +91,7 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		measureBody = new JButton ("Measure Body");
 		measureAll = new JButton ("Measure All");
 		closestSeeds = new JButton ("Closest Seeds");
+		storedSeeds = new JButton ("Stored Seeds");
 		randomSeeds = new JButton ("Random Seeds");
 		solveLP = new JButton ("Linear Programming");
 		solveSA = new JButton ("Simulated Annealing");
@@ -105,6 +107,8 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		treatments.addMouseListener(this);
 		treatments.setToolTipText("Treatments");
 				
+		closestSeeds.addActionListener(this);
+		closestSeeds.setActionCommand("closestSeeds");
 		trainWeights.addActionListener (this);
 		trainWeights.setActionCommand("trainWeights");
 		display.addActionListener(this);
@@ -115,8 +119,8 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		measureBody.setActionCommand("measureBody");
 		measureAll.addActionListener(this);
 		measureAll.setActionCommand("measureAll");
-		closestSeeds.addActionListener(this);
-		closestSeeds.setActionCommand("closestSeeds");
+		storedSeeds.addActionListener(this);
+		storedSeeds.setActionCommand("storedSeeds");
 		randomSeeds.addActionListener(this);
 		randomSeeds.setActionCommand("randomSeeds");
 		solveLP.addActionListener(this);
@@ -154,6 +158,7 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		panel.add (tmp2, BorderLayout.EAST);
 		
 		tmp3.add (closestSeeds);
+		tmp3.add (storedSeeds);
 		tmp3.add (randomSeeds);
 		tmp3.add(trainWeights);
 		tmp3.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
@@ -239,12 +244,15 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		
 		Solver solver = new Solver (entry.getBodyArray(), seeds, entry.getDimensions());
 		try {
+			long start = System.currentTimeMillis ();
 			solver.solveLP();
-			db.updateTreatment (entry.getName(), solver.seeds);
-			printSeeds (solver.seeds);
-			this.optBody = solver.body;
-		    this.optDims = solver.dimensions;
-			JOptionPane.showMessageDialog(this, "Done!");
+			long end = System.currentTimeMillis ();
+			db.updateTreatment (entry.getName(), Solver.seeds);
+			printSeeds (Solver.seeds);
+			this.optBody = Solver.body;
+		    this.optDims = Solver.dimensions;
+			JOptionPane.showMessageDialog(this, "Done! Analyzing treatment");
+			analyzeTreatment(start, end, this.optBody, this.optDims, seeds);
 		} catch (IloException iloExc) {
 			LogTool.print ("Error solving lp: " + iloExc, "error");
 		}
@@ -262,13 +270,16 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 			getRandomSeeds ();
 		}
 		
-		Solver solver = new Solver (entry.getBodyArray(), seeds, entry.getDimensions());		
+		Solver solver = new Solver (entry.getBodyArray(), seeds, entry.getDimensions());
+		long start = System.currentTimeMillis();
 	    solver.solveSA();
-	    db.updateTreatment (entry.getName(), solver.seeds);
-	    this.optBody = solver.body;
-	    this.optDims = solver.dimensions;
-	    printSeeds (solver.seeds);
-	    JOptionPane.showMessageDialog(this, "Done!");
+	    long end = System.currentTimeMillis();
+	    db.updateTreatment (entry.getName(), Solver.seeds);
+	    this.optBody = Solver.body;
+	    this.optDims = Solver.dimensions;
+	    printSeeds (Solver.seeds);
+	    JOptionPane.showMessageDialog(this, "Done! Analyzing treatment!");
+	    analyzeTreatment(start, end, this.optBody, this.optDims, seeds);
 	}
 
 	private void solveGA () {
@@ -282,17 +293,20 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 			getRandomSeeds ();
 		}
 		
-		Solver solver = new Solver (entry.getBodyArray(), seeds, entry.getDimensions());		
+		Solver solver = new Solver (entry.getBodyArray(), seeds, entry.getDimensions());
+		long start = System.currentTimeMillis();
 	    solver.solveGeneticAlg();
-	    this.optBody = solver.body;
-	    this.optDims = solver.dimensions;
-	    db.updateTreatment (entry.getName(), solver.seeds);
-	    printSeeds (solver.seeds);
-	    JOptionPane.showMessageDialog(this, "Done!");
+	    long end = System.currentTimeMillis();
+	    this.optBody = Solver.body;
+	    this.optDims = Solver.dimensions;
+	    db.updateTreatment (entry.getName(), Solver.seeds);
+	    printSeeds (Solver.seeds);
+	    JOptionPane.showMessageDialog(this, "Done! Analyzing treatment");
+	    analyzeTreatment(start, end, this.optBody, this.optDims, seeds);
 	}
 	
 	private String printSeed (Seed seed) {
-		return String.format ("%.2f, %.2f, %.2f", seed.getX (), seed.getY (), seed.getZ ());
+		return String.format ("%.2f;%.2f;%.2f", seed.getX (), seed.getY (), seed.getZ ());
 	}
 	
 	private String printSeeds (Seed[] seeds) {
@@ -310,7 +324,7 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		return str + "]";
 	}
 	
-	private void getClosestSeeds () {
+	private void getStoredSeeds () {
 		TreatmentEntry entry = null;
 		if (bodies.isSelectionEmpty()) {
 			JOptionPane.showMessageDialog(this, "No body selected!");
@@ -379,8 +393,39 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		}
 	}
 	
+	private void analyzeTreatment (long start, long end, Voxel[][][] body, int[] dimensions, Seed[] seeds) {
+		TreatmentAnalyzer ta = new TreatmentAnalyzer(body, dimensions, seeds);
+		ta.analyzeAll();
+		ta.printResults();
+		// runtime measurement
+		
+		Date date = new Date(end - start);
+		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
+		String dateFormatted = formatter.format(date);
+		System.out.println("Runtime: " + dateFormatted);
+	}
+	
+	private void getClosestSeeds () {
+		if (bodies.isSelectionEmpty()) {
+			JOptionPane.showMessageDialog (this, "No body selected! Using random seeds");
+			getRandomSeeds ();
+		}
+		else {
+			this.seeds = db.compareBody(bodies.getSelectedValue());
+			JOptionPane.showMessageDialog(this, "Done");
+		}
+		
+	}
+	
 	private void trainWeights () {
 		JOptionPane.showMessageDialog(this, "Work in progress!");
+		
+		// Process: Optimize a set of bodies 3 times for a mean value
+		
+		// use predefined values
+		
+		// if new seed position creates faster a result, correct weights
+		
 	}
 	
 	@Override
@@ -404,11 +449,14 @@ public class PlannerGUI extends JFrame implements ActionListener, MouseListener 
 		case "solveGA":
 			solveGA ();
 			break;
-		case "closestSeeds":
-			getClosestSeeds();
+		case "storedSeeds":
+			getStoredSeeds();
 			break;
 		case "randomSeeds":
 			getRandomSeeds ();
+			break;
+		case "closestSeeds":
+			getClosestSeeds ();
 			break;
 		case "display":
 			display ();

@@ -221,7 +221,7 @@ public class LPTreatment {
 								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
 							}
 						}
-						cplex.addGe(cplex.sum(dosepart), body[x][y][z].getGoalDosis());
+						cplex.addGe(cplex.sum(dosepart), body[x][y][z].getRelaxedGoalDosis());
 					}
 					else
 					{
@@ -335,7 +335,6 @@ public class LPTreatment {
 		
 		//expressions
 		IloLinearNumExpr objective = cplex.linearNumExpr();
-		int tumor = 0;
 		System.out.println("Adding constraints...");
 		for(int x = xBoundsTumor[0]; x < xBoundsTumor[1]; x++)
 		{
@@ -417,7 +416,6 @@ public class LPTreatment {
 		}
 		
 		System.out.println("Computing dose.....");
-		System.out.println("tumor: " +tumor);
 		int useCounter = 0;
 		for(int i = 0; i < Config.numberOfSeeds; i++)
 		{
