@@ -47,11 +47,14 @@ public class Coordinate implements Serializable {
 	 * 
 	 * @return	point on line
 	 */
-	public static Coordinate getPointOnLine(Coordinate base, Coordinate other, double t)
+	public static Coordinate getPointOnLine(Coordinate base, Vector3D vDirection, double t)
 	{
+		if ((vDirection.getX() == 0) && (vDirection.getY() == 0) && (vDirection.getZ() == 0))
+			return base;
+		
 		Vector3D vBase = base.ToVector();
-		Vector3D vOther = other.ToVector();
-		Vector3D vPoint = vBase.add(vOther.subtract(vBase).scalarMultiply(t));
+		Vector3D vDirectionNormalized = vDirection.normalize();
+		Vector3D vPoint = vBase.add(vDirectionNormalized.scalarMultiply(t));
 		return vectorToCoordinate(vPoint);
 	}
 	
