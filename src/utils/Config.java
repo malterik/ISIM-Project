@@ -54,8 +54,8 @@ public class Config {
         // Parameters for the Simulated Annealing algorithm
         
         public static final boolean SAResets = false;
-        public static final int NumberOfMetropolisResets = 100;
-        public static final int NumberOfMetropolisRounds = 1000;
+        public static final int NumberOfMetropolisResets = 5;
+        public static final int NumberOfMetropolisRounds = 60;
         public static final double StartTemp = NumberOfMetropolisRounds;
         public static final int SAnumberOfSeeds = 50;
         public static final boolean SAdebug = true;

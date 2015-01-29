@@ -18,7 +18,7 @@ import utils.Voxel;
  */
 public class TreatmentSA {
 
-        public static int[] dimensions;
+    public static int[] dimensions;
     static public int[] xBoundsTumor;
     static public int[] yBoundsTumor;
     static public int[] zBoundsTumor;
@@ -116,10 +116,12 @@ public class TreatmentSA {
                     if( (x >= Config.ptvXLow && x <= Config.ptvXHigh) && (y >= Config.ptvYLow && y <= Config.ptvYHigh) && (z >= Config.ptvZLow && z <= Config.ptvZHigh)  ) {        //consider whether the current voxel belongs to the tumor or not
                         body[x][y][z].setGoalDosis(Config.ptvGoalDose);
                         body[x][y][z].setBodyType(Config.tumorType);
+                        body[x][y][z].metavalue = 0;
                         ptvSize++;
                     } else {
                         body[x][y][z].setGoalDosis(Config.oarGoalDose);
                         body[x][y][z].setBodyType(Config.normalType);
+                        body[x][y][z].metavalue = 0;
                         oarSize++;
                     }
                 }
@@ -129,9 +131,9 @@ public class TreatmentSA {
         
     /* Verify body */     
         if (Config.SAdebugbody) {
-        LogTool.print("     MaxDose 3,0,1 : " + body[53][50][50].getMaxDosis() + "","notification");
+        LogTool.print("     MaxDose 46,46,46 : " + body[46][46][46].getMaxDosis() + "","notification");
         LogTool.print("     MaxDose 1,1,1 : " + body[5][5][5].getMaxDosis() + "","notification");
-        LogTool.print("     Type 3,0,1 : " + body[3][0][1].getBodyType()+ "","notification");
+        LogTool.print("     Type 46,46,46 : " + body[46][46][46].getBodyType()+ "","notification");
         LogTool.print("     Type 1,1,1 : " + body[5][5][5].getBodyType() + "","notification");
         }
                 

@@ -11,12 +11,13 @@ public class Voxel implements Serializable {
 	private double currentDosis;
 	private Coordinate coordinate;
 	private int bodyType = -1;
+        public double metavalue;
 	
 	
 	public Voxel(double x, double y, double z) {
 		
 		coordinate = new Coordinate(x, y, z);
-		
+                
 	}
 	
 	/**
@@ -70,6 +71,10 @@ public class Voxel implements Serializable {
 	public double radiationIntensity(Coordinate position, double durationMilliSec){
 		return radiationIntensity(position, durationMilliSec, 90);
 	}
+        
+        public double radiationIntensityNoTime(Coordinate position){
+		return radiationIntensityNoTimeCALC(position, 90);
+	}
 	
 	public double radiationIntensity(double r, double durationMilliSec){
 		double distance = r;
@@ -92,6 +97,26 @@ public class Voxel implements Serializable {
 		return dose;
 	}
 	
+        public double radiationIntensityNoTimeCALC(Coordinate position, double phi){
+		double distance = distanceToVoxel(position);
+		
+		double dose= 0;
+		
+		if(distance > 10) {
+			return 0.0;
+		}
+
+		//  Interpolation for dose function 
+		
+		if(distance == 0) {
+			dose = this.getGoalDosis();
+		} else {
+			dose = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ); 
+		}
+		
+		return dose;
+	}
+        
 	public static void main(String args[]) {
 		Voxel v = new Voxel(0, 0, 0);
 		
