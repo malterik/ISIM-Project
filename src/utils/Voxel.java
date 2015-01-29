@@ -258,7 +258,11 @@ public class Voxel implements Serializable {
 	}
 	
 	public double getRelaxedGoalDosis() {
-		if(goalDosis == 0)
+		if(goalDosis == 50)
+		{
+			return goalDosis - Config.relaxDose;
+		}		
+		else if(goalDosis == 0)
 		{
 			return Config.relaxDose;
 		}
