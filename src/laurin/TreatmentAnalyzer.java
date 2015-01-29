@@ -133,7 +133,7 @@ public class TreatmentAnalyzer {
 				for(int z = 0; z < this.dimensions[2]; z++) {
 					double dose = 0.0;
 					for (Seed seed : seeds)
-					{;
+					{
 						dose += seed.radiationIntensity(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
 					}
 					body[x][y][z].setCurrentDosis(dose);									
@@ -141,6 +141,8 @@ public class TreatmentAnalyzer {
 			}	
 		}
 	}
+	
+	
 	
 	/**
 	 * Calculates average dose for specified body part
@@ -192,7 +194,9 @@ public class TreatmentAnalyzer {
 		for (Voxel voxel : anatomies.get(bodyType-1))
 		{
 			if (voxel.getCurrentDosis() > maxDose)
+			{
 				maxDose = voxel.getCurrentDosis();
+			}
 		}
 		return maxDose;
 	}
@@ -327,7 +331,7 @@ public class TreatmentAnalyzer {
 	 * 
 	 * @param treatmentAnalyzers
 	 */
-	public static void printTreatmentComparison(ArrayList<TreatmentAnalyzer> treatmentAnalyzers)
+	public static void printTreatmentComparison(ArrayList<TreatmentAnalyzer> treatmentAnalyzers, boolean showHistograms)
 	{
 		String spacing = String.format("%5s","");
 		String headLine = String.format("%-15s%s", "Treatment", spacing);
@@ -359,7 +363,7 @@ public class TreatmentAnalyzer {
 			for(int i = 0; i < Config.tumorType; i++)
 			{
 				minLines[i] += String.format("%15s%s", decimalFormat.format(ta.getMinDoses()[i]), spacing);
-				maxLines[i] += String.format("%15s%s", decimalFormat.format(ta.getMinDoses()[i]), spacing); 
+				maxLines[i] += String.format("%15s%s", decimalFormat.format(ta.getMaxDoses()[i]), spacing); 
 				avgLines[i] += String.format("%15s%s", decimalFormat.format(ta.getAvgDoses()[i]), spacing);			
 			}
 			conformalityLine += String.format("%15s%s", decimalFormat.format(ta.getConformalityIndex()), spacing);
@@ -390,6 +394,17 @@ public class TreatmentAnalyzer {
 		System.out.println(homogeinityLine);
 		System.out.println(coverageLine);
 		System.out.println();
+		
+		if (showHistograms)
+		{
+			for (TreatmentAnalyzer ta : treatmentAnalyzers)
+				ta.histogram.display(1.0, 5000);
+		}
+	}
+	
+	public static void printTreatmentComparison(ArrayList<TreatmentAnalyzer> treatmentAnalyzers)
+	{
+		printTreatmentComparison(treatmentAnalyzers, true);
 	}
 	
 }
