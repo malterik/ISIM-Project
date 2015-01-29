@@ -1,12 +1,10 @@
+
 package utils;
 
-import java.util.List;
 
 public class LogTool {
 	
-	
-	public static void print(String str, String level) {
-		
+	public static void print(String str, String level) {	
 		if(level.equals("error") && Config.errors) {
 			System.out.println(str);
 		} else if(level.equals("warning") && Config.warnings) {
@@ -16,9 +14,6 @@ public class LogTool {
 		} else if (level.equals("notification") && Config.notification) {
 			System.out.println(str);
 		}
-		
 	}
-
-
-
 }
+

@@ -1,7 +1,12 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage{mathtools}
-\usepackage[]{algorithm2e}
+\usepackage{xcolor}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\newcommand\mycommfont[1]{\footnotesize\ttfamily\textcolor{blue}{#1}}
+\SetCommentSty{mycommfont}
+
+
 \usetheme{Warsaw}
 \useoutertheme{infolines}
 \usepackage{tikz}
@@ -19,7 +24,7 @@
             \column{.45\linewidth}
             \centering
             \RBox{Karthe T.\\
-            \href{mailto:subhamsoni0049@pec.edu}{subhamsoni0049@pec.edu}}
+            \href{mailto:thobias.karthe@tuhh.de}{thobias.karthe@tuhh.de}}
         \end{columns}
         \vspace{0.5cm}
         \begin{columns}
@@ -55,10 +60,11 @@
 
 \section{Algorithms}
 \subsection{Genetic Algorithm}
+\frame{\tableofcontents[currentsubsection]}
 \subsubsection{Individual}
 
  \begin{frame}
- \frametitle{Genetic Algorithm: Individual}
+ \frametitle{Individual}
  The dwelltimes of the seeds are encoded in the individuals. Equation \eqref{eq:individual} shows one individual for $n  $ Seeds.
  \begin{equation}
  \label{eq:individual}
@@ -70,7 +76,7 @@
  
 \subsubsection{Population}
  \begin{frame}
- \frametitle{Genetic Algorithm: Population}
+ \frametitle{Population}
  A population consists of a certain number of individuals given by the constant $ k $.
  \begin{equation}
  \label{eq:population}
@@ -82,7 +88,7 @@
  
  \subsubsection{Fitness-Function}
  \begin{frame}
- \frametitle{Genetic Algorithm: Fitness-Function}
+ \frametitle{Fitness-Function}
  The Fitness-Function calculates the squared differnce between the goaldose and the current dose within the whole body.
  \begin{equation}
  f(individual) = \sum_{body}(GD-CD)^2
@@ -96,7 +102,8 @@
  
  \subsubsection{Optimisation}
  \begin{frame}
- \frametitle{Genetic Algorithm: Optimisation}
+ \frametitle{Optimisation}
+ \IncMargin{1em}
  \begin{algorithm}[H]
  $temp=0$\;
  \For{x=0; x $\textless$ body.xDim; x++}{
@@ -111,12 +118,13 @@
  $fitnessvalue = \sqrt{temp}$\;
  \Return{fitnessvalue}\;
  \caption{Calculation of the fitnessvalue}
-\end{algorithm}
-This causes a very high runtime...
+ \end{algorithm}
+ \DecMargin{1em}
+ \color{red}This causes a very high runtime...
  \end{frame}
  
  \begin{frame}
- \frametitle{Genetic Algorithm: Optimisation}
+ \frametitle{Optimisation Strategies}
  Solutions to reduce the runtime:
  \begin{enumerate}
  \item Multithreading
@@ -126,9 +134,309 @@ This causes a very high runtime...
  
  \end{frame}
  
+ \begin{frame}
+ \frametitle{Optimised Algorithm}
+ \IncMargin{1em}
+ \begin{algorithm}[H]
+ \SetKwFunction{cb}{CalculateBounds}
+ \SetKwFunction{thread}{ThreadedFitnessFunction}
+
+ \emph{x-roi,y-roi,z-roi $\leftarrow$} \cb{body}  \;
+ \For{x-roi}{
+ 	\thread{x,y-roi,z-roi}
+ }
+ \caption{Multithreaded Fitness-Function}
+ \end{algorithm}
+ \DecMargin{1em}
+ 
+ \IncMargin{1em}
+ \begin{algorithm}[H]
+
+
+ \For{y=y-roi.min; y $\textless$ y-rio.max; y$\leftarrow$y+Scalefactor}{
+ 		\For{z=z-roi.min; z $\textless$ z-rio.max; z$\leftarrow$z+Scalefactor}{
+ 			\For{j=0; j $\textless$ numberOfSeeds; j++} {
+				 	$temp\ \ = temp+  w_{bodytype}(GD-CD)^2$\;		
+ 			}
+  		}
+  	}
+ \caption{Optimised Fitness-Function}
+ \end{algorithm}
+ \DecMargin{1em}
+ 
+\end{frame}
+ 
+\begin{frame}
+
+\subsubsection{Elitism}
+\frametitle{Elitism}
+The idea of elitism is to take in every iteration the best individuals into the next iteration without any cross-over or mutation. 
+\end{frame}
+\subsubsection{Stop-Criterion}
+\begin{frame}
+\frametitle{Stop-Criterion}
+The Stop-Criterion for the genetic algorithm is implemented as follows:
+\IncMargin{1em}
+\begin{algorithm}[H]
+\SetKwFunction{iter}{GeneticAlgIteration}
+$bestIndividual \leftarrow \infty $ \tcp*{FitnessValue of the best individual}  
+$bestIndividualOld,currentIndividual \leftarrow 0$\;
+$stop \leftarrow false$\;
+$counter \leftarrow 0$\;
+\While{! stop} {
+ \tcc{Returns the best fitness value from the current iteration}
+	$currentIndividual \leftarrow $\iter{}\;
+	\If{$currentIndividual \ \   \textless \ \ bestIndividual$} {
+	
+		$ bestIndividual \ \   \leftarrow \ \ currentIndividual $\;
+	
+	}
+	\If{$\left|bestIndividualOld-bestIndividual \right| \ \ \textless \ \ 1$} {
+		\emph{counter++}
+	} 
+	\If{$counter \geq 5$} {
+		$done \leftarrow true$
+	}  
+	
+	
+	
+	
+	}
+	 
+
+\caption{Stop-Criterion}
+\end{algorithm}\DecMargin{1em}
+
+\end{frame}
+
+\subsubsection{Parameter}
+\begin{frame}
+\frametitle{Parameter Overview}
+	\begin{itemize}
+	\item Optimisation Paramter:
+		\begin{itemize}
+		\item Treatment-Range
+		\item Scalefactor
+		\end{itemize}
+	\item Genetic Algorithm Parameter:
+		\begin{itemize}
+		\item Population size $k$
+		\item Weighting facors $w_{bodytype}$
+		\item Mutation Probability $P_{mutation}$
+		\item Crossover Probability $P_{crossover}$
+		\item Number of elite individuals
+		\end{itemize}
+	\end{itemize}
  
  
+\end{frame}
+
+\begin{frame}
+\frametitle{Parameter Overview}
+\textcolor{red}{parameter with influence on runtime} \\
+ \textcolor{blue}{parameter with impact on optimisation quality}  
+	\begin{itemize}
+	\item Optimisation Paramter:
+		\begin{itemize}
+		\item \textcolor{red}{Treatment}\textcolor{blue}{-Range}
+		\item \textcolor{red}{Scale}\textcolor{blue}{factor}
+		\end{itemize}
+	\item Genetic Algorithm Parameter:
+		\begin{itemize}
+		\item \textcolor{red}{Population} \textcolor{blue}{size $k$}
+		\item \textcolor{blue}{Weighting facors $w_{bodytype}$}
+		\item \textcolor{blue}{Mutation Probability $P_{mutation}$}
+		\item \textcolor{blue}{Crossover Probability $P_{crossover}$}
+		\item \textcolor{blue}{Number of elite individuals}
+		\end{itemize}
+	\end{itemize}
  
+ 
+\end{frame}
+
+\begin{frame}
+\frametitle{Runtime}
+
+\begin{itemize}
+\item Multithreading \textcolor{red}{off}
+\item $k = 12$
+\item $Elitism = 2$
+\item $Scalefactor = 1$
+\item $Treatmentrange = 10 \ cm$
+\end{itemize}
+
+ \textbf{$\Rightarrow \ \sim $20h Runtime} 
+ 
+
+
+\end{frame}
+
+\begin{frame}
+
+Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-3570K CPU @ 4x3.40Ghz}
+\begin{columns}[T] % align columns
+\begin{column}{.48\textwidth}
+\begin{itemize}
+\item Multithreading \textcolor{red}{off}
+\item $k = 12$
+\item $Elitism = 2$
+\item $Scalefactor = 1$
+\item $Treatmentrange = 10 \ cm$
+\end{itemize}
+
+ \textbf{$\Rightarrow \ \sim $20h Runtime}
+\end{column}%
+\hfill%
+
+\begin{column}{.48\textwidth}
+\begin{itemize}
+\item Multithreading \textcolor{green}{on}
+\item $k = 12$
+\item $Elitism = 2$
+\item $Scalefactor = 5$
+\item $Treatmentrange = 8 \ cm$
+\end{itemize}
+
+ \textbf{$\Rightarrow \ \sim $10min Runtime}
+\end{column}%
+\end{columns}
+\end{frame}
+ 
+ \subsection{Linear Programming}
+ \frame{\tableofcontents[currentsubsection]}
+ \subsubsection{Genral Idea}
+ \begin{frame}
+ \frametitle{General Idea}
+ \begin{figure}[h] 
+  \centering
+     \includegraphics[width=1\textwidth]{LPexample.JPG}
+  \caption{LP-Example [Intelligent Systems in Medicine - Schlaefer]}
+  \label{fig:LPE}
+\end{figure}
+ \end{frame}
+ 
+ \subsubsection{Objective Function - Minimize}
+ \begin{frame}
+ \frametitle{Objective Function - Minimize}
+ The time-variable t is multiplied with the dose of the matching seed in every body fragment. The tumor is not considered.
+ \begin{equation}
+ \label{eq:lp}
+ objective \ function: \ \ f(t_{1}, t_{2}, ... ,t_{n}) = 
+ \sum_{x,y,z}^N \sum_{i=1}^n dose_{i}(body_{x,y,z}) \cdot t_{i}
+ \end{equation}
+ The objective function has to be minimized.
+ \end{frame}
+ 
+ \subsubsection{Constraints - Tumor}
+ \begin{frame}
+ \frametitle{Constraints - Tumor}
+ The dose in the tumor must not fall under the defined GoalDose.
+ \begin{equation}
+ \label{eq:constr}
+ constraints: \ \ \sum_{x,y,z}^N \sum_{i=1}^n dose_{i}(tumor_{x,y,z}) \cdot t_{i} \ge GoalDose(tumor)
+ \end{equation}
+ \end{frame}
+ 
+ \subsubsection{Objective Function - Maximize}
+ \begin{frame}
+ \frametitle{Objective Function - Maximize}
+ The time-variable t is multiplied with the dose of the matching seed in every tumor fragment. The healthy body is not considered.
+ \begin{equation}
+ \label{eq:lp2}
+ objective \ function: \ \ f(t_{1}, t_{2}, ... ,t_{n}) = 
+ \sum_{x,y,z}^N \sum_{i=1}^n dose_{i}(tumor_{x,y,z}) \cdot t_{i}
+ \end{equation}
+ The objective function has to be maximized.
+ \end{frame}
+ 
+ \subsubsection{Constraints - Body}
+ \begin{frame}
+ \frametitle{Constraints - Body}
+ The dose in the healthy body must be higher then the defined GoalDose.
+ \begin{equation}
+ \label{eq:constr2}
+ constraints: \ \ \sum_{x,y,z}^N \sum_{i=1}^n dose_{i}(body_{x,y,z}) \cdot t_{i} \le GoalDose(body_{i})
+ \end{equation}
+ 
+ Using a combination of both leads to to strong constraints. In that case the problem is not solvable.
+ \end{frame}
+ 
+ \subsubsection{Comparison}
+ \begin{frame}
+ \frametitle{Comparison}
+ \begin{tabbing}
+    only Min:....... \=blalalala \kill
+    only Min: \> good tumor coverage, no modelling of body \\
+    only Max: \> bad tumor coverage, good modelling of body \\
+    Min-Max: \> results comparable to Max \\
+    Max-Min: \> results comparable to Min, less seeds used \\
+  \end{tabbing}
+ \end{frame}
+ 
+ 
+ \subsubsection{Using CPlex}
+ \begin{frame}
+ \frametitle{Using CPlex}
+ 
+ \IncMargin{1em}
+ \begin{algorithm}[H]
+ $IloNumExpr \ dosepart[] \gets new \ IloNumExpr[numberOfSeeds]$\;
+ $IloNumVar[] \ time \gets new \ IloNumVar[numberOfSeeds]$\;
+ $IloLinearNumExpr \ objective \gets cplex.linearNumExpr()$\;
+
+ \caption{CPlex setup}
+ \end{algorithm}
+ \DecMargin{1em} 
+ 
+ \end{frame}
+ 
+ \subsubsection*{Using CPlex}
+ \begin{frame}
+ \frametitle{Using CPlex}
+ 
+ \IncMargin{1em}
+ \begin{algorithm}[H]
+ \For{x=0; x $\textless$ body.xDim; x++}{
+ 	\For{y=0; y $\textless$ body.yDim; y++}{
+ 		\For{z=0; z $\textless$ body.zDim; z++}{
+			\If{$body[x][y][z].getBodyType() == Config.tumorType$} {
+				\For{i=0; i $\textless$ numberOfSeeds; i++}{
+					$dosepart[i] \gets cplex.prod(dose(x,y,z,i),time[i])$	
+				}
+				$cplex.addGe(cplex.sum(dosepart),goalDosis(x,y,z));$
+				}
+			\Else{\For{i=0; i $\textless$ numberOfSeeds; i++}{
+					$objective.addTerm(dose(x,y,z,i),time[i]);$	
+				}
+				
+				
+				}
+ 			
+  		}
+  	}
+  }
+  $cplex.addMinimize(objective);$
+  $cplex.solve();$
+ \caption{CPlex}
+ \end{algorithm}
+ \DecMargin{1em} 
+ 
+ \end{frame}
+ 
+ \subsubsection*{Runtime}
+ \begin{frame}
+ \frametitle{Runtime}
+ Runtime with different problem sizes\footnote{Intel\textregistered  Core i5-4690 CPU @ 4x3.50Ghz}
+ 
+ 
+\begin{itemize}
+\item $numberOfSeeds = 50 \Rightarrow \ \sim $1min Runtime
+\item $numberOfSeeds = 500 \Rightarrow \ \sim $1h Runtime
+\end{itemize}  
+ 
+ The results have no significant difference.
+ 
+ \end{frame}
  
  
 \end{document}

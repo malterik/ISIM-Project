@@ -7,15 +7,16 @@ import utils.Coordinate;
 
 public class CrossDistanceCalculator implements Callable<double[]> {
     private BodyEntry body = null;
-    private int z;
+    private int z, max;
     private ArrayList<double[]> tumor = null;
     private double[] partRes = null;
 	
 	
-	public CrossDistanceCalculator (BodyEntry body, int z, ArrayList<double[]> tumor) {
+	public CrossDistanceCalculator (BodyEntry body, int z, int max, ArrayList<double[]> tumor) {
 		this.body = body;
 		this.tumor = tumor;
 		this.z = z;
+		this.max = max;
 		partRes = new double[body.getMaxType() + 1];
 		for (int i = 0; i < partRes.length; i++) {
 			partRes[i] = 50000;
@@ -63,8 +64,9 @@ public class CrossDistanceCalculator implements Callable<double[]> {
 	
 	@Override
 	public double[] call() throws Exception {
-		System.out.println(z);
+		System.out.println(z + "/" + max);
 		crossCalculate ();		
 		return partRes;
 	}
 }
+

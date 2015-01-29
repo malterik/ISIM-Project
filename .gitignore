@@ -79,5 +79,6 @@ local.properties
 /datas/
 presentation/*
 !presentation/isimpresentation.tex
+!presentation/LPexample.JPG
 src/tex/*
 !src/tex/main.tex
