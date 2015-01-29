@@ -146,12 +146,12 @@ public class TreatmentEntry implements Serializable {
 	}
 	res = res / sizeErrors.length / centerErrors.length / centerDistsErrors.length / closestDistsErrors.length;
 	
-	LogTool.print("Entry " + tEntry.getName(), "debug");
+	/*LogTool.print("Entry " + tEntry.getName(), "debug");
 	LogTool.print(String.format("Size: (%f|%f|%f|%f|%f|%f)", sizeErrors[0],sizeErrors[1],sizeErrors[2],sizeErrors[3],sizeErrors[4],sizeErrors[5]), "debug");
 	LogTool.print(String.format("Centers: (%f|%f|%f|%f|%f|%f)", centerErrors[0], centerErrors[1],centerErrors[2],centerErrors[3],centerErrors[4],centerErrors[5]), "debug");
 	LogTool.print(String.format("CenterDists: (%f|%f|%f|%f|%f|%f)", centerDistsErrors[0], centerDistsErrors[1],centerDistsErrors[2],centerDistsErrors[3],centerDistsErrors[4],centerDistsErrors[5]), "debug");
 	LogTool.print(String.format("ClosestDists: (%f|%f|%f|%f|%f|%f)", closestDistsErrors[0], closestDistsErrors[1],closestDistsErrors[2],closestDistsErrors[3],closestDistsErrors[4],closestDistsErrors[5]), "debug");
-	LogTool.print (String.format ("Error: %f\n", res), "debug");
+	LogTool.print (String.format ("Error: %f\n", res), "debug");*/
 	return res;
   }
 }
