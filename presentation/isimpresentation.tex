@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{mathtools}
 \usepackage{xcolor}
+\usepackage{graphicx}
 \usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 \newcommand\mycommfont[1]{\footnotesize\ttfamily\textcolor{blue}{#1}}
 \SetCommentSty{mycommfont}
@@ -253,6 +254,7 @@ $counter \leftarrow 0$\;
  
 \end{frame}
 
+\subsubsection{Runtime}
 \begin{frame}
 \frametitle{Runtime}
 Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-3570K CPU @ 4x3.40Ghz}
@@ -273,13 +275,13 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 \begin{column}{.48\textwidth}
 \begin{itemize}
 \item Multithreading \textcolor{green}{on}
-\item $k = 12$
+\item $k = 10$
 \item $Elitism = 2$
 \item $Scalefactor = 5$
 \item $Treatmentrange = 8 \ cm$
 \end{itemize}
 
- \textbf{$\Rightarrow \ \sim $10min Runtime}
+ \textbf{$\Rightarrow \ \sim $12min Runtime}
 \end{column}%
 \end{columns}
 \end{frame}
@@ -288,7 +290,7 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 \frametitle{Results}
 	\begin{figure}[h]
 	\centering
-	\includegraphics[width=1\textwidth]{pictures/body1_w1-4-2-3-2.png}
+	\includegraphics[width=1\textwidth]{pictures/body1_w1-4-2-3-2}
 	\caption{Result of an unweighted optimisation}
 	\end{figure}
  
