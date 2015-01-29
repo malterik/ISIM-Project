@@ -13,6 +13,7 @@ import utils.RandGenerator;
 import utils.Seed;
 import utils.Voxel;
 import java.lang.Math;
+import java.util.Arrays;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -37,6 +38,8 @@ public class Looper {
     
     private  Voxel [][][] body; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
     private  Seed[] seeds = new Seed[Config.SAnumberOfSeeds];
+    private  Voxel [][][] body2; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
+    private  Seed[] seeds2 = new Seed[Config.SAnumberOfSeeds];
     public double[] Cur_state = new double[Config.SAnumberOfSeeds];
     public double[] New_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
     public double[] Global_Lowest_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
@@ -56,13 +59,15 @@ public class Looper {
         this.temperature = Config.StartTemp;
 		this.body = body;
 		this.seeds = seeds;
-                this.Cur_cost = Cur_cost;
-                this.New_cost = New_cost;
-                this.temperature = temperature;
-                this.Cur_state = Cur_state;
-                this.New_state = New_state;
+                this.body2 = body;
+		this.seeds2 = seeds;
+//                this.Cur_cost = Cur_cost;
+//                this.New_cost = New_cost;
+//                this.temperature = temperature;
+//                this.Cur_state = Cur_state;
+//                this.New_state = New_state;
                 this.Global_lowest_cost = Double.MAX_VALUE;
-                this.Global_Lowest_state = Global_Lowest_state;
+//                this.Global_Lowest_state = Global_Lowest_state;
 //                LogTool.print("Cur_state : " + Cur_state + " Zeit 2 : " + Zeit2 + " body : " + New_state, "notification");
 //                this.dwelltimes = Looper.seeds().;
                         }
@@ -91,6 +96,23 @@ public class Looper {
     * @param New_state Contains randomized dwelltimes
     * @param Config.SAnumberOfSeeds Contains randomized dwelltimes
     */
+    
+    /**
+     * Works.Randomly determines a new state vector
+     * @param New_state Contains randomized dwelltimes
+     * @param Config .SAnumberOfSeeds Contains randomized dwelltimes
+     * @return
+     */
+    public double[] newstater (){
+        double[] styles = new double[Config.SAnumberOfSeeds];
+        for(int iii=0; iii < Config.SAnumberOfSeeds; iii++)
+            {
+                styles[iii] = RandGenerator.randDouble(0, 10);
+        }
+        return styles;
+    }
+    
+    
     private void newState() {
          for(int iii=0; iii < Config.SAnumberOfSeeds; iii++)
             {
@@ -182,7 +204,6 @@ public class Looper {
 // following works    
     public void setCur_state(double[] Cur_state) {
         this.Cur_state = Cur_state;
-        
     }
     
     public double[] getCur_state(double[] Cur_state) {
@@ -203,55 +224,31 @@ public class Looper {
          * It contains the metropolis loop
 	 */
     public void solveSA() {
-        
+        initState();
         for (int ab = 0; ab < Config.NumberOfMetropolisResets; ab++) {
             LogTool.print("==================== START CALC FOR OUTER ROUND " + ab + "=========================","notification");
-            //make initial state
-            //make random state
-            //cost of random state
-            // random better tahn inital ? accept
-            // random worse ? calculate randomnumber and calculate metropolis probability
-            // if random number euqal or larger than than metropolis probability
-            // set current state to value of random state
-            
-            //lower temperature
-            //calculate next random state
-            //cost of next random state
-            // next random better than last random ? accept
-            // next random worse ? calculate randomnumber and calculate metropolis probability
-            // if randomnumber above or equal to metropolis probability -> accept "next" random state else ignore
-            // Is this
-            
+            LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
+
             if (Config.SAverboselvl>1) {
                 LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
                 LogTool.print("Debug: GLS get 1: " + this.getGlobal_Lowest_state_string(),"notification");
             }
             
-            /*if (ab==0){
-                this.initState();
-            
-                if (Config.SAverboselvl>1) {
-                    LogTool.print("SolveSA: Cur_state after Initstate : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
-                }
-            }*/
-            
-            setCur_cost(cost());
+            setCur_cost(costCUR());
 //            setcurfitnessValue(evaluate());
 
             /* [Newstate] with random dwelltimes */
-            newState(); 
+            New_state = newstater(); 
             if (Config.SAverboselvl>1) {
                 LogTool.print("SolveSA: New State before Metropolis: A)" + New_state[0] + " B) " + New_state[1] + " C) " + New_state[2],"notification");
             }
             
-            setNew_cost(cost());
+            setNew_cost(costNEX());
 //            setnewFitnessValue(evaluate());
             
             if (Config.SAverboselvl>1) {
                 LogTool.print("SolveSA: New Cost : " + New_cost,"notification");
             }
-            
-            double random_double = RandGenerator.randDouble(0.01, 0.99);
 
             /**
                 * MetropolisLoop
@@ -259,52 +256,86 @@ public class Looper {
              */
 
             for(int x=0;x<Config.NumberOfMetropolisRounds;x++) {   
-    //            break;
+                if (true) {
+                    
+                }
     //            LogTool.print("SolveSA Iteration " + x + " Curcost " + Cur_cost + " Newcost " + New_cost,"notification");
                if ((Cur_cost - New_cost)>0) { // ? die Kosten
                    
                    if (Config.SAverboselvl>1) {
-                       LogTool.print("Fall 1","notification");
+                       LogTool.print("Fall 1 START","notification");
                    }
                    
                    if (Config.SAdebug) {                      
-                          LogTool.print("SolveSA: Metropolis NewCost : " + this.getNew_cost(),"notification");
-                          LogTool.print("SolveSA: Metropolis CurCost : " + this.getCur_cost(),"notification");
+                          LogTool.print("SolveSA: (Fall 1) Metropolis NewCost : " + this.getNew_cost(),"notification");
+                          LogTool.print("SolveSA: (Fall 1) Metropolis CurCost : " + this.getCur_cost(),"notification");
                           LogTool.print("SolveSA Cost delta " + (Cur_cost - New_cost) + " ","notification");
                    }
-                          Cur_state = New_state;
-                          Cur_cost = New_cost;
-                          
-                    } else if (Math.exp(-(Cur_cost - New_cost)/temperature)> random_double) {
-                        
-                        Cur_state = New_state;
-                        Cur_cost = New_cost;
-                        
-                        if (Config.SAdebug) {
-                            LogTool.print("SolveSA: NewCost : " + this.getNew_cost(),"notification");
-                            LogTool.print("SolveSA: CurCost : " + this.getCur_cost(),"notification");
-                        }
-                        
-                        if (Config.SAverboselvl>1) {
-                            LogTool.print("Fall 2: Zufallsgenerierter Zustand traegt hoehere Kosten als vorhergehender Zustand. Iteration: " + x,"notification");
-                        }
-                    }
-               
+                   Cur_state = New_state;
+                   Cur_cost = New_cost;
+                   if (Config.SAverboselvl>1) {
+                   LogTool.print("SolveSA: (Fall 1 nach set) Metropolis NewCost : " + this.getNew_cost(),"notification");
+                   LogTool.print("SolveSA: (Fall 1 nach set) Metropolis CurCost : " + this.getCur_cost(),"notification");
+                   LogTool.print("SolveSA: (Fall 1 nach set): NewState : " + this.getNew_state_string(),"notification");
+                   LogTool.print("SolveSA: (Fall 1 nach set): CurState : " + this.getCur_state_string(),"notification");
+                   }
+                   New_state = newstater();
+                   if (Config.SAdebug) {
+                           LogTool.print("SolveSA C1 after generate: NewCost : " + this.getNew_cost(),"notification");
+                           LogTool.print("SolveSA C1 after generate: CurCost : " + this.getCur_cost(),"notification");
+                           LogTool.print("SolveSA C1 after generate: NewState : " + this.getNew_state_string(),"notification");
+                           LogTool.print("SolveSA C1 after generate: CurState : " + this.getCur_state_string(),"notification");
+                   }
+                   if (Config.SAverboselvl>1) {
+                       LogTool.print("Fall 1 STOP ","notification");
+                   }
+                   } else if (Math.exp(-(New_cost - Cur_cost)/temperature)> RandGenerator.randDouble(0.01, 0.99)) {
+                       if (Config.SAverboselvl>1) {
+                           LogTool.print("Fall 2 START: Zufallsgenerierter Zustand traegt hoehere Kosten als vorhergehender Zustand. Iteration: " + x,"notification");
+                       }
+                       if (Config.SAdebug) {
+                           LogTool.print("SolveSA C2 before set: NewCost : " + this.getNew_cost(),"notification");
+                           LogTool.print("SolveSA C2 before set: CurCost : " + this.getCur_cost(),"notification");
+                           LogTool.print("SolveSA C2 before set: NewState : " + this.getNew_state_string(),"notification");
+                           LogTool.print("SolveSA C2 before set: CurState : " + this.getCur_state_string(),"notification");
+                       }
+                       Cur_state = New_state;
+                       Cur_cost = New_cost;
+                       if (Config.SAdebug) {
+                           LogTool.print("SolveSA C2 after set: NewCost : " + this.getNew_cost(),"notification");
+                           LogTool.print("SolveSA C2 after set: CurCost : " + this.getCur_cost(),"notification");
+                       }
+                       New_state = newstater();
+                       if (Config.SAdebug) {
+                           LogTool.print("SolveSA C2 after generate: NewCost : " + this.getNew_cost(),"notification");
+                           LogTool.print("SolveSA C2 after generate: CurCost : " + this.getCur_cost(),"notification");
+                           LogTool.print("SolveSA C2 after generate: NewState : " + this.getNew_state_string(),"notification");
+                           LogTool.print("SolveSA C2 after generate: CurState : " + this.getCur_state_string(),"notification");
+                       }
+                       if (Config.SAverboselvl>1) {
+                           LogTool.print("Fall 2 STOP: Zufallsgenerierter Zustand traegt hoehere Kosten als vorhergehender Zustand. Iteration: " + x,"notification");
+                       }
+                   } else {
+                       New_state = newstater();
+                   }
                temperature = temperature-1;
                if (temperature==0)  {
                    break;
                }
                
-               random_double = RandGenerator.randDouble(0.01, 0.99);
-               newState();
-               setNew_cost(cost());
+               setNew_cost(costNEX());
+               if ((x==98)&(ab==0)) {
+               LogTool.print("Stayte Checkpoitn","notification");
+                }
             }
-            // Hier wird kontrolliert, ob das minimalergebnis des aktuellen Metropolisloops kleiner ist als das bsiher kleinste
-            // Dies funktioniert, ABER Global_Lowest_state wird AUS IGRENDEINEM GRUND immer auf den letzten Cur_state gesetzt...
-            // Warum wird Global_Lowest_state ueberschrieben, auch wenn es
-            if (ab==9) {
-                double diff=0;
-            }
+            
+//            if (ab==9) {
+//                double diff=0;
+//            }
+            
+            // Hier wird kontrolliert, ob das minimalergebnis des aktuellen
+            // Metropolisloops kleiner ist als das bsiher kleinste
+            
             if (Cur_cost<Global_lowest_cost) {
                 this.setGlobal_lowest_cost(Cur_cost);
                 GlobalState GLowestState = new GlobalState(this.Cur_state);
@@ -317,12 +348,12 @@ public class Looper {
 //                this.setGlobal_Lowest_state(this.getCur_state(Cur_state));
 //                LogTool.print("Debug: Cur<global GLS get after set : " + this.getGlobal_Lowest_state_string(),"notification");        
             }
-            LogTool.print("SolveSA: Iteration : " + ab,"notification");
-            LogTool.print("SolveSA: Last Calculated New State/Possible state inner loop 99 : " + this.getNew_state_string(),"notification");
+            LogTool.print("SolveSA: Outer Iteration : " + ab,"notification");
+            LogTool.print("SolveSA: Last Calculated New State/Possible state inner loop (i.e. 99) : " + this.getNew_state_string(),"notification");
 //            LogTool.print("SolveSA: Best Solution : " + this.getCur_state_string(),"notification");
             LogTool.print("SolveSA: GLS after: " + this.getGlobal_Lowest_state_string(),"notification");
             LogTool.print("SolveSA: NewCost : " + this.getNew_cost(),"notification");
-            LogTool.print("SolveSA: CurCost : " + this.getCur_cost(),"notification");        
+            LogTool.print("SolveSA: CurCost : " + this.getCur_cost() + "i.e. lowest State of this round","notification");        
         }
        // return GLowestState;
     }
@@ -331,16 +362,45 @@ public class Looper {
  * 
  * @return Returns the cost as a SSD (Sum of squared differences)
  */
-    public double cost() {
+    public double costNEX() {
         double diff=0;
         double intensity=0;
         
-//        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
-        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x++) {
-//			for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
-            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y++) {
-//				for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
-                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
+        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x++) {
+			for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y++) {
+				for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
+
+					this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+					for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+						// Calculate intensity based based on current dwelltime
+						intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
+                                                if (intensity>0) {
+//                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
+                                                }
+						this.body2[x][y][z].addCurrentDosis(intensity);
+					}	
+					diff += Math.pow((this.body2[x][y][z].getGoalDosis()-this.body2[x][y][z].getCurrentDosis()),2);
+//                                        LogTool.print(" diffdose " + (Looper.body2[x][y][z].getGoalDosis()-Looper.body2[x][y][z].getCurrentDosis()),"notification");
+				}	 
+			}
+		}
+        return Math.sqrt(diff);
+//        return Math.random();
+    }
+    
+    public double costCUR() {
+        double diff=0;
+        double intensity=0;
+        
+        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x++) {
+			for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y++) {
+				for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
 
 					this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
 					for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
@@ -358,7 +418,7 @@ public class Looper {
 		}
         return Math.sqrt(diff);
 //        return Math.random();
-    }    
+    }
     
     public double evaluate() {
     	double fitness = 0;

@@ -157,7 +157,11 @@ public class TreatmentSA {
             }
         }
         
-        LogTool.print("     Seedtimes : A)" + seeds[0].getDurationMilliSec() + " B) " + seeds[1].getDurationMilliSec() + " C) " + seeds[2].getDurationMilliSec(),"notification");
+        String Global_Lowest_state_string = new String();
+        for (int cc = 0; cc < Config.SAnumberOfSeeds; cc++) {
+            Global_Lowest_state_string = Global_Lowest_state_string.concat(" " + cc + ") " + seeds[cc].getDurationMilliSec());
+            }
+        LogTool.print("     Seedtimes : " + Global_Lowest_state_string,"notification");
         
     /* Attack the problem using SA */
         
@@ -165,8 +169,9 @@ public class TreatmentSA {
         // Dawid inslucde the verbose switch pls
         LogTool.print("Initialized Looper Object!","notification");
         LogTool.print("Beginning Annealing...","notification");
+        looper.solveSA();
 //        LogTool.print("seeds, curstate,newstate" + looper.getCur_state() + " " + looper.getNew_state() + " ","notification");    
-       // GlobalState GLS = looper.solveSA();
+//        GlobalState GLS = looper.solveSA();
 //        GlobalState GLS = looper;
         LogTool.print("GLC: " + looper.getGlobal_lowest_cost()+ " CURC: " + looper.getCur_cost(),"notification");
 //        LogTool.print("FitnessGlobalLow: " + looper.+ " FitnessCURC: " + looper.getcurfitnessValue(),"notification");
