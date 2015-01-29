@@ -15,10 +15,18 @@ public class Needle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private ArrayList<Seed> seeds;
+	private Voxel tumorSurfacePointA;
+	private Voxel tumorSurfacePointB;
 	
-	public Needle()
+	private Needle()
 	{
-		seeds = new ArrayList<Seed>();
+		this.seeds = new ArrayList<Seed>();
+	}
+	
+	public Needle(Voxel insideTumor, Voxel outsideTumor, Voxel[][][] body)
+	{
+		this();
+		setTumorSurfacePointsFromVoxels (insideTumor, outsideTumor, body);
 	}
 	
 	public ArrayList<Seed> getSeeds()
@@ -31,25 +39,120 @@ public class Needle implements Serializable {
 		seeds.add(seed);
 	}
 	
+	
 	public int getSize()
 	{
 		return this.seeds.size();
 	}
 	
-	/**
-	 * Calculates direction of needle as difference between second and first seeds' coordinates.
-	 * 
-	 * @return direction of needle
-	 */
-	public Vector3D getDirection()
+	public Voxel getTumorSurfacePointA() 
 	{
-		if (this.getSize() < 2)
-			return null;
-		else
+		return tumorSurfacePointA;
+	}
+	
+	public Voxel getTumorSurfacePointB() 
+	{
+		return tumorSurfacePointB;
+	}
+	
+	/**
+	 * Sorts seeds by their distance from the first intersection with the tumor surface
+	 */
+	public void sortSeedsByDistanceToTumorSurfacePointA() 
+	{
+		Collections.sort(this.seeds, new Comparator<Seed>() {
+		    public int compare(Seed s1, Seed s2) {    
+		    	Needle needle = s1.getNeedle();
+		    	Double s1Dist = new Double(s1.distanceToVoxel(needle.tumorSurfacePointA.getCoordinate()));
+		    	Double s2Dist = new Double(s1.distanceToVoxel(needle.tumorSurfacePointA.getCoordinate()));
+		        return s1Dist.compareTo(s2Dist);
+		    }
+		});
+	}
+	
+	/**
+	 * Calculates the needles' intersecting points with the tumor from one point inside the tumor and one point outside
+	 * @param insideVoxel
+	 * @param otherVoxel
+	 * @param body
+	 */
+	private void setTumorSurfacePointsFromVoxels (Voxel insideVoxel, Voxel otherVoxel, Voxel[][][] body)
+	{	
+		final double STEP_SIZE = 0.1;
+		Coordinate coordinate = insideVoxel.getCoordinate();
+		Coordinate other = otherVoxel.getCoordinate();
+		Vector3D vDirection = other.ToVector().subtract(coordinate.ToVector());
+		
+		
+		while (voxelInBodyType(body, coordinate, Config.tumorType))
 		{
-			// subtract second coordinate from first
-			return (seeds.get(1).getCoordinate().ToVector()).subtract(seeds.get(0).getCoordinate().ToVector());
+			coordinate = Coordinate.getPointOnLine(coordinate, vDirection, STEP_SIZE);
 		}
+		
+		this.tumorSurfacePointA = new Voxel(coordinate.getX(), coordinate.getY(), coordinate.getZ());
+		
+		coordinate = insideVoxel.getCoordinate();
+		while (voxelInBodyType(body, coordinate, Config.tumorType))
+		{	
+			coordinate = Coordinate.getPointOnLine(coordinate, vDirection, (-1.0 * STEP_SIZE));
+		}
+		
+		this.tumorSurfacePointB = new Voxel(coordinate.getX(), coordinate.getY(), coordinate.getZ());
+	}
+	
+	/**
+	 * Checks if coordinate is of body type bodyType
+	 * 
+	 * @param body
+	 * @param c
+	 * @param bodyType
+	 * @return
+	 */
+	public static boolean voxelInBodyType(Voxel[][][] body, Coordinate c, int bodyType)
+	{
+		int iX = (int) Math.round(c.getX());
+		int iY = (int) Math.round(c.getY());
+		int iZ = (int) Math.round(c.getZ());
+		
+		if (coordinateInBounds(body, iX, iY, iZ))
+		{
+			if (body[iX][iY][iZ].getBodyType() == bodyType)
+			{
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+	
+	/*
+	 * Checks if coordinate is in bounds of body
+	 */
+	public static boolean coordinateInBounds(Voxel[][][] body, int x, int y, int z)
+	{
+		if (x >= 0
+				&& x < body.length
+				&& y >= 0
+				&& y < body[0].length
+				&& z >= 0
+				&& z < body[0][0].length)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Creates a seed at a random position within a needles intersections with the tumor
+	 * @return
+	 */
+	private Seed createRandomSeedInTumor()
+	{
+		double distance = this.getTumorSurfacePointA().distanceToVoxel(this.getTumorSurfacePointB().getCoordinate());
+		Vector3D vDirection = this.tumorSurfacePointB.getCoordinate().ToVector().subtract(this.tumorSurfacePointA.getCoordinate().ToVector());
+		Coordinate seedCoordinate = Coordinate.getPointOnLine(this.getTumorSurfacePointA().getCoordinate(), vDirection, RandGenerator.randDouble(0, distance/Coordinate.GRID_RESOLUTION));
+		Seed seed = new Seed(seedCoordinate.getX(), seedCoordinate.getY(), seedCoordinate.getZ(), 0);
+		return seed;
 	}
 	
 	/**
@@ -109,70 +212,154 @@ public class Needle implements Serializable {
 		return bestNeedles;
 	}
 	
+	
 	/**
-	 * Creates random needles with seeds through tumor.
+	 * Calculates a line between two arrays of points.
+	 * Within the array the point is picked randomly.
 	 * 
-	 * Needles are created so that:
-	 * 		- each needle holds at least minSeedsPerNeedle seeds
-	 * 		- the spacing between seeds on needle is seedSpacing
-	 * 		- the sum of all seeds on the created needles is numSeeds
-	 * 
-	 * @param body					array of body voxels
-	 * @param xBounds				x bounds of smallest cuboid around tumor
-	 * @param yBounds				y bounds of smallest cuboid around tumor
-	 * @param zBounds				z bounds of smallest cuboid around tumor
-	 * @param numSeeds				number of seeds to place
-	 * @param minSeedsPerNeedle		minimum number of seeds per needle
-	 * @param seedSpacing			spacing between seeds
-	 * 
-	 * @return needles that hold seeds
-	 */
-	public static ArrayList<Needle> createRandomNeedles(Voxel[][][] body, int[] xBounds, int[] yBounds, int[] zBounds, int numSeeds, int minSeedsPerNeedle, double seedSpacing)
+	 * @return direction of line  
+	 **/
+	public static Vector3D getLineThroughAreas(Voxel[] a, Voxel[] b)
 	{
-		ArrayList<Needle> needles = new ArrayList<Needle>();
-		ArrayList<Set<Voxel>> bodyParts = BodyAnalyzer.splitBodyTypes(body);
-		Voxel[] tumorOutterVoxels = BodyAnalyzer.getOutterVoxels(body, bodyParts.get(Config.tumorType - 1)); // tumor surface voxels
-		
-		int seedCount = 0;
-		while (seedCount < numSeeds)
+		Vector3D vA = a[RandGenerator.randInt(0, a.length-1)].getCoordinate().ToVector();
+		Vector3D vB = b[RandGenerator.randInt(0, a.length-1)].getCoordinate().ToVector();
+		return vB.subtract(vA);
+	}
+	
+	/**
+	 * Fills up seeds on a list of needles so that the sum of seeds on all needles is numSeeds.
+	 * 
+	 * @param needles
+	 * @param numSeeds
+	 * @return
+	 */
+	public static ArrayList<Needle> placeMoreSeedsOnNeedles(ArrayList<Needle> needles, int numSeeds)
+	{
+		int seedsPlaced = 0;
+		for (Needle needle : needles)
 		{
-			// pick two random points from tumor surface
-			Coordinate a = tumorOutterVoxels[RandGenerator.randInt(0, tumorOutterVoxels.length - 1)].getCoordinate();
-			Coordinate b = tumorOutterVoxels[RandGenerator.randInt(0, tumorOutterVoxels.length - 1)].getCoordinate();
-			
-			// set first seed position to somewhere between the surface point and seed spacing
-			Coordinate base = Coordinate.getPointOnLine(a, b, RandGenerator.randDouble(0, seedSpacing));
-			
-			// create needle
-			Needle needle = new Needle();
-			
-			// create seed when either
-			// - distance between first point and other point on tumor surface allows to place at least minSeedsPerNeedle
-			// - less than minSeedsPerNeedle are required to reach numSeeds
-			double distance = base.distanceToCoordiante(b);
-			if ((distance > (minSeedsPerNeedle * seedSpacing)) || ((numSeeds - seedCount) < minSeedsPerNeedle))
-			{
-				for (double d = 0; d < distance; d += seedSpacing )
-				{
-					Coordinate next = Coordinate.getPointOnLine(base, b, d);
-					
-					// tumor possibly not convex
-					if (body[(int) Math.round(next.getX())][(int) Math.round(next.getY())][(int) Math.round(next.getZ())].getBodyType() == Config.tumorType)
-					{
-						Seed seed = new Seed(next.getX(), next.getY(), next.getZ(), 0);
-						needle.addSeed(seed);
-						seed.setNeedle(needle);
-					}
-				}
-				
-				// add needle to collection of needles if it holds enough seeds
-				if ((needle.getSize() > minSeedsPerNeedle)  || ((numSeeds - seedCount) < minSeedsPerNeedle))
-				{
-					needles.add(needle);
-					seedCount += needle.getSize();
-				}
-			}
+			seedsPlaced += needle.getSize();
+		}
+		
+
+		while (seedsPlaced < numSeeds)
+		{
+			Seed seed = getNeedlePositionWithGreatestDistance(needles);
+			seedsPlaced++;
 		}
 		return needles;
 	}
+	
+	/**
+	 * Calculates the coordinate within a list of needles that and the tumor that has the greatest distance
+	 * to any other seeds. A seed is placed at the described coordinate.
+	 * 
+	 * @param needles
+	 * @return	Seed at calculated coordinate
+	 */
+	public static Seed getNeedlePositionWithGreatestDistance(ArrayList<Needle> needles)
+	{
+		final double STEP_SIZE = 0.1;
+		Coordinate maxDistCoordinate = null;
+		double maxDist = 0.0;
+		Needle maxNeedle = null;
+		
+		
+		Seed[] seeds = Needle.needlesToSeeds(needles);
+		
+
+		for (Needle needle : needles)
+		{
+			double distanceInTumor = needle.getTumorSurfacePointA().distanceToVoxel(needle.getTumorSurfacePointB().getCoordinate());
+			Vector3D vDirection =  needle.getTumorSurfacePointB().getCoordinate().ToVector().subtract(needle.getTumorSurfacePointA().getCoordinate().ToVector());
+			for (double d = 0.3; d <= (distanceInTumor-0.3); d += STEP_SIZE)
+			{
+				Coordinate coordinate = Coordinate.getPointOnLine(needle.getTumorSurfacePointA().getCoordinate(), vDirection, d);
+				//System.out.println(coordinate.getX() +  ", " + coordinate.getY() + ", " + coordinate.getZ());
+				
+				double minDist = Double.MAX_VALUE;
+				for (Seed seed : seeds)
+				{				
+					if (coordinate.distanceToCoordiante(seed.getCoordinate()) < minDist)
+					{
+						minDist = coordinate.distanceToCoordiante(seed.getCoordinate());
+					}
+				}
+				if (minDist > maxDist)
+				{
+					maxDist = minDist;
+					maxDistCoordinate = coordinate;
+					maxNeedle = needle;
+				}
+			}
+		}
+		
+		Seed seed = new Seed(maxDistCoordinate.getX(), maxDistCoordinate.getY(), maxDistCoordinate.getZ(), 0);
+		seed.setNeedle(maxNeedle);
+		maxNeedle.addSeed(seed);
+		
+		return seed;
+	}
+	
+	/**
+	 * Creates cuboid entry area from bounds.
+	 * 
+	 * @param body
+	 * @param xBounds
+	 * @param yBounds
+	 * @param zBounds
+	 * @return
+	 */
+	public static Voxel[] getEntryVoxles(Voxel[][][] body, int[] xBounds, int yBounds[], int[] zBounds)
+	{
+		Set<Voxel> entryVoxels = new HashSet<Voxel>();
+				
+		for (int x = xBounds[0]; x <= xBounds[1]; x++)
+		{
+			for (int y = yBounds[0]; y <= yBounds[1]; y++)
+			{
+				for (int z = zBounds[0]; z <= zBounds[1]; z++)
+				{
+					entryVoxels.add(body[x][y][z]);
+				}	
+			}
+		}
+				
+		return entryVoxels.toArray(new Voxel[entryVoxels.size()]);
+	}
+	
+	/**
+	 * Creates needles from that is defined by one point through an entry area and one point inside the tumor.
+	 * The points within the entry area and the tumor are randomly picked.
+	 * numSeedsPerNeedle seeds will be placed randomly on the needle inside the tumor.
+	 * 
+	 * @param entryVoxels			
+	 * @param tumorVoxels
+	 * @param body
+	 * @param numNeedles
+	 * @param numSeedsPerNeedle
+	 * @return
+	 */
+	public static ArrayList<Needle> createNeedlesThroughEntry(Voxel[] entryVoxels, Voxel[] tumorVoxels, Voxel[][][] body, int numNeedles, int numSeedsPerNeedle)
+	{
+		ArrayList<Needle> needles = new ArrayList<Needle>();
+		
+		for (int i = 0; i < numNeedles; i++)
+		{
+			Voxel entryVoxel = entryVoxels[RandGenerator.randInt(0, entryVoxels.length - 1)];
+			Voxel tumorVoxel = tumorVoxels[RandGenerator.randInt(0, tumorVoxels.length - 1)];
+			Needle needle = new Needle(tumorVoxel, entryVoxel, body);
+			
+			for (int j = 0; j < numSeedsPerNeedle; j++)
+			{
+				Seed seed = needle.createRandomSeedInTumor();
+				needle.addSeed(seed);
+				seed.setNeedle(needle);
+			}
+			needles.add(needle);
+		}
+		
+		return needles;
+	}
+
 }
