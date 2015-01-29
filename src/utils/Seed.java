@@ -9,6 +9,8 @@ import java.util.Set;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
+import erik.BodyAnalyzer;
+
 /**
  * 
  * @author Erik
@@ -43,25 +45,13 @@ public class Seed extends Voxel {
 	{
 		return needle;
 	}
-	
-	/**
-	 * Rearranges seed positions by fitting lines through most influential seeds.
-	 * 
-	 * Needles (lines) are defined by the the two seeds with the largest remaining dwell times until maximum allowed number of needles is reached.
-	 * For each needle the remaining seeds' positions are changed to their perpendicular point on the needle when within a certain distance.
-	 *
-	 * @param seeds					original seeds
-	 * @param numberOfNeedles 		maximum number of needles
-	 * @param maxDistanceToLine		allowed distance between seed and line
-	 * @param needles				set to hold needles
-	 * 	
-     * @return seeds in rearranged positions
-	 */
-	public static ArrayList<Needle> rearrangeSeeds(Seed[] seeds, int numberOfNeedles, double maxDistanceToLine)
+		
+	public static ArrayList<Needle> rearrangeSeeds(Seed[] seeds, int numberOfNeedles, Voxel[][][] body, double maxDistanceToLine)
 	{
 		ArrayList<Seed> rearrangedSeeds = new ArrayList<Seed>();
 		ArrayList<Seed> originalSeeds = new ArrayList<Seed>(Arrays.asList(seeds));
 		ArrayList<Needle> needles = new ArrayList<Needle>();
+		Voxel[] tumorVoxels = BodyAnalyzer.getOutterVoxels(body, BodyAnalyzer.splitBodyTypes(body).get(Config.tumorType-1));
 		
 		// remove seeds with zero dwell time
 		for (Iterator<Seed> iterator = originalSeeds.iterator(); iterator.hasNext(); ) {
@@ -86,12 +76,13 @@ public class Seed extends Voxel {
 		// create needles until no are seeds left or maximum needle number reached
 		while (originalSeeds.size() > 0 && needleCounter < numberOfNeedles)
 		{
-			Needle needle = new Needle();
+			Needle needle = null;
 			if (originalSeeds.size() > 1)
 			{
 				// create needle from two points with largest dwell times
 				Seed seedA = originalSeeds.get(0);
 				Seed seedB = originalSeeds.get(1);
+				needle = new Needle(seedA, seedB, body);
 				needle.addSeed(seedA);
 				needle.addSeed(seedB);
 				seedA.setNeedle(needle);
@@ -144,6 +135,7 @@ public class Seed extends Voxel {
 	}
 	
 	
+	
 	/**
 	 * Calculates the angle (phi) for dose calculation
 	 * 
@@ -158,7 +150,7 @@ public class Seed extends Voxel {
 			return 90;
 		else
 		{
-			Vector3D vNeedle = needle.getDirection();
+			Vector3D vNeedle = needle.getTumorSurfacePointB().getCoordinate().ToVector().subtract(needle.getTumorSurfacePointB().getCoordinate().ToVector());
 			Vector3D vLineSeedToVoxel = (voxel.getCoordinate().ToVector()).subtract(this.getCoordinate().ToVector());
 			return (Vector3D.angle(vNeedle, vLineSeedToVoxel) * 180 * Math.PI);
 		}

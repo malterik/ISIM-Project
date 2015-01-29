@@ -12,12 +12,31 @@ public class Voxel implements Serializable {
 	private Coordinate coordinate;
 	private int bodyType = -1;
         public double metavalue;
+	private static double[] lut;
 	
 	
 	public Voxel(double x, double y, double z) {
 		
 		coordinate = new Coordinate(x, y, z);
                 
+		
+	}
+	
+	/**
+	 * LUT creation for fast dose approximation
+	 * @param maxDist
+	 * @param num
+	 */
+	public static void setLUT(double maxDist, int num)
+	{
+		lut = new double[num+1];
+		double phi = 90.0;
+		
+		for (int i = 0; i <= num; i++)
+		{
+			double distance = i*(maxDist/(double)(num+1));
+			lut[i] = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) );  
+		}
 	}
 	
 	/**
@@ -63,6 +82,26 @@ public class Voxel implements Serializable {
 			dose = this.getGoalDosis();
 		} else {
 			dose = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ) * durationMilliSec ; 
+		}
+		
+		return dose;
+	}
+	
+	public double radiationIntensityLUT(Coordinate position, double durationMilliSec, double phi){
+		double distance = distanceToVoxel(position);
+		
+		double dose= 0;
+		
+		if(distance > 10) {
+			return 0.0;
+		}
+
+		//  Interpolation for dose function 
+		
+		if(distance == 0) {
+			dose = this.getGoalDosis();
+		} else {
+			dose = lut[(int)(distance/10.0*Config.LUTSize)] * durationMilliSec;
 		}
 		
 		return dose;
@@ -132,7 +171,7 @@ public class Voxel implements Serializable {
 	/*  Mathematical help functions to calculate all partial resultes for the dose */ 
 	
 	
-	private double F(double phi, double r) {
+	private static double F(double phi, double r) {
 		
 		
 		if(phi == 90) {
@@ -171,7 +210,7 @@ public class Voxel implements Serializable {
 		return F;
 	}
 	
-	private double gl(double r) {
+	private static double gl(double r) {
 		double gl = 0;
 		
 		double[] coeff = { 		//coefficents for the interpolationspolynom
@@ -196,7 +235,7 @@ public class Voxel implements Serializable {
 		
 	}
 	
-	private double GL(double r, double phi) {
+	private static double GL(double r, double phi) {
 		double res = 0; 
 		if(phi == 0) {
 			
@@ -209,7 +248,7 @@ public class Voxel implements Serializable {
 		return res;
 	}
 	
-	private double beta(double r, double phi) {
+	private static double beta(double r, double phi) {
 		double res = 0;
 		
 		double part_res1 = 0;
@@ -283,11 +322,7 @@ public class Voxel implements Serializable {
 	}
 	
 	public double getRelaxedGoalDosis() {
-		if(goalDosis == 50)
-		{
-			return goalDosis - Config.relaxDose;
-		}		
-		else if(goalDosis == 0)
+		if(goalDosis == 0)
 		{
 			return Config.relaxDose;
 		}

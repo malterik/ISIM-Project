@@ -1,4 +1,6 @@
+
 \documentclass{beamer}
+\usepackage{cancel}
 \usepackage[utf8]{inputenc}
 \usepackage{mathtools}
 \usepackage{xcolor}
@@ -7,6 +9,7 @@
 \newcommand\mycommfont[1]{\footnotesize\ttfamily\textcolor{blue}{#1}}
 \SetCommentSty{mycommfont}
 
+\setcounter{tocdepth}{2}
 
 \usetheme{Warsaw}
 \useoutertheme{infolines}
@@ -59,7 +62,36 @@
 \end{frame}
 \frame{\tableofcontents}
 
+\section{Dose-Function}
+
+\frame{\tableofcontents[currentsection]}
+
+\begin{frame}
+\frametitle{Dose-Function}
+The Dose-Function is implemented as follows:
+\begin{equation}
+\dot{D}(r,\theta_{0})= S_{k}\Lambda \frac{G_{L}(r,\theta_{0})}{G_{L}(r_{0},\theta_{0})} g_{L}(r) F(r_{0},\theta_{0})
+\end{equation}
+\begin{equation}
+\Rightarrow \ \dot{D}(r,\theta_{0})= S_{k}\Lambda \frac{G_{L}(r,\theta_{0})}{G_{L}(r_{0},\theta_{0})} g_{L}(r) \cdot 1
+\end{equation}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Dose-Function}
+	\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{pictures/dosefunction}
+	\caption{Dose-Function Plot}
+	\end{figure}
+ 
+ 
+\end{frame}
+
+
 \section{Algorithms}
+\frame{\tableofcontents[currentsection]}
 \subsection{Genetic Algorithm}
 \frame{\tableofcontents[currentsubsection]}
 \subsubsection{Individual}
@@ -262,7 +294,7 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 \begin{column}{.48\textwidth}
 \begin{itemize}
 \item Multithreading \textcolor{red}{off}
-\item $k = 12$
+\item $k = 10$
 \item $Elitism = 2$
 \item $Scalefactor = 1$
 \item $Treatmentrange = 10 \ cm$
@@ -281,11 +313,13 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 \item $Treatmentrange = 8 \ cm$
 \end{itemize}
 
- \textbf{$\Rightarrow \ \sim $12min Runtime}
+ \textbf{$\Rightarrow \ \sim $10min Runtime}
 \end{column}%
 \end{columns}
 \end{frame}
  
+ 
+\subsubsection{Results}
 \begin{frame}
 \frametitle{Results}
 	\begin{figure}[h]
@@ -297,6 +331,7 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
  
 \end{frame}  
 
+
 \begin{frame}
 \frametitle{Results}
 	\begin{figure}[h]
@@ -306,7 +341,56 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 	\end{figure}
  
  
+\end{frame} 
+
+
+\begin{frame}
+\frametitle{Results}
+	\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{pictures/body2_w1-4-2-70-20.png}
+	\caption{Result of a weighted optimisation}
+	\end{figure}
+ 
+ 
+\end{frame} 
+
+\subsubsection{Outlook}
+\begin{frame}
+\frametitle{Pros \& Cons}
+
+\begin{columns}[T] % align columns
+\begin{column}{.48\textwidth}
+\textcolor{green}{Pros:}
+\begin{itemize}
+\item It always finds a good solution
+\item Very flexible input
+\end{itemize}
+
+\end{column}%
+\hfill%
+
+\begin{column}{.48\textwidth}
+\textcolor{red}{Cons:}
+
+\begin{itemize}
+\item Relative high runtime
+\item Every patient should use individual weights for Dose-Function
+\end{itemize}
+\end{column}%
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Outlook}
+\begin{itemize}
+\item Runtime/Paramter optimisation
+\item Classifier for weighting factors?
+\item Optimise seed positions aswell?
+\end{itemize}
+ 
 \end{frame}  
+ 
  
  \subsection{Linear Programming}
  \frame{\tableofcontents[currentsubsection]}
