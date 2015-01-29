@@ -99,6 +99,9 @@ public class Config {
 	public static final int scaleFactor = 5;
 	
 	public static final double cancelValue = 1;
+
+	//other
+	public static final int LUTSize = 10000; // size of lookup table for fast dose approximation
 	
 	
 	
