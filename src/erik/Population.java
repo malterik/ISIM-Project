@@ -170,9 +170,9 @@ public class Population
             System.out.println(" ; Best Fitness = " + pop.findBestIndividual().getFitnessValue()); 
            
             //LogTool.print("Iteration : "+iter, "notification");
-            //LogTool.print("Improvement: "+Math.abs(bestResultOld-bestResult)+" Cancel counter= " + counter, "debug");
+            LogTool.print("Improvement: "+Math.abs(bestResultOld-bestResult)+" Cancel counter= " + counter, "debug");
             
-            if(pop.findBestIndividual().getFitnessValue() < bestResult) {
+            if(pop.findBestIndividual().getFitnessValue() <= bestResult) {
             	bestResultOld = bestResult;
             	bestResult =  pop.findBestIndividual().getFitnessValue();
             }
