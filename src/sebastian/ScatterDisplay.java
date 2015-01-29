@@ -12,6 +12,7 @@ import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.Scatter;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
 
+import utils.Config;
 import utils.Coordinate;
 import utils.LogTool;
 import utils.Voxel;
@@ -41,7 +42,7 @@ public class ScatterDisplay{
 	 */
 	public static enum ChartType {CurrentDosis, MaxDosis, MinDosis, GoalDosis, BodyType};
 	
-	private static float TRANSPARENCY = 0.6f;
+	private static float TRANSPARENCY = 0.25f;
 	
 	protected static String CANVAS_TYPE = "awt";
 	protected static Rectangle DEFAULT_WINDOW = new Rectangle(0,0,600,600);
@@ -69,7 +70,7 @@ public class ScatterDisplay{
         switch (type) {
         case CurrentDosis:
         	factor = (float) (data.getCurrentDosis() / max_dosis * 0.75);
-        	if (data.getCurrentDosis() != 0) {
+        	if (data.getCurrentDosis() != 0 && data.getBodyType() != Config.normalType) {
         	  color = new Color (0.7f, 0, 0.9f, factor + 0.25f);
         	}
         	else {
@@ -77,7 +78,7 @@ public class ScatterDisplay{
         	}
         	break;
         case MaxDosis:
-        	if (data.getMaxDosis() >= data.getCurrentDosis()) {
+        	if (data.getMaxDosis() >= data.getCurrentDosis() && data.getBodyType() != Config.normalType) {
         	  factor = (float) ((data.getMaxDosis () - data.getCurrentDosis ()) / data.getMaxDosis () * 0.7f);
         	  color = new Color (0, 0.3f + factor, (0.7f - factor), TRANSPARENCY);
         	}
@@ -87,7 +88,7 @@ public class ScatterDisplay{
         	}
         	break;
         case MinDosis:
-        	if (data.getMinDosis() <= data.getCurrentDosis()) {
+        	if (data.getMinDosis() <= data.getCurrentDosis() && data.getBodyType() != Config.normalType) {
           	  factor = (float) ((data.getCurrentDosis () - data.getMinDosis ()) / data.getCurrentDosis () * 0.7f);
           	  color = new Color (0, 0.3f + factor, (0.7f - factor), TRANSPARENCY);
           	}
@@ -97,8 +98,8 @@ public class ScatterDisplay{
           	}
         	break;
         case  GoalDosis:
-        	if (data.getGoalDosis() >= data.getCurrentDosis()) {
-          	  factor = (float) ((data.getGoalDosis () - data.getCurrentDosis ()) / data.getGoalDosis () * 0.7f);
+        	if (data.getGoalDosis() >= data.getCurrentDosis() && data.getBodyType() != Config.normalType) {
+          	  factor = (float) ((data.getGoalDosis () - data.getCurrentDosis ()) / data.getGoalDosis () * 0.25f);
           	  color = new Color (0, 0.3f + factor, (0.7f - factor), TRANSPARENCY);
           	}
           	else {

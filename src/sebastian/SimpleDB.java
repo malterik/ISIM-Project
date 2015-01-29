@@ -239,11 +239,6 @@ public class SimpleDB {
 	  
   }
   
-  private double getDistance(Coordinate coordinate, double[] voxel2) {
-	double[] voxel1 = new double[] {coordinate.getX(), coordinate.getY(), coordinate.getZ()};
-	return getDistance (voxel1, voxel2);
-  }
-
 /**
    * Calculates the distance between two volume centers (vc) by euclidian norm
    * @param vc1 volume center 1

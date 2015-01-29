@@ -27,10 +27,10 @@ public class DoseEvaluator implements Callable<Double> {
         double intensity=0;
         double[] weightingFactor = new double[5];
         weightingFactor[0] = 1;
-        weightingFactor[1] = 50;
-        weightingFactor[2] = 1;
-        weightingFactor[3] = 50;
-        weightingFactor[4] = 1;
+        weightingFactor[1] = 4;
+        weightingFactor[2] = 2;
+        weightingFactor[3] = 70;
+        weightingFactor[4] = 20;
         
 			
 		for(int y =Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1] ; y+= Config.scaleFactor) {

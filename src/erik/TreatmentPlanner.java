@@ -118,9 +118,9 @@ public class TreatmentPlanner {
 		LogTool.print("Initialized Solver!", "notification");
 
 		long start = System.currentTimeMillis();
-		solver.solveGeneticAlg();
+		//solver.solveGeneticAlg();
         //solver.solveSA();
-		//solver.solveLP();
+		solver.solveLP();
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
@@ -163,8 +163,7 @@ public class TreatmentPlanner {
 	public static void main(String[] args) throws IloException {
 		printTreatmentData();
 		planTreatment();
-		while(true);
-		
+		while (true);
 	}
 }
 
