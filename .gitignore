@@ -80,5 +80,6 @@ local.properties
 presentation/*
 !presentation/isimpresentation.tex
 !presentation/LPexample.JPG
+!presentation/pictures
 src/tex/*
 !src/tex/main.tex
