@@ -118,7 +118,7 @@ public class TreatmentPlanner {
 
 		long start = System.currentTimeMillis();
 		//solver.solveGeneticAlg();
-        //solver.solveSA();
+                //solver.solveSA();
 		solver.solveLP();
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,

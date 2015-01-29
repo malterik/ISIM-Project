@@ -108,11 +108,20 @@ public class Voxel implements Serializable {
 	}
 	
 	public double radiationIntensity(Coordinate position, double durationMilliSec){
-		return radiationIntensity(position, durationMilliSec, 90);
+            double temp=radiationIntensityNoTimeCALC(position, 90);
+             if (temp>0.0) {
+//                LogTool.print("Wert in Time " + temp, "notification");
+//                LogTool.print("Wert in Time " + temp-, "notification");
+            }
+		return temp;
 	}
         
         public double radiationIntensityNoTime(Coordinate position){
-		return radiationIntensityNoTimeCALC(position, 90);
+            double temp = radiationIntensityNoTimeCALC(position, 90);
+            if (temp>0.0) {
+                LogTool.print("Wert in nOtIME " + temp, "notification");
+            }
+		return temp;
 	}
 	
 	public double radiationIntensity(double r, double durationMilliSec){

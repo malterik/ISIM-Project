@@ -179,6 +179,13 @@ public class TreatmentSA {
 //        LogTool.print("FitnessGlobalLow: " + looper.+ " FitnessCURC: " + looper.getcurfitnessValue(),"notification");
         //LogTool.print("GLS external: " + GLS.getGlobal_Lowest_state_string(),"notification");
         LogTool.print("SolveSA: Global Current Best Solution : " + looper.getGlobal_Lowest_state_string(),"notification");
+        
+//        for(int i=0; i<Config.SAnumberOfSeeds;i++) {
+//            double theval = looper.getGlobal_Lowest_state()[i];
+//			Solver.seeds[i].setDurationMilliSec(theval);
+//			System.out.println("Verweildauer: "+ Solver.seeds[i].getDurationMilliSec() );
+//		}
+        
 //        looper.rausfindenWarumCUrCostsichnichtaendert();
 
 //        The looper needs to establish an initial solution and temperature

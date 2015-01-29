@@ -87,11 +87,11 @@ public class Looper {
 //                Cur_state[1] = Zeit2;
 //                Cur_state[2] = Zeit3;
             }
-        for(int x=0; x < Config.xDIM; x++) {
+        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
 //        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x++) {
-            for(int y=0; y < Config.yDIM; y++) {
+            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
 //            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y++) {
-                for(int z=0; z < Config.zDIM; z++) {
+                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
 //                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
 
 //                    this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
@@ -556,6 +556,16 @@ public class Looper {
 
     public double getcurfitnessValue() {
         return curfitnessValue;
+    }
+    
+    public void setFinalSolution () {
+        for(int i=0; i<Config.SAnumberOfSeeds;i++) {
+                this.seeds[i].setDurationMilliSec(GLowestState.getDwelltimes()[i]);
+                Cur_state[i] = GLowestState.getDwelltimes()[i];
+            }
+        setCur_cost(costCURsuper());
+//        setCur_cost(costCUR());
+        
     }
     
     
