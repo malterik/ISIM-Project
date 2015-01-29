@@ -136,6 +136,13 @@ public class Voxel implements Serializable {
 		return dose;
 	}
 	
+        /**
+         * @author Dawid
+         * @param position
+         * @param phi
+         * @return metavalue
+         */
+        
         public double radiationIntensityNoTimeCALC(Coordinate position, double phi){
 		double distance = distanceToVoxel(position);
 		
