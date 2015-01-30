@@ -113,8 +113,9 @@ public class Voxel implements Serializable {
 //                LogTool.print("Wert in Time " + temp, "notification");
 //                LogTool.print("Wert in Time " + temp-, "notification");
             }
-		return temp;
+		return temp*durationMilliSec;
 	}
+	
         
         public double radiationIntensityNoTime(Coordinate position){
             double temp = radiationIntensityNoTimeCALC(position, 90);
