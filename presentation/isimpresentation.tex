@@ -604,15 +604,27 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 	\begin{frame}
 	\frametitle{Another Approach: Stepwise Optimization}
 	\begin{itemize}
+	\item applied idea of stepwise optimization to HDR brachytherapy\footnote{Stepwise multi-criteria optimization for robotic radiosurgery - Schläfer, Schweikard} 
 	\item conflicting goals cannot always be met
-	\item stepwise optimization while keeping bounds
-	\item identify and balance tradeoffs
+	\item balancing of tradeoffs by human planner
+	\item when solution is pareto-efficient $\rightarrow$ relax bounds to optimize other criterion
+	\item keep bounds from previous steps
+	\item human planner decides when final solution is reached
 	\end{itemize}   
 	\end{frame}
 	
 	\begin{frame}
+	\frametitle{Idea}
+		\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.6\textwidth]{pictures/struktogramm_resized}
+		\caption{Principle of stepwise optimization}
+		\end{figure}
+	\end{frame}
+	
+	\begin{frame}
 		\frametitle{Problem}
-		The optimization problem:		
+		The optimization problem\footnote{Stepwise multi-criteria optimization for robotic radiosurgery - Schläfer, Schweikard}:		
 		\begin{equation}
 			\begin{matrix}
 			\textit{min} &            & ~\hat{c}_s^T\hat{s} & +\hat{c}_s^T\check{s}    & +\check{c}_s^T\hat{t} & +\check{c}_s^T\check{t} & & \\\\
@@ -623,12 +635,11 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 			             & \hat{t}    & 		            &            &           &            & \leq & b_{\hat{t}}\\
 			             & \check{t}  & 	                &            &           &            & \leq & b_{\check{t}}\\
 						 & \multicolumn{2}{c}{x,\hat{s},\check{s},\hat{t},\check{t}} & & & & \geq & 0
-			\end{matrix}	
+			\end{matrix}		
 		\end{equation}
 		\begin{itemize}
-			\item $\hat{s},\check{s}$ for bounds on single voxel
-			\item $\hat{t},\check{t}$ for bounds on VOI
-			\item only s or t are minimized per VOI in one step
+			\item $\hat{s},\check{s}$ for bounds on single voxel, $\hat{t},\check{t}$ for whole VOI
+			\item only $\hat{s}$,$\check{s}$ or $\hat{t}$,$\check{t}$ are minimized per VOI in one step
 		\end{itemize}   
 	\end{frame}
 	
@@ -670,7 +681,7 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 		\textcolor{green}{Pros:}
 		\begin{itemize}
 		\item adjustment by dose constraints (not weighting factors)
-		\item control over tradeoffs
+		\item doctor has control over possible tradeoffs
 		\end{itemize}
 		
 		\end{column}%
@@ -679,7 +690,7 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 		\textcolor{red}{Cons:}
 		
 		\begin{itemize}
-		\item manual adjustment requires medical expertise
+		\item multiple steps involved
 		\item only hard constraints for min/max values
 		\end{itemize}
 		\end{column}%
