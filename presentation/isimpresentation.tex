@@ -17,7 +17,7 @@
 \newcommand\RBox[1]{%
   \tikz\node[draw,rounded corners,align=center,] {#1};%
 }  
-\author[Elm S. \& Karthe T. \& Golebiewski D. \& Schröder M.E.]
+\author[Elm-Karthe-Golebiewski-Schröder-Mordhorst]
 {%
    \texorpdfstring{
         \begin{columns}
@@ -29,7 +29,7 @@
             \centering
             \RBox{Karthe T.\\
             \href{mailto:thobias.karthe@tuhh.de}{thobias.karthe@tuhh.de}}
-        \end{columns}
+        \end{columns}            
         \vspace{0.5cm}
         \begin{columns}
             \column{.45\linewidth}
@@ -55,12 +55,49 @@
    }
    {John Doe \& Jane Doe}
 }
-\title{Treatment planning tool for HDR Brachytherapy}
+\title{Treatment planning for HDR Brachytherapy}
 \begin{document}
 \begin{frame}
 \titlepage
 \end{frame}
 \frame{\tableofcontents}
+
+\section{HDR Brachytherapy - The Problem}
+\frame{\tableofcontents[currentsection]}
+\subsubsection*{The Body}
+\begin{frame}
+\frametitle{The Body}
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=0.7\textwidth]{pictures/body.JPG}
+  \caption{body with tumor}
+  \label{fig:body}
+\end{figure}
+\end{frame}
+
+\subsubsection*{Needles - Prostate Treatment}
+\begin{frame}
+\frametitle{Needles - Prostate Treatment}
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=0.7\textwidth]{pictures/prost.JPG}
+  \caption{prostate implantation using a template and needles - Dr. S. Aluwini, Dr.Ir. I.K.K. Kolkman-Deurloo}
+  \label{fig:prost}
+\end{figure}
+\end{frame}
+
+\subsubsection*{Coverage - Prostate Treatment}
+\begin{frame}
+\frametitle{Coverage - Prostate Treatment}
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=0.7\textwidth]{pictures/cover.JPG}
+  \caption{radiation isodose curves covering the target - D. Jeffrey Demanes M.D.}
+  \label{fig:cover}
+\end{figure}
+\end{frame}
+
+
 
 \section{Evaluation Criteria}
 \frame{\tableofcontents[currentsection]}
@@ -462,7 +499,7 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
  \frametitle{General Idea}
  \begin{figure}[h] 
   \centering
-     \includegraphics[width=1\textwidth]{LPexample.JPG}
+     \includegraphics[width=1\textwidth]{pictures/LPexample.JPG}
   \caption{LP-Example [Intelligent Systems in Medicine - Schlaefer]}
   \label{fig:LPE}
 \end{figure}
@@ -687,6 +724,7 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 	\end{frame}
 	
 \subsection{Needle Placement}
+\frame{\tableofcontents[currentsubsection]}
 	\begin{frame}
 	\frametitle{Idea}
 		In a real situatuion, needle positions and angles are constrainted.\\
