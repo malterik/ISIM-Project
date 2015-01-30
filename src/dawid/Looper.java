@@ -87,15 +87,16 @@ public class Looper {
 //                Cur_state[1] = Zeit2;
 //                Cur_state[2] = Zeit3;
             }
-        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
-//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x++) {
-            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
-//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y++) {
-                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
-//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
-
-//                    this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    this.body2[x][y][z].metavalue = 0.0;
+        
+         if ((Config.SACostFunctionType==3)||(Config.SACostFunctionType==1)) {
+            for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+                for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+//                  for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+                    for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+//                      for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+//                          this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+                        this.body2[x][y][z].metavalue = 0.0;
                         for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
                             // Calculate intensity based based on current dwelltime
                             metaintensity = this.body2[x][y][z].radiationIntensityNoTime((this.seeds2[i].getCoordinate()));
@@ -104,15 +105,41 @@ public class Looper {
     //                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
                                                     }
     //                        this.body2[x][y][z].addCurrentDosis(metaintensity);
-                              this.body2[x][y][z].metavalue += metaintensity;                      
+                              this.body2[x][y][z].metavalue += metaintensity;           
+//                              Das ist implementation one
                         }   
                 }    
             }
         }
         this.body = this.body2;
-        diffr = (this.body[2][2][3].metavalue-this.body2[2][2][3].metavalue);
-        LogTool.print("BODYDIFFR CHECK AT INIT!!!!!!!!!! :" + diffr + "@ 2,2,3 ","notification");
-        
+         } else {
+         
+    //        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+            for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+    //            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+                for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+    //                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+                    for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+    //                    this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+                        this.body2[x][y][z].metavalue = 0.0;
+                            for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                                // Calculate intensity based based on current dwelltime
+                                metaintensity = this.body2[x][y][z].radiationIntensityNoTime((this.seeds2[i].getCoordinate()));
+        //                                radiationIntensityNoTime(this.seeds2[i].getCoordinate(), New_state[i]);
+                                                        if (metaintensity>0) {
+        //                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
+                                                        }
+        //                        this.body2[x][y][z].addCurrentDosis(metaintensity);
+                                  this.body2[x][y][z].metavalue += metaintensity;           
+    //                              Das ist implementation one
+                            }   
+                    }    
+                }
+            }
+            this.body = this.body2;
+            diffr = ((this.body[43][43][43].metavalue+10000)-(this.body2[43][43][43].metavalue));
+            LogTool.print("BODYDIFFR CHECK AT INIT!!!!!!!!!! :" + diffr + "@ 43,43,43 ","notification");
+         }
     }
     /**
     * Works. Randomly determines a new state vector
@@ -237,7 +264,7 @@ public class Looper {
  * 
  * @return The Seed[] of seeds
  */
-    public Seed[] getSeed()
+    public Seed[] getSeeds()
     {
         return seeds;
     }
@@ -397,11 +424,40 @@ public class Looper {
         double intensity=0;
         
         for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
-//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x++) {
+//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
             for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
-//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y++) {
+//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
                 for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
-//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
+//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+
+                    this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                        // Calculate intensity based based on current dwelltime
+                        intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
+                                                if (intensity>0) {
+//                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
+                                                }
+                        this.body2[x][y][z].addCurrentDosis(intensity);
+                    }   
+                    diff += Math.pow((this.body2[x][y][z].getGoalDosis()-this.body2[x][y][z].getCurrentDosis()),2);
+//                                        LogTool.print(" diffdose " + (Looper.body2[x][y][z].getGoalDosis()-Looper.body2[x][y][z].getCurrentDosis()),"notification");
+                }    
+            }
+        }
+        return Math.sqrt(diff);
+//        return Math.random();
+    }
+    
+    public double costNEXfinal() {
+        double diff=0;
+        double intensity=0;
+        
+//        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+//            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+//                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
                     for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
@@ -426,11 +482,11 @@ public class Looper {
         double intensity=0;
         
         for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
-//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x++) {
+//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
             for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
-//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y++) {
+//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
                 for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
-//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
+//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
                     for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
@@ -450,16 +506,45 @@ public class Looper {
 //        return Math.random();
     }
     
-    public double costCUR() {
+    public double costNEXsuperfinal() {
+        double diff=0;
+        double intensity=0;
+        
+//        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+//            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+//                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+
+                    this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                        // Calculate intensity based based on current dwelltime
+                        intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
+                                                if (intensity>0) {
+//                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
+                                                }
+                        this.body2[x][y][z].addCurrentDosis(intensity);
+                    }   
+                    diff += Math.pow((this.body2[x][y][z].getGoalDosis()-this.body2[x][y][z].getCurrentDosis()),2);
+//                                        LogTool.print(" diffdose " + (Looper.body2[x][y][z].getGoalDosis()-Looper.body2[x][y][z].getCurrentDosis()),"notification");
+                }    
+            }
+        }
+        return Math.sqrt(diff);
+//        return Math.random();
+    }
+    
+    public double costCURsuper() {
         double diff=0;
         double intensity=0;
         
         for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
-//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x++) {
+//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
             for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
-//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y++) {
+//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
                 for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
-//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
+//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
                     for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
@@ -479,16 +564,45 @@ public class Looper {
 //        return Math.random();
     }
     
-    public double costCURsuper() {
+    public double costCUR() {
         double diff=0;
         double intensity=0;
         
-        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
-//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x++) {
-            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
-//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y++) {
-                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
-//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z++) {
+//        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+//            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+//                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+
+                    this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                        // Calculate intensity based based on current dwelltime
+                        intensity = this.body[x][y][z].radiationIntensity(this.seeds[i].getCoordinate(), Cur_state[i]);
+                                                if (intensity>0) {
+//                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
+                                                }
+                        this.body[x][y][z].addCurrentDosis(intensity);
+                    }   
+                    diff += Math.pow((this.body[x][y][z].getGoalDosis()-this.body[x][y][z].getCurrentDosis()),2);
+//                                        LogTool.print(" diffdose " + (Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),"notification");
+                }    
+            }
+        }
+        return Math.sqrt(diff);
+//        return Math.random();
+    }
+    
+    public double costCURsuperfinal() {
+        double diff=0;
+        double intensity=0;
+        
+//        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+//            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+//                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
                     for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
@@ -501,6 +615,35 @@ public class Looper {
                     }   
                     diff += Math.pow((this.body[x][y][z].getGoalDosis()-this.body[x][y][z].getCurrentDosis()),2);
 //                                        LogTool.print(" diffdose " + (Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),"notification");
+                }    
+            }
+        }
+        return Math.sqrt(diff);
+//        return Math.random();
+    }
+    
+    public double costCURfinal() {
+        double diff=0;
+        double intensity=0;
+        
+//        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+//            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+//                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+
+                    this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                        // Calculate intensity based based on current dwelltime
+                        intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
+                                                if (intensity>0) {
+//                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
+                                                }
+                        this.body2[x][y][z].addCurrentDosis(intensity);
+                    }   
+                    diff += Math.pow((this.body2[x][y][z].getGoalDosis()-this.body2[x][y][z].getCurrentDosis()),2);
+//                                        LogTool.print(" diffdose " + (Looper.body2[x][y][z].getGoalDosis()-Looper.body2[x][y][z].getCurrentDosis()),"notification");
                 }    
             }
         }
@@ -557,16 +700,28 @@ public class Looper {
     public double getcurfitnessValue() {
         return curfitnessValue;
     }
+
+    public Voxel[][][] getBody() {
+        return body;
+    }
     
-    public void setFinalSolution () {
+    
+    public void setFinalSolution() {
         for(int i=0; i<Config.SAnumberOfSeeds;i++) {
                 this.seeds[i].setDurationMilliSec(GLowestState.getDwelltimes()[i]);
                 Cur_state[i] = GLowestState.getDwelltimes()[i];
             }
-        setCur_cost(costCURsuper());
-//        setCur_cost(costCUR());
-        
+        if (Config.SACostFunctionType==3) {
+            setCur_cost(costCUR());
+        }
+        if (Config.SACostFunctionType==2) {
+            setCur_cost(costCURfinal());
+        }
+        if (Config.SACostFunctionType==1) {
+            setCur_cost(costCURsuper());
+        }
+        if (Config.SACostFunctionType==0) {
+            setCur_cost(costCURsuperfinal());
+        }
     }
-    
-    
 }
