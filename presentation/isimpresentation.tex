@@ -644,13 +644,36 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 	\end{frame}
 	
 	\begin{frame}
+	\frametitle{Example: optimize coverage}
+		To optimize the PTV coverage (maximize PTV voxels with dose $\geq$ PTV goal dose) the following steps are required:
+		
+		\begin{enumerate}
+		\item set difference between goalDose and lower bound
+				as slack variable bound
+					\begin{equation}
+						b_{\hat{s},PTV} = goalDose - b_{l,PTV}
+					\end{equation}
+		\item set PTV lower bound to desired dose
+			\begin{equation}
+				b_{l,PTV} = goalDose
+			\end{equation}
+		\item minimize values of $\hat{s}_{PTV}$
+		\item set new lower bound
+			\begin{equation}
+			b_{l,PTV} = b_{l,PTV} - \hat{s}_{PTV}
+			\end{equation}
+		\end{enumerate}
+
+	\end{frame}	
+	
+	\begin{frame}
 	\frametitle{Idea}
 		\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.7\textwidth]{pictures/stepwise}
 		\caption{Stepwise optimization}
 		\end{figure}
-	\end{frame}
+	\end{frame}	
 	
 	\begin{frame}
 	\frametitle{Sampling}
@@ -762,13 +785,22 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 		\end{itemize}
 	\end{frame}
 	\begin{frame}
+	\frametitle{Evaluation}
+		\begin{itemize}
+		\item average of ten runs: optimization for coverage with same bounds
+		\item 25 Needles with 2 seeds each are creates
+		\item measurement is made for best k needles with varying k
+		\end{itemize}
+	\end{frame}
+	\begin{frame}
 	\frametitle{Results}
-		Average of ten runs: optimization for coverage with fixed bounds
 		\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{pictures/histogramm_nadeln}
-		\caption{Needle placement}
+		\caption{Result for data2593.4844}
 		\end{figure}
+		Result: For k $>$ 10 needles around 90 \% of the reference coverage (random seeds) can be reached 
+		
 	\end{frame}
 
 
