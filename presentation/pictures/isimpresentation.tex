@@ -69,7 +69,7 @@
 			\frametitle{Coverage}
 			Definition of Coverage:
 			\begin{equation}
-				coverage = \frac{\text{\# PTV voxels with dose $>$ goal dose}}{\text{\# PTV voxels}}
+				coverage = \frac{\text{PTV voxels with dose $>$ goal dose}}{\text{PTV voxels}}
 			\end{equation}
 			\begin{itemize}
 				\item Coverage is between 0 and 1 
@@ -595,158 +595,30 @@ Runtime with and without optimisation\footnote{Intel\textregistered  Core i5-357
 	\begin{frame}
 	\frametitle{Another Approach: Stepwise Optimization}
 	\begin{itemize}
-	\item conflicting goals cannot always be met
-	\item stepwise optimization while keeping bounds
-	\item identify and balance tradeoffs
+	\item Conflicting goals cannot always be met
+	\item Tradeoff identyfying and handling
 	\end{itemize}   
 	\end{frame}
 	
 	\begin{frame}
-		\frametitle{Problem}
-		The optimization problem:		
+		\frametitle{Coverage}
+		Definition of Coverage:
 		\begin{equation}
-			\begin{matrix}
-			\textit{min} &            & ~\hat{c}_s^T\hat{s} & +\hat{c}_s^T\check{s}    & +\check{c}_s^T\hat{t} & +\check{c}_s^T\check{t} & & \\\\
-			\textit{s.t} & Ax         & -\hat{s}            &            & -\hat{t}  &            & \leq & b_u\\
-			 		     & Ax         & 		            & +\check{s} &           & +\check{t} & \geq & b_l\\
-					   	 & \hat{s}    & 		            &            &           &            & \leq & b_{\hat{s}}\\
-			             & \check{s}  & 	                &            &           &            & \leq & b_{\check{s}}\\
-			             & \hat{t}    & 		            &            &           &            & \leq & b_{\hat{t}}\\
-			             & \check{t}  & 	                &            &           &            & \leq & b_{\check{t}}\\
-						 & \multicolumn{2}{c}{x,\hat{s},\check{s},\hat{t},\check{t}} & & & & \geq & 0
-			\end{matrix}	
+			coverage = \frac{\text{PTV voxels with dose $>$ goal dose}}{\text{PTV voxels}}
 		\end{equation}
 		\begin{itemize}
-			\item $\hat{s},\check{s}$ for bounds on single voxel
-			\item $\hat{t},\check{t}$ for bounds on VOI
-			\item only s or t are minimized per VOI in one step
+			\item Coverage is between 0 and 1 
+			\item larger percentage indicates greater coverage
 		\end{itemize}   
 	\end{frame}
 	
+\subsubsection*{Needle Placement}	
 	\begin{frame}
-	\frametitle{Idea}
-		\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.7\textwidth]{pictures/stepwise}
-		\caption{Stepwise optimization}
-		\end{figure}
-	\end{frame}
-	
-	\begin{frame}
-	\frametitle{Sampling}
-		Large-scale linear programming problems can easily exceed a computer's memory.
-		Therefore not each voxel can be considered for dose constraints. The following limitations are made:
-		\begin{itemize}
-			\item all PTV voxels are considered
-			\item the number of OAR voxels is reduced to the number of PTV voxels for each body part
-			\item selection of OAR voxels by nearest distance to PTV
-		\end{itemize}
-	\end{frame}	
-	
-	\begin{frame}
-	\frametitle{Runtime}
- 		Runtime for 50 seeds:\footnote{Intel\textregistered  Core i5-3320M CPU @ 4x2.60Ghz}
- 
-		\begin{itemize}
-			\item runtime depends on the number of optimization steps
-			\item single steps vary in runtime (15-60 seconds for ~25,000 voxels, 60-180 seconds for 120,000 voxels)
-		\end{itemize}  
-	\end{frame}
-	\subsubsection{Outlook}
-	\begin{frame}
-		\frametitle{Pros \& Cons}
-		
-		\begin{columns}[T] % align columns
-		\begin{column}{.48\textwidth}
-		\textcolor{green}{Pros:}
-		\begin{itemize}
-		\item adjustment by dose constraints (not weighting factors)
-		\item control over tradeoffs
-		\end{itemize}
-		
-		\end{column}%
-		\hfill%
-		\begin{column}{.48\textwidth}
-		\textcolor{red}{Cons:}
-		
-		\begin{itemize}
-		\item manual adjustment requires medical expertise
-		\item only hard constraints for min/max values
-		\end{itemize}
-		\end{column}%
-		\end{columns}
-	\end{frame}
-	
-	\begin{frame}
-	\frametitle{Outlook}
-		Further ideas can be taken into account:
-		\begin{itemize}
-			\item dose-volume constraints
-			\item reduce number of seeds $\rightarrow$ treatment time
-		\end{itemize}  
-	\end{frame}
-	
-\subsection{Needle Placement}
-	\begin{frame}
-	\frametitle{Idea}
-		In a real situatuion, needle positions and angles are constrainted.\\
-		Therefore needles are required to intersect an entry zone in this simulation.
-		
-		The needle placement procedure is as follows:
-		\begin{itemize}
-		\item needles have to reach tumor from entry region
-		\item a variable number of needles can be generated
-		\item a variable number of seeds is placed on each needle
-		\end{itemize}
-	\end{frame}	
-	\begin{frame}
-	\frametitle{Idea}
+	\frametitle{Results}
 		\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{pictures/needles}
-		\caption{Needle placement}
-		\end{figure}
-	\end{frame}
-	\begin{frame}
-	\frametitle{Algorithm}
-		\begin{algorithm}[H]					 
-			\KwIn{numberOfNeedles, seedsPerNeedle, entryVoxels, tumorVoxels}
-			\KwOut{needles containing seeds}
-			 \For{(numberOfNeedles)}
-			 {
-			 	$a \gets $ pickRandom(entryVoxels)\;
-			 	$b \gets $ pickRandom(tumorVoxels)\;
-			 	$needle \gets $ createNeedle(a,b)\;
-			 	\For{(seedsPerNeedle)}
-			 	{
-			 		$seed \gets $ createSeedInTumor(needle, tumorVoxels)\;
-			 		needle.add(seed)\;
-			 	}
-			 	needles.add(needle)\;
-			 }
-		\caption{Needle creation}
-		\end{algorithm} 
-	\end{frame}
-	\begin{frame}
-	\frametitle{After first optimization}
-		Needle selection:
-		\begin{itemize}
-		\item take k needles with greatest influence on dose
-		\item criterion: sum of seeds' dwell times
-		\end{itemize}
-		Before further oprimization:
-		\begin{itemize}
-		\item repeatedly place remaining seeds
-		\item choose seed location with largest distance to other seeds
-		\end{itemize}
-	\end{frame}
-	\begin{frame}
-	\frametitle{Results}
-		Average of ten runs: optimization for coverage with fixed bounds
-		\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.5\textwidth]{pictures/histogramm_nadeln}
-		\caption{Needle placement}
+		\caption{Result of an unweighted optimisation}
 		\end{figure}
 	\end{frame}
 
