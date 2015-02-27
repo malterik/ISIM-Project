@@ -17,6 +17,7 @@ public class LPTreatment {
 	static int[] yBoundsTumor;
 	static int[] zBoundsTumor;
 	static int[] dim;
+	static double relax = 0;
 	
 	static boolean[] seedUsed = new boolean[Config.numberOfSeeds];
 	
@@ -221,7 +222,7 @@ public class LPTreatment {
 								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
 							}
 						}
-						cplex.addGe(cplex.sum(dosepart), body[x][y][z].getRelaxedGoalDosis());
+						cplex.addGe(cplex.sum(dosepart), body[x][y][z].getRelaxedGoalDosis() - relax);
 					}
 					else
 					{
@@ -444,6 +445,20 @@ public class LPTreatment {
 		
 		solveLPMin();
 		//solveLPMax();
+	}
+	
+	public static void main(String[] args) {
+		double[] doubleArgs = new double[args.length];
+
+	      for (int i = 0; i < args.length; i++) {
+	         try {
+	            doubleArgs[i] = Double.parseDouble(args[i]);
+	         } catch (NumberFormatException e) {
+	            System.err.println("Failed trying to parse a non-numeric argument, " + args[i]);
+	         }
+	      }
+	      relax = doubleArgs[0];
+	      
 	}
 
 }
