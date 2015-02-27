@@ -151,6 +151,7 @@ public class TreatmentPlanner {
 		//ta.analyzeAll();
 		String filename = "";
 		filename += algo + "_";
+		filename += Config.numberOfSeeds + "_";
 		
 		for (double dValue : doubleArgs)
 		{
