@@ -40,6 +40,10 @@ public class TreatmentAnalyzer implements Serializable {
 	private double coverage;
 	private Histogram histogram;
 	
+	private String sAlgorithm;
+	private double[] doubleArgs;
+	
+	
 	private transient ArrayList<Set<Voxel>> anatomies;
 	
 	/**
@@ -61,6 +65,8 @@ public class TreatmentAnalyzer implements Serializable {
 		this.title = title;
 		
 		this.anatomies = BodyAnalyzer.splitBodyTypes(body);
+		this.sAlgorithm = "";
+		this.doubleArgs = null;
 		irradiate();
 		analyzeAll();
 	}
@@ -91,6 +97,14 @@ public class TreatmentAnalyzer implements Serializable {
 	
 	public String getTitle() {
 		return title;
+	}
+	
+	public String getSAlgorithm() {
+		return sAlgorithm;
+	}
+	
+	public double[] getDoubleArgs() {
+		return doubleArgs;
 	}
 	
 	public void setMinDoses(double[] minDoses) {
@@ -130,6 +144,14 @@ public class TreatmentAnalyzer implements Serializable {
 		this.coverage = coverage;
 	}
 	
+	public void setSAlgorithm(String sAlgorithm) {
+		this.sAlgorithm = sAlgorithm;
+	}
+	
+	public void setDoubleArgs(double[] doubleArgs) {
+		this.doubleArgs = doubleArgs;
+	}
+	
 	/**
 	 * Calculates dose for each voxel.
 	 */
@@ -140,8 +162,8 @@ public class TreatmentAnalyzer implements Serializable {
 					double dose = 0.0;
 					for (Seed seed : seeds)
 					{
-						//dose += seed.radiationIntensityLUT(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
-						dose += body[x][y][z].radiationIntensityLUT(seed.getCoordinate(), seed.getDurationMilliSec(), 90);
+						dose += seed.radiationIntensity(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
+						//dose += body[x][y][z].radiationIntensityLUT(seed.getCoordinate(), seed.getDurationMilliSec(), 90);
 					}
 					body[x][y][z].setCurrentDosis(dose);									
 				}
