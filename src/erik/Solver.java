@@ -102,8 +102,8 @@ public class Solver {
 		}
 	}
         
-        public void solveSA() {
-            Looper looper = new Looper(Solver.body,Solver.seeds);
+        public void solveSA(double[] args) {
+            Looper looper = new Looper(Solver.body,Solver.seeds,args);
             LogTool.print("Initialized Looper Object!","notification");
             LogTool.print("Beginning Annealing...","notification");
             looper.solveSA();

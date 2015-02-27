@@ -41,6 +41,7 @@ public class Looper {
     public double[] New_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
     public double[] Global_Lowest_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
     public GlobalState GLowestState;
+    double[] cliarguments;
     
     private double Cur_cost, New_cost, Global_lowest_cost, temperature, newfitnessValue, curfitnessValue;
     
@@ -49,10 +50,13 @@ public class Looper {
      * @param body
      * The body of the patient
      * @param seeds
+     * @param cliargs
+     * Command LIne Arguments as given by TreatmentPlanner
      * The seeds which should be optimized
      */
     
-    public Looper(Voxel [][][] body, Seed[] seeds) {
+    
+    public Looper(Voxel [][][] body, Seed[] seeds,double[] cliargs) {
         this.temperature = Config.StartTemp;
         this.body = body;
         
@@ -69,6 +73,7 @@ public class Looper {
         this.seeds = seeds;
         this.body2 = body22;
         this.seeds2 = seeds;
+        this.cliarguments = cliargs;
 //                this.Cur_cost = Cur_cost;
 //                this.New_cost = New_cost;
 //                this.temperature = temperature;
