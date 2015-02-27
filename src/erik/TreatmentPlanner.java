@@ -180,7 +180,7 @@ public class TreatmentPlanner {
 		
 		Config.setNumberOfSeeds(seedNumber);
 
-		double[] doubleArgs = new double[args.length];
+		double[] doubleArgs = new double[args.length-2];
 
 	      for (int i = 2; i < args.length; i++) {
 	         try {
