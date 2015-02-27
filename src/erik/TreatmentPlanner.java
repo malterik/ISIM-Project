@@ -118,19 +118,19 @@ public class TreatmentPlanner {
 
 		long start = System.currentTimeMillis();
 		
-		if(algo == "LP")
+		if(algo.equals("LP"))
 		{
 			solver.solveLP(doubleArgs[0]);
 		}
-		else if(algo == "LPSW")
+		else if(algo.equals("LPWS"))
 		{
 			
 		}
-		else if(algo == "GA")
+		else if(algo.equals("GA"))
 		{
 			solver.solveGeneticAlg();
 		}
-		else if(algo == "SA")
+		else if(algo.equals("SA"))
 		{
 			solver.solveSA();
 		}
