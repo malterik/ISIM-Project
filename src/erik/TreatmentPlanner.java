@@ -184,7 +184,7 @@ public class TreatmentPlanner {
 
 	      for (int i = 2; i < args.length; i++) {
 	         try {
-	            doubleArgs[i] = Double.parseDouble(args[i]);
+	            doubleArgs[i-2] = Double.parseDouble(args[i]);
 	         } catch (NumberFormatException e) {
 	            System.err.println("Failed trying to parse a non-numeric argument, " + args[i]);
 	         }
