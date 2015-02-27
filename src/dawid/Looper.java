@@ -15,6 +15,8 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import sebastian.BodyEntry;
+
 /**
  *
  * @author Dawid
@@ -53,8 +55,17 @@ public class Looper {
     public Looper(Voxel [][][] body, Seed[] seeds) {
         this.temperature = Config.StartTemp;
         this.body = body;
+        
+        for(int xxx=0; xxx < Solver.dimensions[0]; xxx++) {
+            for(int yyy=0; yyy < Solver.dimensions[1]; yyy++) {
+                for(int zzz=0; zzz < Solver.dimensions[2]; zzz++) {
+                    this.body2[xxx][yyy][zzz] = body[xxx][yyy][zzz];
+                }
+            }
+        }
+        
         this.seeds = seeds;
-        this.body2 = body;
+//        this.body2 = body;
         this.seeds2 = seeds;
 //                this.Cur_cost = Cur_cost;
 //                this.New_cost = New_cost;
@@ -705,7 +716,9 @@ public class Looper {
         return body;
     }
     
-    
+/*
+    Sets the field cur_cost which contains the cost ot the current best solution
+    */    
     public void setFinalSolution() {
         for(int i=0; i<Config.SAnumberOfSeeds;i++) {
                 this.seeds[i].setDurationMilliSec(GLowestState.getDwelltimes()[i]);
