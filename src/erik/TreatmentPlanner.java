@@ -20,7 +20,7 @@ import utils.Voxel;
 
 public class TreatmentPlanner {
 
-	private static void planTreatment() throws IloException {
+	private static void planTreatment(string algo, double doubleArgs[]) throws IloException {
 
 		/*
 		 * // Start visualization Voxel[][][] testData = new Voxel[1][1][5];
@@ -117,9 +117,24 @@ public class TreatmentPlanner {
 		LogTool.print("Initialized Solver!", "notification");
 
 		long start = System.currentTimeMillis();
-		//solver.solveGeneticAlg();
-                //solver.solveSA();
-		solver.solveLP();
+		
+		if(algo == "LP")
+		{
+			solver.solveLP(doubleargs[1]);
+		}
+		else if(algo == "LPSW")
+		{
+			
+		}
+		else if(algo == "GA")
+		{
+			solver.solveGeneticAlg();
+		}
+		else if(algo == "SA")
+		{
+			solver.solveSA();
+		}
+
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
@@ -160,9 +175,20 @@ public class TreatmentPlanner {
 	}
 
 	public static void main(String[] args) throws IloException {
+		string algo = args[0];
+
+		double[] doubleArgs = new double[args.length];
+
+	      for (int i = 1; i < args.length; i++) {
+	         try {
+	            doubleArgs[i] = Double.parseDouble(args[i]);
+	         } catch (NumberFormatException e) {
+	            System.err.println("Failed trying to parse a non-numeric argument, " + args[i]);
+	         }
+	      }
+
 		printTreatmentData();
-		planTreatment();
-		while (true);
+		planTreatment(algo, doubleArgs);
 	}
 }
 

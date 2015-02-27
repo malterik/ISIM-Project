@@ -21,7 +21,7 @@ public class LPTreatment {
 	
 	static boolean[] seedUsed = new boolean[Config.numberOfSeeds];
 	
-	public LPTreatment(Voxel[][][] body, Seed[] seed, int[] x, int[] y, int[] z, int[] dim)
+	public LPTreatment(Voxel[][][] body, Seed[] seed, int[] x, int[] y, int[] z, int[] dim, double relax)
 	{
 		LPTreatment.body = body;
 		LPTreatment.seed = seed;
@@ -29,6 +29,7 @@ public class LPTreatment {
 		LPTreatment.yBoundsTumor = y;
 		LPTreatment.zBoundsTumor = z;
 		LPTreatment.dim = dim;
+		LPTreatment.relax = relax;
 	}
 	
 	public static Seed[] getSeed()

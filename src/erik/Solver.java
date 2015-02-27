@@ -119,14 +119,14 @@ public class Solver {
                     }
         }
 	
-	public void solveLP() throws IloException
+	public void solveLP(double relax) throws IloException
 	{
 		int nonZeroCounter = 0;		
 		
-		new LPTreatment(body, seeds, xBoundsTumor, yBoundsTumor, zBoundsTumor, dimensions);
+		new LPTreatment(body, seeds, xBoundsTumor, yBoundsTumor, zBoundsTumor, dimensions, relax);
 		//LPTreatment.solveLP();
-		//LPTreatment.solveLPMin();
-		LPTreatment.solveLPIT();
+		LPTreatment.solveLPMin();
+		//LPTreatment.solveLPIT();
 		
 		
 		for(int i = 0; i < Config.numberOfSeeds; i++)
