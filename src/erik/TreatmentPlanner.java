@@ -138,7 +138,16 @@ public class TreatmentPlanner {
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
-		ta.analyzeAll();
+		//ta.analyzeAll();
+		String filename = "";
+		filename += algo + "_";
+		
+		for (double dValue : doubleArgs)
+		{
+			filename += Double.toString(dValue) + "_";
+		}
+		filename += ".ser";
+		ta.writeToFile(filename);
 		ta.printResults();
 		// runtime measurement
 		
@@ -146,6 +155,8 @@ public class TreatmentPlanner {
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Runtime: " + dateFormatted);
+		
+		
 
 		
 		/*ScatterDisplay display5 = new ScatterDisplay(ChartType.BodyType);
