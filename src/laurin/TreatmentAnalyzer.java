@@ -1,5 +1,11 @@
 package laurin;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -19,9 +25,9 @@ import utils.Voxel;
  * @author Laurin Mordhorst
  */
 
-public class TreatmentAnalyzer {
+public class TreatmentAnalyzer implements Serializable {
 	
-	private Voxel[][][] body;
+	private transient Voxel[][][] body;
 	private int[] dimensions;
 	private Seed[] seeds;
 	private String title;
@@ -34,7 +40,7 @@ public class TreatmentAnalyzer {
 	private double coverage;
 	private Histogram histogram;
 	
-	private ArrayList<Set<Voxel>> anatomies;
+	private transient ArrayList<Set<Voxel>> anatomies;
 	
 	/**
 	 * Public Constructor for the TreatmentAnalyzer
@@ -134,7 +140,8 @@ public class TreatmentAnalyzer {
 					double dose = 0.0;
 					for (Seed seed : seeds)
 					{
-						dose += seed.radiationIntensity(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
+						//dose += seed.radiationIntensityLUT(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
+						dose += body[x][y][z].radiationIntensityLUT(seed.getCoordinate(), seed.getDurationMilliSec(), 90);
 					}
 					body[x][y][z].setCurrentDosis(dose);									
 				}
@@ -314,7 +321,7 @@ public class TreatmentAnalyzer {
 	 * Prints all results analyzed.
 	 */
 	public void printResults() {
-		for (int i = 0; i < anatomies.size(); i++)
+		for (int i = 0; i < Config.tumorType - 1; i++)
 		{
 			LogTool.print("Body type " + i + ": minDose: " + minDoses[i] + ", maxDose: " + maxDoses[i] + ", avgDose: " + avgDoses[i],"notification");
 		}
@@ -405,6 +412,45 @@ public class TreatmentAnalyzer {
 	public static void printTreatmentComparison(ArrayList<TreatmentAnalyzer> treatmentAnalyzers)
 	{
 		printTreatmentComparison(treatmentAnalyzers, true);
+	}
+	
+	public void writeToFile(String filename)
+	{
+		try
+	    {
+			FileOutputStream fileOut = new FileOutputStream(filename);//creates a card serial file in output stream
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);//routs an object into the output stream.
+			out.writeObject(this);// we designate our array of cards to be routed
+			out.close();// closes the data paths
+			fileOut.close();// closes the data paths
+	    }
+		catch(IOException i)//exception stuff
+		{
+	      i.printStackTrace();
+		}
+	}
+	
+	public static TreatmentAnalyzer readFromFile(String filename)
+	{
+		TreatmentAnalyzer treatmentAnalyzer = null;
+		try// If this doesnt work throw an exception
+        {
+           FileInputStream fileIn = new FileInputStream(filename);// Read serial file.
+           ObjectInputStream in = new ObjectInputStream(fileIn);// input the read file.
+           treatmentAnalyzer = (TreatmentAnalyzer) in.readObject();// allocate it to the object file already instanciated.
+           in.close();//closes the input stream.
+           fileIn.close();//closes the file data stream.
+       }catch(IOException i)//exception stuff
+       {
+           i.printStackTrace();
+           return null;
+       }catch(ClassNotFoundException c)//more exception stuff
+       {
+           System.out.println("Error");
+           c.printStackTrace();
+           return null;
+       }
+	   return treatmentAnalyzer;
 	}
 	
 }
