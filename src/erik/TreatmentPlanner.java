@@ -20,7 +20,7 @@ import utils.Voxel;
 
 public class TreatmentPlanner {
 
-	private static void planTreatment(string algo, double doubleArgs[]) throws IloException {
+	private static void planTreatment(String algo, double doubleArgs[]) throws IloException {
 
 		/*
 		 * // Start visualization Voxel[][][] testData = new Voxel[1][1][5];
@@ -120,7 +120,7 @@ public class TreatmentPlanner {
 		
 		if(algo == "LP")
 		{
-			solver.solveLP(doubleargs[1]);
+			solver.solveLP(doubleArgs[1]);
 		}
 		else if(algo == "LPSW")
 		{
@@ -175,7 +175,7 @@ public class TreatmentPlanner {
 	}
 
 	public static void main(String[] args) throws IloException {
-		string algo = args[0];
+		String algo = args[0];
 
 		double[] doubleArgs = new double[args.length];
 
