@@ -189,7 +189,7 @@ public class LPStepwise {
 		Voxel[][][] body = getVoxelArray(entry);
 		
 		int[] dimensions = new int[]{body.length, body[0].length, body[0][0].length};
-		BodyAnalyzer ba = new BodyAnalyzer(body, dimensions);
+		BodyAnalyzer ba = new BodyAnalyzer(body, dimensions, Config.treatmentRange);
 		int[] xEntryBounds = ba.getxBoundsTumor(1);
 		int[] yEntryBounds = ba.getyBoundsTumor(1);
 		int[] zEntryBounds = new int[]{0,0};

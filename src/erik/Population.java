@@ -5,25 +5,41 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import com.sun.org.apache.bcel.internal.generic.POP;
+
 import utils.Config;
 import utils.LogTool;
 
 public class Population
 {
+    /*
     final static int ELITISM_K =2;
     final static int POP_SIZE = 8 + ELITISM_K;  // population size
     final static int MAX_ITER = 800;             // max number of iterations
     final static double MUTATION_RATE = 0.55;     // probability of mutation
-    final static double CROSSOVER_RATE = 0.8;     // probability of crossover
+    final static double CROSSOVER_RATE = 0.8;     // probability of crossover */
     
-
+	private static int ELITISM_K;
+	private static int POP_SIZE;  // population size             // max number of iterations
+    private static double MUTATION_RATE;     // probability of mutation
+    private static double CROSSOVER_RATE;     // probability of crossover
+    public static double[] weighting_factors = new double[5];
+    public static double treatmentRange;
+    
     private static Random m_rand = new Random();  // random-number generator
     private Individual[] m_population;
     private double totalFitness;
    
     
-    public Population() {
+    public Population(int elitism, int pop_size, double mutation_rate, double crossover_rate, double[] weightingfactors, double treatmentRange) {
 
+    	ELITISM_K = elitism;
+    	POP_SIZE = pop_size;
+    	MUTATION_RATE = mutation_rate;
+    	CROSSOVER_RATE = crossover_rate;
+    	weighting_factors = weightingfactors;
+    	
+    	
         m_population = new Individual[POP_SIZE];
 
         // init population
@@ -108,10 +124,9 @@ public class Population
 
         return newIndiv;
     }
-
-
-    public static Individual solve() {
-        Population pop = new Population();
+    
+    public static Individual solve(int elitism, int pop_size, double mutation_rate, double crossover_rate, double[] weightingfactors, double treatmentRange) {
+        Population pop = new Population(elitism,pop_size, mutation_rate, crossover_rate, weightingfactors, treatmentRange);
         Individual[] newPop = new Individual[POP_SIZE];
         Individual[] indiv = new Individual[2];
         double bestResult = Double.MAX_VALUE;

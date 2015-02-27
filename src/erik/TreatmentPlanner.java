@@ -91,8 +91,8 @@ public class TreatmentPlanner {
 		}
 		db.close();
 
-		BodyAnalyzer ba = new BodyAnalyzer(body, entry.getDimensions());
-
+		
+		BodyAnalyzer ba = new BodyAnalyzer(body, entry.getDimensions(),Config.treatmentRange);
 		/* Initialize the Seeds */
 
 		Seed[] seeds = new Seed[Config.numberOfSeeds];
@@ -120,18 +120,26 @@ public class TreatmentPlanner {
 		
 		if(algo == "LP")
 		{
+			
 			solver.solveLP(doubleArgs[0]);
 		}
 		else if(algo == "LPSW")
 		{
 			
 		}
-		else if(algo == "GA")
+		else if(algo.equalsIgnoreCase("GA"))
 		{
-			solver.solveGeneticAlg();
+			double[] weighting_factors = new double[5];
+			weighting_factors[0] = doubleArgs[4];
+			weighting_factors[1] = doubleArgs[5];
+			weighting_factors[2] = doubleArgs[6];
+			weighting_factors[3] = doubleArgs[7];
+			weighting_factors[4] = doubleArgs[8];
+			solver.solveGeneticAlg((int) doubleArgs[0], (int) doubleArgs[1], doubleArgs[2], doubleArgs[3], weighting_factors,doubleArgs[9]);
 		}
 		else if(algo == "SA")
 		{
+			
 			solver.solveSA();
 		}
 
@@ -184,7 +192,7 @@ public class TreatmentPlanner {
 
 	      for (int i = 2; i < args.length; i++) {
 	         try {
-	            doubleArgs[i] = Double.parseDouble(args[i]);
+	            doubleArgs[i-2] = Double.parseDouble(args[i]);
 	         } catch (NumberFormatException e) {
 	            System.err.println("Failed trying to parse a non-numeric argument, " + args[i]);
 	         }

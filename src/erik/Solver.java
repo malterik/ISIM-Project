@@ -76,7 +76,7 @@ public class Solver {
 			}
 		}
 		
-		BodyAnalyzer ba = new BodyAnalyzer(body, dimensions);
+		BodyAnalyzer ba = new BodyAnalyzer(body, dimensions, Population.treatmentRange);
 		Solver.xBoundsTumor = ba.getxBoundsTumor(2);
 		Solver.yBoundsTumor = ba.getyBoundsTumor(2);
 		Solver.zBoundsTumor = ba.getzBoundsTumor(2);
@@ -91,10 +91,10 @@ public class Solver {
 	/**
 	 * This method solves the optimization problem with a genetic algorithm
 	 */
-	public void solveGeneticAlg() {
+	public void solveGeneticAlg(int elitism, int pop_size, double mutation_rate, double crossover_rate, double[] weightingfactors, double treatmentRange) {
 		
 		LogTool.print("Created Population","notification");
-		Individual test = Population.solve();
+		Individual test = Population.solve(elitism,pop_size, mutation_rate, crossover_rate, weightingfactors, treatmentRange);
 		
 		for(int i=0; i<Config.numberOfSeeds;i++) {
 			Solver.seeds[i].setDurationMilliSec(test.getGene(i));

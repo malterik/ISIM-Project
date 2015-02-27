@@ -3,7 +3,6 @@ package erik;
 import java.util.concurrent.Callable;
 
 import utils.Config;
-import utils.Coordinate;
 
 
 public class DoseEvaluator implements Callable<Double> {
@@ -25,12 +24,8 @@ public class DoseEvaluator implements Callable<Double> {
 	public double evaluate() {
         double temp=0;
         double intensity=0;
-        double[] weightingFactor = new double[5];
-        weightingFactor[0] = 1;
-        weightingFactor[1] = 4;
-        weightingFactor[2] = 2;
-        weightingFactor[3] = 70;
-        weightingFactor[4] = 20;
+        double[] weightingFactor = Population.weighting_factors;
+
         
 			
 		for(int y =Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1] ; y+= Config.scaleFactor) {
@@ -46,7 +41,6 @@ public class DoseEvaluator implements Callable<Double> {
 					
 				}	
 				temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2) * weightingFactor[Solver.body[x][y][z].getBodyType()-1];
-				
 				
 			}	
 		}

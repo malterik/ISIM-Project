@@ -24,6 +24,8 @@ public class BodyAnalyzer {
 	
 	private int voxelCountTumor;
 	
+	private double treatmentRange;
+	
 	/**
 	 * Public Constructor for the BodyAnalyzer
 	 * @param body
@@ -31,8 +33,9 @@ public class BodyAnalyzer {
 	 * @param dimensions
 	 * the x,y and z dimensions for the body array
 	 */
-	public BodyAnalyzer(Voxel[][][] body, int[] dimensions) {
+	public BodyAnalyzer(Voxel[][][] body, int[] dimensions, double treatmentRange) {
 		
+		this.treatmentRange = treatmentRange;
 		this.body = body;
 		this.dimensions = dimensions;
 		this.setVoxelCountTumor(0);
@@ -148,8 +151,8 @@ public class BodyAnalyzer {
 			return xBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = xBoundsTumor[0] - (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
-			upperBound = xBoundsTumor[1] + (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
+			lowerBound = xBoundsTumor[0] - (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
+			upperBound = xBoundsTumor[1] + (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
@@ -193,8 +196,8 @@ public class BodyAnalyzer {
 			return yBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = yBoundsTumor[0] - (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
-			upperBound = yBoundsTumor[1] + (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
+			lowerBound = yBoundsTumor[0] - (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
+			upperBound = yBoundsTumor[1] + (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
@@ -237,8 +240,8 @@ public class BodyAnalyzer {
 			return zBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = zBoundsTumor[0] - (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
-			upperBound = zBoundsTumor[1] + (int) (Config.treatmentRange/Coordinate.GRID_RESOLUTION);
+			lowerBound = zBoundsTumor[0] - (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
+			upperBound = zBoundsTumor[1] + (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
