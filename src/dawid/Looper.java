@@ -276,7 +276,7 @@ public class Looper {
     public void solveSA() {
         initState();
         for (int ab = 0; ab < Config.NumberOfMetropolisResets; ab++) {
-            LogTool.print("==================== START CALC FOR OUTER ROUND " + ab + "=========================","notification");
+            LogTool.print("==================== INACTIVE: START CALC FOR OUTER ROUND " + ab + "=========================","notification");
             LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
 
                 if (Config.SAverboselvl>1) {

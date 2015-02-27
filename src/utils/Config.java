@@ -60,9 +60,9 @@ public class Config {
         // 3: slow using the static bounds above
         // in case of errors keep changing, option 3 is SAFE
         
-        public static final int SACostFunctionType = 0; //see above comments 
+        public static final int SACostFunctionType = 1; //see above comments 
         public static final boolean SAResets = false;
-        public static final int NumberOfMetropolisResets = 5;
+        public static final int NumberOfMetropolisResets = 1;
         public static final int NumberOfMetropolisRounds = 60;
         public static final double StartTemp = NumberOfMetropolisRounds;
         public static final int SAnumberOfSeeds = 50;
