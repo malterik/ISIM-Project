@@ -56,16 +56,18 @@ public class Looper {
         this.temperature = Config.StartTemp;
         this.body = body;
         
+        Voxel[][][] body22 = new Voxel[Solver.dimensions[0]][Solver.dimensions[1]][Solver.dimensions[2]];
+        
         for(int xxx=0; xxx < Solver.dimensions[0]; xxx++) {
             for(int yyy=0; yyy < Solver.dimensions[1]; yyy++) {
                 for(int zzz=0; zzz < Solver.dimensions[2]; zzz++) {
-                    this.body2[xxx][yyy][zzz] = body[xxx][yyy][zzz];
+                    body22[xxx][yyy][zzz] = body[xxx][yyy][zzz];
                 }
             }
         }
         
         this.seeds = seeds;
-//        this.body2 = body;
+        this.body2 = body22;
         this.seeds2 = seeds;
 //                this.Cur_cost = Cur_cost;
 //                this.New_cost = New_cost;
@@ -148,8 +150,8 @@ public class Looper {
                 }
             }
             this.body = this.body2;
-            diffr = ((this.body[43][43][43].metavalue+10000)-(this.body2[43][43][43].metavalue));
-            LogTool.print("BODYDIFFR CHECK AT INIT!!!!!!!!!! :" + diffr + "@ 43,43,43 ","notification");
+            diffr = ((this.body[43][43][43].metavalue)-(this.body2[43][43][43].metavalue));
+            LogTool.print("Shallowcopy Check, value should be 0 :" + diffr + "@ 43,43,43 ","notification");
          }
     }
     /**
@@ -173,7 +175,7 @@ public class Looper {
         return styles;
     }
     
-    
+  
     private void newState() {
          for(int iii=0; iii < Config.SAnumberOfSeeds; iii++)
             {

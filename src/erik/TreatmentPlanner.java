@@ -133,6 +133,11 @@ public class TreatmentPlanner {
 		else if(algo.equals("SA"))
 		{
 			solver.solveSA();
+                        //ToDo: solveSA so modden dass sie Parameter akzeptiert
+                        // In meinem Fall MINDESTENS die Seedzahl
+                        // Darueber hinaus gibt es nur varianten der
+                        // Sum of Squared Differences...
+                        
 		}
 
 		long end = System.currentTimeMillis();
