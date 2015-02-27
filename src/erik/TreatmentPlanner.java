@@ -91,8 +91,8 @@ public class TreatmentPlanner {
 		}
 		db.close();
 
-		
 		BodyAnalyzer ba = new BodyAnalyzer(body, entry.getDimensions(),Config.treatmentRange);
+
 		/* Initialize the Seeds */
 
 		Seed[] seeds = new Seed[Config.numberOfSeeds];
@@ -118,16 +118,15 @@ public class TreatmentPlanner {
 
 		long start = System.currentTimeMillis();
 		
-		if(algo == "LP")
+		if(algo.equals("LP"))
 		{
-			
 			solver.solveLP(doubleArgs[0]);
 		}
-		else if(algo == "LPSW")
+		else if(algo.equals("LPWS"))
 		{
 			
 		}
-		else if(algo.equalsIgnoreCase("GA"))
+		else if(algo.equals("GA"))
 		{
 			double[] weighting_factors = new double[5];
 			weighting_factors[0] = doubleArgs[4];
@@ -137,16 +136,28 @@ public class TreatmentPlanner {
 			weighting_factors[4] = doubleArgs[8];
 			solver.solveGeneticAlg((int) doubleArgs[0], (int) doubleArgs[1], doubleArgs[2], doubleArgs[3], weighting_factors,doubleArgs[9]);
 		}
-		else if(algo == "SA")
+		else if(algo.equals("SA"))
 		{
-			
 			solver.solveSA();
+                        //ToDo: solveSA so modden dass sie Parameter akzeptiert
+                        // In meinem Fall MINDESTENS die Seedzahl
+                        // Darueber hinaus gibt es nur varianten der
+                        // Sum of Squared Differences...
 		}
 
 		long end = System.currentTimeMillis();
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
-		ta.analyzeAll();
+		//ta.analyzeAll();
+		String filename = "";
+		filename += algo + "_";
+		
+		for (double dValue : doubleArgs)
+		{
+			filename += Double.toString(dValue) + "_";
+		}
+		filename += ".ser";
+		ta.writeToFile(filename);
 		ta.printResults();
 		// runtime measurement
 		
@@ -154,6 +165,8 @@ public class TreatmentPlanner {
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Runtime: " + dateFormatted);
+		
+		
 
 		
 		/*ScatterDisplay display5 = new ScatterDisplay(ChartType.BodyType);
@@ -188,7 +201,7 @@ public class TreatmentPlanner {
 		
 		Config.setNumberOfSeeds(seedNumber);
 
-		double[] doubleArgs = new double[args.length];
+		double[] doubleArgs = new double[args.length-2];
 
 	      for (int i = 2; i < args.length; i++) {
 	         try {

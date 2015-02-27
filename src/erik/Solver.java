@@ -125,8 +125,8 @@ public class Solver {
 		
 		new LPTreatment(body, seeds, xBoundsTumor, yBoundsTumor, zBoundsTumor, dimensions, relax);
 		//LPTreatment.solveLP();
-		LPTreatment.solveLPMin();
-		//LPTreatment.solveLPIT();
+		//LPTreatment.solveLPMin();
+		LPTreatment.solveLPIT();
 		
 		
 		for(int i = 0; i < Config.numberOfSeeds; i++)
