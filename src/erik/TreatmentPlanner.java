@@ -120,7 +120,7 @@ public class TreatmentPlanner {
 		
 		if(algo == "LP")
 		{
-			solver.solveLP(doubleArgs[1]);
+			solver.solveLP(doubleArgs[0]);
 		}
 		else if(algo == "LPSW")
 		{
@@ -176,10 +176,13 @@ public class TreatmentPlanner {
 
 	public static void main(String[] args) throws IloException {
 		String algo = args[0];
+		int seedNumber = Integer.parseInt(args[1]);
+		
+		Config.setNumberOfSeeds(seedNumber);
 
 		double[] doubleArgs = new double[args.length];
 
-	      for (int i = 1; i < args.length; i++) {
+	      for (int i = 2; i < args.length; i++) {
 	         try {
 	            doubleArgs[i] = Double.parseDouble(args[i]);
 	         } catch (NumberFormatException e) {

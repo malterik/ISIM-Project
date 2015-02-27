@@ -73,7 +73,7 @@ public class Config {
         
 	// Parameters for the genetic algorithm
 	
-	public static final int numberOfSeeds = 50;
+	public static int numberOfSeeds = 50;
 	public static final int numberOfIterations = 10;
 	
 	// outputs
@@ -110,6 +110,11 @@ public class Config {
 
 	//other
 	public static final int LUTSize = 10000; // size of lookup table for fast dose approximation
+	
+	public static void setNumberOfSeeds(int number)
+	{
+		numberOfSeeds = number;
+	}
 	
 	
 	
