@@ -48,7 +48,7 @@ public class Config {
 	
 	
 	// Parameters for classification
-	public static final double VOXEL_DIST = 1; // in cm
+	public static final double VOXEL_DIST = 0.1; // in cm
 	public static final int TUMOR = 5; // BodyType for Tumor
 	
         // Parameters for the Simulated Annealing algorithm
@@ -104,7 +104,7 @@ public class Config {
 	
 	public static final int treatmentRange = 8; // indicates the range in cm for the region around the tumor which shall be treated by radiation
 	
-	public static final int scaleFactor = 5;
+	public static  int scaleFactor = 1;
 	
 	public static final double cancelValue = 1;
 
@@ -114,6 +114,12 @@ public class Config {
 	public static void setNumberOfSeeds(int number)
 	{
 		numberOfSeeds = number;
+	}
+	
+	public static void setScaleFactor(int number) {
+		
+		scaleFactor = number;
+		
 	}
 	
 	
