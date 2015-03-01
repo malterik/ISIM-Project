@@ -138,7 +138,7 @@ public class TreatmentPlanner {
 		}
 		else if(algo.equals("SA"))
 		{
-			solver.solveSA();
+			solver.solveSA(doubleArgs);
                         //ToDo: solveSA so modden dass sie Parameter akzeptiert
                         // In meinem Fall MINDESTENS die Seedzahl
                         // Darueber hinaus gibt es nur varianten der
@@ -146,10 +146,21 @@ public class TreatmentPlanner {
 		}
 
 		long end = System.currentTimeMillis();
+		
+		Date date = new Date(end - start);
+		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
+		String dateFormatted = formatter.format(date);
+		System.out.println("Runtime: " + dateFormatted);
+		
+		
+		
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
 		//ta.analyzeAll();
-		String filename = "";
+		ta.setRuntime(date);
+		ta.setSAlgorithm(algo);
+		ta.setDoubleArgs(doubleArgs);
+		String filename = "treatments/";
 		filename += algo + "_";
 		filename += Config.numberOfSeeds + "_";
 		
@@ -159,13 +170,12 @@ public class TreatmentPlanner {
 		}
 		filename += ".ser";
 		ta.writeToFile(filename);
-		ta.printResults();
+		//ta.printResults();
 		// runtime measurement
 		
-		Date date = new Date(end - start);
-		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
-		String dateFormatted = formatter.format(date);
-		System.out.println("Runtime: " + dateFormatted);
+
+		
+		
 		
 		
 
