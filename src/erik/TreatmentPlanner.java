@@ -19,7 +19,7 @@ import utils.Seed;
 import utils.Voxel;
 
 public class TreatmentPlanner {
-	private static final boolean outputToFile = false;
+	private static final boolean outputToFile = true;
 
 	private static void planTreatment(String algo, double doubleArgs[]) throws IloException {
 
