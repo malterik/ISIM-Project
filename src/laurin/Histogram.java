@@ -1,6 +1,7 @@
 package laurin;
 
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +27,7 @@ import utils.Voxel;
  *  
  * @author Laurin Mordhorst	
  */
-public class Histogram extends JFrame {
+public class Histogram extends JFrame implements Serializable {
 	
 	private HashMap<String,double[]> dataSets;
 	private String title;
