@@ -96,7 +96,7 @@ public class Config {
 	public static final int rectumType 		= 3; //low-medium dose (liver)
 	public static final int urethraType 	= 4; // no dose (pancreas)
 	public static final int tumorType 		= 5; // high dose
-	public static final int dummyType 		= 6; // high dose
+	public static final int dummyType 		= 0; // high dose
 	
 	//Multithreading
 	

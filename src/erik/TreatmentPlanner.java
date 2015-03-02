@@ -164,7 +164,7 @@ public class TreatmentPlanner {
 		else if(algo.equals("GA"))
 		{
 			double[] weighting_factors = new double[6];
-			weighting_factors[0] = 1;
+			weighting_factors[0] = 0;
 			weighting_factors[1] = doubleArgs[4];
 			weighting_factors[2] = doubleArgs[5];
 			weighting_factors[3] = doubleArgs[6];
