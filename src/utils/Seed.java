@@ -19,6 +19,10 @@ import erik.BodyAnalyzer;
  */
 public class Seed extends Voxel implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Needle needle;
 	
 	public Seed(double x, double y, double z, double durationMilliSec) {
