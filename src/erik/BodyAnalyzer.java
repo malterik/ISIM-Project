@@ -291,8 +291,11 @@ public class BodyAnalyzer {
 		
 		for(int x = 0; x < body.length; x++) {				
 			for(int y = 0; y < body[0].length; y++) {		
-				for(int z = 0; z < body[0][0].length; z++) {		
-					anatomies.get(body[x][y][z].getBodyType()-1).add(body[x][y][z]);									
+				for(int z = 0; z < body[0][0].length; z++) {
+					if ((body[x][y][z].getBodyType()) != Config.dummyType)
+					{
+						anatomies.get(body[x][y][z].getBodyType()-1).add(body[x][y][z]);	
+					}
 				}
 			}	
 		}	

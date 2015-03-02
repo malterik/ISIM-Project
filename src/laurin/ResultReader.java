@@ -33,15 +33,13 @@ public class ResultReader {
 	
 	public static void compareHistogramsByBodyType(HashMap<TreatmentAnalyzer, String> treatments, String bodyType)
 	{
-		ArrayList<Histogram> histograms = new ArrayList<Histogram>();
-		ArrayList<HashMap<String, double[]>> dataSets = new ArrayList<HashMap<String, double[]>>();
-		
 		Histogram histogramComparison = new Histogram("Comparison of " + bodyType);
 		
 		for (Map.Entry<TreatmentAnalyzer, String> treatment : treatments.entrySet())
 		{
 			Histogram histogram = treatment.getKey().getHistogram();
 			histogramComparison.addDataSet(treatment.getValue(), histogram.getDataSets().get(bodyType));
+			HashMap<String, double[]> datasets = histogram.getDataSets();
 		}
 		
 		histogramComparison.display(100, 5000);
@@ -70,13 +68,15 @@ public class ResultReader {
 			treatment.getKey().setTitle(treatment.getValue());
 		}
 		
-		TreatmentAnalyzer.printTreatmentComparison(treatmentAnalyzers, false);
+		TreatmentAnalyzer.printTreatmentComparison(treatmentAnalyzers, true);
 	}
 	
 	public static void main(String[] args) {
-		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "LP_50_1.*");   
+		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "LP_50_5.*");   
 		compareHistogramsByBodyType(treatments, "Tumor");
-		//printTreatmentComparison(treatments);
+		printTreatmentComparison(treatments);
+		
+		
 	}
 
 }

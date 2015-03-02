@@ -65,8 +65,9 @@ public class Solver {
 							break;
 						}
 						default: {
-							Solver.body[x][y][z].setGoalDosis(Config.normalGoalDose);
-							Solver.body[x][y][z].setBodyType(Config.normalType);
+							//Solver.body[x][y][z].setGoalDosis(Config.normalGoalDose);
+							//Solver.body[x][y][z].setBodyType(Config.normalType);
+							Solver.body[x][y][z].setBodyType(Config.dummyType);
 							break;
 						}
 					
