@@ -123,6 +123,11 @@ public class TreatmentAnalyzer implements Serializable {
 		return gridResolution;
 	}
 	
+	public Histogram getHistogram()
+	{
+		return histogram;
+	}
+	
 	public void setMinDoses(double[] minDoses) {
 		this.minDoses = minDoses;
 	}
@@ -178,6 +183,10 @@ public class TreatmentAnalyzer implements Serializable {
 		this.gridResolution = gridResolution;
 	}
 	
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
 	/**
 	 * Calculates dose for each voxel.
 	 */
