@@ -405,7 +405,7 @@ public class TreatmentAnalyzer implements Serializable {
 		String conformalityLine = String.format("%-15s%s", "Conformality", spacing);
 		String homogeinityLine = String.format("%-15s%s", "Homogeinity", spacing);
 		String coverageLine = String.format("%-15s%s", "Coverage", spacing);
-		DecimalFormat decimalFormat = new DecimalFormat("#####0.0000");
+		DecimalFormat decimalFormat = new DecimalFormat("#####0.000E00");
 		
 		for(int i = 0; i < Config.tumorType; i++)
 		{

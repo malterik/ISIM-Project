@@ -58,7 +58,7 @@ public class ResultReader {
 	    });
 	}
 	
-	public static void printTreatmentComparison(HashMap<TreatmentAnalyzer, String> treatments)
+	public static void printTreatmentComparison(HashMap<TreatmentAnalyzer, String> treatments, boolean showHistograms)
 	{
 		ArrayList<TreatmentAnalyzer> treatmentAnalyzers = new ArrayList<TreatmentAnalyzer>();
 		
@@ -68,13 +68,13 @@ public class ResultReader {
 			treatment.getKey().setTitle(treatment.getValue());
 		}
 		
-		TreatmentAnalyzer.printTreatmentComparison(treatmentAnalyzers, true);
+		TreatmentAnalyzer.printTreatmentComparison(treatmentAnalyzers, showHistograms);
 	}
 	
 	public static void main(String[] args) {
-		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "LP_50_5.*");   
-		compareHistogramsByBodyType(treatments, "Tumor");
-		printTreatmentComparison(treatments);
+		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "LP_50_.*");   
+		compareHistogramsByBodyType(treatments, "Rectum");
+		printTreatmentComparison(treatments, false);
 		
 		
 	}
