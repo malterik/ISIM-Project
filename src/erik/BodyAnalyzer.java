@@ -68,17 +68,17 @@ public class BodyAnalyzer {
 							
 							break;
 						}
-						case Config.spineType:
+						case Config.bladderType:
 						{
 							
 							break;
 						}
-						case Config.liverType:
+						case Config.rectumType:
 						{
 							
 							break;
 						}
-						case Config.pancreasType:
+						case Config.urethraType:
 						{
 							
 							break;

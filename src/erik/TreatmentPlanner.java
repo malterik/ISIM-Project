@@ -20,7 +20,7 @@ import utils.Seed;
 import utils.Voxel;
 
 public class TreatmentPlanner {
-	private static final boolean outputToFile = false;
+	private static final boolean outputToFile = true;
 
 	private static void planTreatment(String algo, double doubleArgs[]) throws IloException {
 
@@ -35,8 +35,8 @@ public class TreatmentPlanner {
 		 */
 
 		// Database test
-		//Config.useLUT = true;
-		//Voxel.setLUT(10, 10000);
+		Config.useLUT = true;
+		Voxel.setLUT(10, 10000);
 		
 		SimpleDB db = new SimpleDB();
 		
@@ -90,19 +90,19 @@ public class TreatmentPlanner {
 							body[x][y][z].setBodyType(Config.normalType);
 							break;
 						}
-						case Config.spineType: {
-							body[x][y][z].setGoalDosis(Config.spineGoalDose);
-							body[x][y][z].setBodyType(Config.spineType);
+						case Config.bladderType: {
+							body[x][y][z].setGoalDosis(Config.bladderGoalDose);
+							body[x][y][z].setBodyType(Config.bladderType);
 							break;
 						}
-						case Config.liverType: {
-							body[x][y][z].setGoalDosis(Config.liverGoalDose);
-							body[x][y][z].setBodyType(Config.liverType);
+						case Config.rectumType: {
+							body[x][y][z].setGoalDosis(Config.rectumGoalDose);
+							body[x][y][z].setBodyType(Config.rectumType);
 							break;
 						}
-						case Config.pancreasType: {
-							body[x][y][z].setGoalDosis(Config.pancreasGoalDose);
-							body[x][y][z].setBodyType(Config.pancreasType);
+						case Config.urethraType: {
+							body[x][y][z].setGoalDosis(Config.urethraGoalDose);
+							body[x][y][z].setBodyType(Config.urethraType);
 							break;
 						}
 						case Config.tumorType: {
@@ -264,7 +264,7 @@ public class TreatmentPlanner {
 	         }
 	      }
 	    if( outputToFile) {
-	        String filename = "";
+	        String filename = "logs/";
 			filename += algo + "_";
 			filename += Config.numberOfSeeds + "_";
 			

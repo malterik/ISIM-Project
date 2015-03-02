@@ -41,19 +41,19 @@ public class LPStepwise {
 							body[x][y][z].setBodyType(Config.normalType);
 							break;
 						}
-						case Config.spineType: {
-							body[x][y][z].setGoalDosis(Config.spineGoalDose);
-							body[x][y][z].setBodyType(Config.spineType);
+						case Config.bladderType: {
+							body[x][y][z].setGoalDosis(Config.bladderGoalDose);
+							body[x][y][z].setBodyType(Config.bladderType);
 							break;
 						}
-						case Config.liverType: {
-							body[x][y][z].setGoalDosis(Config.liverGoalDose);
-							body[x][y][z].setBodyType(Config.liverType);
+						case Config.rectumType: {
+							body[x][y][z].setGoalDosis(Config.rectumGoalDose);
+							body[x][y][z].setBodyType(Config.rectumType);
 							break;
 						}
-						case Config.pancreasType: {
-							body[x][y][z].setGoalDosis(Config.pancreasGoalDose);
-							body[x][y][z].setBodyType(Config.pancreasType);
+						case Config.urethraType: {
+							body[x][y][z].setGoalDosis(Config.urethraGoalDose);
+							body[x][y][z].setBodyType(Config.urethraType);
 							break;
 						}
 						case Config.tumorType: {

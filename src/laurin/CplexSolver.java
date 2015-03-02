@@ -427,17 +427,17 @@ public class CplexSolver {
 						b_voi_lower = Config.normalMinDose;;
 						b_voi_upper = Config.normalMaxDose;
 						break;
-					case Config.spineType: 
-						b_voi_lower = Config.spineMinDose;
-						b_voi_upper = Config.spineMaxDose;
+					case Config.bladderType: 
+						b_voi_lower = Config.bladderMinDose;
+						b_voi_upper = Config.bladderMaxDose;
 						break;
-					case Config.liverType: 
-						b_voi_lower = Config.liverMinDose;
-						b_voi_upper = Config.liverMaxDose;
+					case Config.rectumType: 
+						b_voi_lower = Config.rectumMinDose;
+						b_voi_upper = Config.rectumMaxDose;
 						break;
-					case Config.pancreasType: 
-						b_voi_lower = Config.pancreasMinDose;
-						b_voi_upper = Config.pancreasMaxDose;
+					case Config.urethraType: 
+						b_voi_lower = Config.urethraMinDose;
+						b_voi_upper = Config.urethraMaxDose;
 						break;
 				}
 				

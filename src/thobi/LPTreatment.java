@@ -83,31 +83,31 @@ public class LPTreatment {
 							cplex.addLe(cplex.sum(dosepart), Config.normalGoalDose);
 							break;
 						}
-						case Config.spineType:
+						case Config.bladderType:
 						{
 							for(int i = 0; i < Config.numberOfSeeds; i++)
 							{
 								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
 							}
-							cplex.addLe(cplex.sum(dosepart), Config.spineGoalDose);
+							cplex.addLe(cplex.sum(dosepart), Config.bladderGoalDose);
 							break;
 						}
-						case Config.liverType:
+						case Config.rectumType:
 						{
 							for(int i = 0; i < Config.numberOfSeeds; i++)
 							{
 								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
 							}
-							cplex.addLe(cplex.sum(dosepart), Config.liverGoalDose);
+							cplex.addLe(cplex.sum(dosepart), Config.rectumGoalDose);
 							break;
 						}
-						case Config.pancreasType:
+						case Config.urethraType:
 						{
 							for(int i = 0; i < Config.numberOfSeeds; i++)
 							{
 								dosepart[i] = cplex.prod(seed[i].radiationIntensity(body[x][y][z].getCoordinate(),1), time[i]);
 							}
-							cplex.addLe(cplex.sum(dosepart), Config.pancreasGoalDose);
+							cplex.addLe(cplex.sum(dosepart), Config.urethraGoalDose);
 							break;
 						}
 						case Config.tumorType:
