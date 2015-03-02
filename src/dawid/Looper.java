@@ -34,12 +34,12 @@ public class Looper {
  */
     
     private  Voxel [][][] body; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
-    private  Seed[] seeds = new Seed[Config.SAnumberOfSeeds];
+    private  Seed[] seeds = new Seed[Config.numberOfSeeds];
     private  Voxel [][][] body2; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
-    private  Seed[] seeds2 = new Seed[Config.SAnumberOfSeeds];
-    public double[] Cur_state = new double[Config.SAnumberOfSeeds];
-    public double[] New_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
-    public double[] Global_Lowest_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
+    private  Seed[] seeds2 = new Seed[Config.numberOfSeeds];
+    public double[] Cur_state = new double[Config.numberOfSeeds];
+    public double[] New_state = new double[Config.numberOfSeeds]; // Do I even need this ?
+    public double[] Global_Lowest_state = new double[Config.numberOfSeeds]; // Do I even need this ?
     public GlobalState GLowestState;
     double[] cliarguments;
     
@@ -94,7 +94,7 @@ public class Looper {
     private void initState() {
         double metaintensity=0;
         double diffr=0;
-         for(int ii=0; ii < Config.SAnumberOfSeeds; ii++)
+         for(int ii=0; ii < Config.numberOfSeeds; ii++)
             {
                 Cur_state[ii] = this.seeds[ii].getDurationMilliSec();
 //                Zeit2 = this.seeds[1].getDurationMilliSec();
@@ -115,7 +115,7 @@ public class Looper {
 //                      for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 //                          this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
                         this.body2[x][y][z].metavalue = 0.0;
-                        for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                        for(int i=0; i<Config.numberOfSeeds;++i) { 
                             // Calculate intensity based based on current dwelltime
                             metaintensity = this.body2[x][y][z].radiationIntensityNoTime((this.seeds2[i].getCoordinate()));
     //                                radiationIntensityNoTime(this.seeds2[i].getCoordinate(), New_state[i]);
@@ -140,7 +140,7 @@ public class Looper {
                     for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
     //                    this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
                         this.body2[x][y][z].metavalue = 0.0;
-                            for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                            for(int i=0; i<Config.numberOfSeeds;++i) { 
                                 // Calculate intensity based based on current dwelltime
                                 metaintensity = this.body2[x][y][z].radiationIntensityNoTime((this.seeds2[i].getCoordinate()));
         //                                radiationIntensityNoTime(this.seeds2[i].getCoordinate(), New_state[i]);
@@ -162,18 +162,18 @@ public class Looper {
     /**
     * Works. Randomly determines a new state vector
     * @param New_state Contains randomized dwelltimes
-    * @param Config.SAnumberOfSeeds Contains randomized dwelltimes
+    * @param Config.numberOfSeeds Contains randomized dwelltimes
     */
     
     /**
      * Works.Randomly determines a new state vector
      * @param New_state Contains randomized dwelltimes
-     * @param Config .SAnumberOfSeeds Contains randomized dwelltimes
+     * @param Config .numberOfSeeds Contains randomized dwelltimes
      * @return
      */
     public double[] newstater (){
-        double[] styles = new double[Config.SAnumberOfSeeds];
-        for(int iii=0; iii < Config.SAnumberOfSeeds; iii++)
+        double[] styles = new double[Config.numberOfSeeds];
+        for(int iii=0; iii < Config.numberOfSeeds; iii++)
             {
                 styles[iii] = RandGenerator.randDouble(0, 5);
         }
@@ -182,7 +182,7 @@ public class Looper {
     
   
     private void newState() {
-         for(int iii=0; iii < Config.SAnumberOfSeeds; iii++)
+         for(int iii=0; iii < Config.numberOfSeeds; iii++)
             {
                 New_state[iii] = RandGenerator.randDouble(0, 10);
 //                LogTool.print("newState: Dwelltime Seed  " + iii + " : " + Cur_state[iii], "notification");
@@ -220,7 +220,7 @@ public class Looper {
     
     public String getGlobal_Lowest_state_string() {
         String Global_Lowest_state_string = new String();
-        for (int cc = 0; cc < Config.SAnumberOfSeeds; cc++) {
+        for (int cc = 0; cc < Config.numberOfSeeds; cc++) {
             Global_Lowest_state_string = Global_Lowest_state_string.concat(" " + cc + ") " + Global_Lowest_state[cc]);
             }
         return Global_Lowest_state_string;
@@ -239,7 +239,7 @@ public class Looper {
  */
     public String getNew_state_string() {
         String NewState = new String();
-        for (int aa = 0; aa < Config.SAnumberOfSeeds; aa++) {
+        for (int aa = 0; aa < Config.numberOfSeeds; aa++) {
             NewState = NewState.concat(" " + aa + ") " + New_state[aa]);
             }
 //        NewState = "1: " + New_state[0] + " 2: " + New_state[1] + " 3: " + New_state[2] + "";
@@ -264,7 +264,7 @@ public class Looper {
     public String getCur_state_string() {
         String CurState = new String();
 //        CurState = "1: " + Cur_state[0] + " 2: " + Cur_state[1] + " 3: " + Cur_state[2] + "";
-        for (int aa = 0; aa < Config.SAnumberOfSeeds; aa++) {
+        for (int aa = 0; aa < Config.numberOfSeeds; aa++) {
             CurState = CurState.concat(" " + aa + ") " + Cur_state[aa]);
             }
         return CurState;
@@ -449,7 +449,7 @@ public class Looper {
 //                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
                                                 if (intensity>0) {
@@ -478,7 +478,7 @@ public class Looper {
                 for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
                                                 if (intensity>0) {
@@ -507,7 +507,7 @@ public class Looper {
 //                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].metavalue * New_state[i];
                                                 if (intensity>0) {
@@ -536,7 +536,7 @@ public class Looper {
                 for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
                                                 if (intensity>0) {
@@ -565,7 +565,7 @@ public class Looper {
 //                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body[x][y][z].radiationIntensity(this.seeds[i].getCoordinate(), Cur_state[i]);
                                                 if (intensity>0) {
@@ -594,7 +594,7 @@ public class Looper {
                 for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body[x][y][z].radiationIntensity(this.seeds[i].getCoordinate(), Cur_state[i]);
                                                 if (intensity>0) {
@@ -623,7 +623,7 @@ public class Looper {
                 for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body[x][y][z].metavalue * Cur_state[i];
                                                 if (intensity>0) {
@@ -652,7 +652,7 @@ public class Looper {
                 for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
                                                 if (intensity>0) {
@@ -727,7 +727,7 @@ public class Looper {
     Sets the field cur_cost which contains the cost ot the current best solution
     */    
     public void setFinalSolution() {
-        for(int i=0; i<Config.SAnumberOfSeeds;i++) {
+        for(int i=0; i<Config.numberOfSeeds;i++) {
                 this.seeds[i].setDurationMilliSec(GLowestState.getDwelltimes()[i]);
                 Cur_state[i] = GLowestState.getDwelltimes()[i];
             }
