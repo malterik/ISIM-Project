@@ -43,6 +43,11 @@ public class Histogram extends JFrame implements Serializable {
 		dataSets = new HashMap<String, double[]>();
 	}
 	
+	public HashMap<String,double[]> getDataSets()
+	{
+		return dataSets;
+	}
+	
 	/**
 	 * Add data set to histogram.
 	 * 

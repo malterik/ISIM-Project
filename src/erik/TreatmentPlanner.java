@@ -286,4 +286,3 @@ public class TreatmentPlanner {
 		System.exit(0);				// necessary to terminate all threads 
 	}
 }
-

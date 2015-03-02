@@ -123,6 +123,11 @@ public class TreatmentAnalyzer implements Serializable {
 		return gridResolution;
 	}
 	
+	public Histogram getHistogram()
+	{
+		return histogram;
+	}
+	
 	public void setMinDoses(double[] minDoses) {
 		this.minDoses = minDoses;
 	}
@@ -178,6 +183,10 @@ public class TreatmentAnalyzer implements Serializable {
 		this.gridResolution = gridResolution;
 	}
 	
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
 	/**
 	 * Calculates dose for each voxel.
 	 */
@@ -358,9 +367,9 @@ public class TreatmentAnalyzer implements Serializable {
 		LogTool.print("Adding histogram data", "Notification");
 		Histogram histogram = new Histogram(this.title);
 		histogram.addDataSet("Normal", this.getAnatomy(Config.normalType));
-		histogram.addDataSet("Spine", this.getAnatomy(Config.bladderType));
-		histogram.addDataSet("Liver", this.getAnatomy(Config.rectumType));
-		histogram.addDataSet("Pancreas", this.getAnatomy(Config.urethraType));
+		histogram.addDataSet("Bladder", this.getAnatomy(Config.bladderType));
+		histogram.addDataSet("Rectum", this.getAnatomy(Config.rectumType));
+		histogram.addDataSet("Urethra", this.getAnatomy(Config.urethraType));
 		histogram.addDataSet("Tumor", this.getAnatomy(Config.tumorType));
 		setHistogram(histogram);
 	}
@@ -396,7 +405,7 @@ public class TreatmentAnalyzer implements Serializable {
 		String conformalityLine = String.format("%-15s%s", "Conformality", spacing);
 		String homogeinityLine = String.format("%-15s%s", "Homogeinity", spacing);
 		String coverageLine = String.format("%-15s%s", "Coverage", spacing);
-		DecimalFormat decimalFormat = new DecimalFormat("#####0.0000");
+		DecimalFormat decimalFormat = new DecimalFormat("#####0.000E00");
 		
 		for(int i = 0; i < Config.tumorType; i++)
 		{
