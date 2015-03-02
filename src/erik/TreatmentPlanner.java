@@ -20,7 +20,7 @@ import utils.Seed;
 import utils.Voxel;
 
 public class TreatmentPlanner {
-	private static final boolean outputToFile = true;
+	private static final boolean outputToFile = false;
 
 	private static void planTreatment(String algo, double doubleArgs[]) throws IloException {
 
@@ -35,8 +35,8 @@ public class TreatmentPlanner {
 		 */
 
 		// Database test
-		Config.useLUT = true;
-		Voxel.setLUT(10, 10000);
+		//Config.useLUT = true;
+		//Voxel.setLUT(10, 10000);
 		
 		SimpleDB db = new SimpleDB();
 		
@@ -86,8 +86,9 @@ public class TreatmentPlanner {
 
 						switch (entry.getBodyArray()[x][y][z].getBodyType()) {
 						case Config.normalType: {
-							body[x][y][z].setGoalDosis(Config.normalGoalDose);
-							body[x][y][z].setBodyType(Config.normalType);
+							//body[x][y][z].setGoalDosis(Config.normalGoalDose);
+							//body[x][y][z].setBodyType(Config.normalType);
+							body[x][y][z].setBodyType(7);
 							break;
 						}
 						case Config.bladderType: {
@@ -111,8 +112,9 @@ public class TreatmentPlanner {
 							break;
 						}
 						default: {
-							body[x][y][z].setGoalDosis(Config.normalGoalDose);
-							body[x][y][z].setBodyType(Config.normalType);
+							//body[x][y][z].setGoalDosis(Config.normalGoalDose);
+							//body[x][y][z].setBodyType(Config.normalType);
+							body[x][y][z].setBodyType(7);
 							break;
 						}
 						}

@@ -25,10 +25,10 @@ public class Config {
 	public static final double oarGoalDose = 30;
 	
 	public static final double normalGoalDose = 10; 	//max
-	public static final double bladderGoalDose = 0; 		//max
-	public static final double rectumGoalDose = 30; 		//max
-	public static final double urethraGoalDose = 0; 	//max
-	public static final double tumorGoalDose = 50; 		//min
+	public static final double bladderGoalDose = 32.0*0.75; 		//max
+	public static final double rectumGoalDose = 32.0*0.75; 		//max
+	public static final double urethraGoalDose = 32.0*1.5; 	//max
+	public static final double tumorGoalDose = 32; 		//min
 	
 	public static final double relaxDose = 5;
 	
@@ -44,11 +44,10 @@ public class Config {
 	public static final double urethraMaxDose = 30;
 	public static final double tumorMaxDose = 70;
 	
-	public static final String[] bodyTypeDescriptions = {"Normal", "Spine", "Liver", "Pancreas", "Tumor"};
+	public static final String[] bodyTypeDescriptions = {"Normal", "Bladder", "Rectum", "Urethra", "Tumor"};
 	
 	
 	// Parameters for classification
-	public static final double VOXEL_DIST = 0.1; // in cm
 	public static final int TUMOR = 5; // BodyType for Tumor
 	
         // Parameters for the Simulated Annealing algorithm
