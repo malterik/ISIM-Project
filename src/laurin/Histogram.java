@@ -29,6 +29,10 @@ import utils.Voxel;
  */
 public class Histogram extends JFrame implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HashMap<String,double[]> dataSets;
 	private String title;
 	
