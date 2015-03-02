@@ -151,8 +151,8 @@ public class BodyAnalyzer {
 			return xBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = xBoundsTumor[0] - (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
-			upperBound = xBoundsTumor[1] + (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
+			lowerBound = xBoundsTumor[0] - (int) (treatmentRange/Config.gridResolution);
+			upperBound = xBoundsTumor[1] + (int) (treatmentRange/Config.gridResolution);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
@@ -196,8 +196,8 @@ public class BodyAnalyzer {
 			return yBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = yBoundsTumor[0] - (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
-			upperBound = yBoundsTumor[1] + (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
+			lowerBound = yBoundsTumor[0] - (int) (treatmentRange/Config.gridResolution);
+			upperBound = yBoundsTumor[1] + (int) (treatmentRange/Config.gridResolution);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
@@ -240,8 +240,8 @@ public class BodyAnalyzer {
 			return zBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = zBoundsTumor[0] - (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
-			upperBound = zBoundsTumor[1] + (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
+			lowerBound = zBoundsTumor[0] - (int) (treatmentRange/Config.gridResolution);
+			upperBound = zBoundsTumor[1] + (int) (treatmentRange/Config.gridResolution);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;

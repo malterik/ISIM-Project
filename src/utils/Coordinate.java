@@ -9,7 +9,6 @@ public class Coordinate implements Serializable {
 	private double x;
 	private double y;
 	private double z;
-	public static final double GRID_RESOLUTION = 0.2;  // Distance between two voxel in cm
 	
 	public Coordinate(double x, double y , double z) {
 		this.x = x;
@@ -70,6 +69,6 @@ public class Coordinate implements Serializable {
 	
 	public double distanceToCoordiante(Coordinate position) {
 		
-	    return(( Math.sqrt( Math.pow(this.getX()-position.getX(), 2) + Math.pow(this.getY()-position.getY(), 2) + Math.pow(this.getZ()-position.getZ(), 2) ) ) * GRID_RESOLUTION);
+	    return(( Math.sqrt( Math.pow(this.getX()-position.getX(), 2) + Math.pow(this.getY()-position.getY(), 2) + Math.pow(this.getZ()-position.getZ(), 2) ) ) * Config.gridResolution);
 	}
 }

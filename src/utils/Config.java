@@ -104,11 +104,12 @@ public class Config {
 	
 	public static final int treatmentRange = 8; // indicates the range in cm for the region around the tumor which shall be treated by radiation
 	
-	public static  int scaleFactor = 1;
+	public static int scaleFactor = 1;
 	
 	public static final double cancelValue = 1;
 
 	//other
+	public static boolean useLUT = false;
 	public static final int LUTSize = 10000; // size of lookup table for fast dose approximation
 	
 	public static void setNumberOfSeeds(int number)
@@ -121,6 +122,8 @@ public class Config {
 		scaleFactor = number;
 		
 	}
+	
+	public static double gridResolution = 0.05;
 	
 	
 	

@@ -80,11 +80,17 @@ public class Voxel implements Serializable {
 		
 		if(distance == 0) {
 			dose = this.getGoalDosis();
+		} else if (Config.useLUT == true){
+			radiationIntensityLUT(position, durationMilliSec, phi);
 		} else {
 			dose = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ) * durationMilliSec ; 
 		}
 		
 		return dose;
+	}
+	
+	public double radiationIntensity(Coordinate position, double durationMilliSec){
+		return radiationIntensity(position, durationMilliSec, 90);
 	}
 	
 	public double radiationIntensityLUT(Coordinate position, double durationMilliSec, double phi){
@@ -107,14 +113,14 @@ public class Voxel implements Serializable {
 		return dose;
 	}
 	
-	public double radiationIntensity(Coordinate position, double durationMilliSec){
+	/*public double radiationIntensity(Coordinate position, double durationMilliSec){
             double temp=radiationIntensityNoTimeCALC(position, 90);
              if (temp>0.0) {
 //                LogTool.print("Wert in Time " + temp, "notification");
 //                LogTool.print("Wert in Time " + temp-, "notification");
             }
 		return temp*durationMilliSec;
-	}
+	}*/
 	
         
         public double radiationIntensityNoTime(Coordinate position){

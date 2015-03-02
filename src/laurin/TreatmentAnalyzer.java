@@ -40,6 +40,7 @@ public class TreatmentAnalyzer implements Serializable {
 	private double homogenityIndex;
 	private double coverage;
 	private Date runtime;
+	private double gridResolution;
 	private Histogram histogram;
 	
 	private String sAlgorithm;
@@ -113,6 +114,11 @@ public class TreatmentAnalyzer implements Serializable {
 		return doubleArgs;
 	}
 	
+	public double getGridResolution()
+	{
+		return gridResolution;
+	}
+	
 	public void setMinDoses(double[] minDoses) {
 		this.minDoses = minDoses;
 	}
@@ -161,6 +167,11 @@ public class TreatmentAnalyzer implements Serializable {
 	public void setRuntime(Date runtime)
 	{
 		this.runtime = runtime;
+	}
+	
+	public void setGridResolution(double gridResolution)
+	{
+		this.gridResolution = gridResolution;
 	}
 	
 	/**
