@@ -28,6 +28,10 @@ import utils.Voxel;
 
 public class TreatmentAnalyzer implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private transient Voxel[][][] body;
 	private int[] dimensions;
 	private Seed[] seeds;
@@ -354,9 +358,9 @@ public class TreatmentAnalyzer implements Serializable {
 		LogTool.print("Adding histogram data", "Notification");
 		Histogram histogram = new Histogram(this.title);
 		histogram.addDataSet("Normal", this.getAnatomy(Config.normalType));
-		histogram.addDataSet("Spine", this.getAnatomy(Config.spineType));
-		histogram.addDataSet("Liver", this.getAnatomy(Config.liverType));
-		histogram.addDataSet("Pancreas", this.getAnatomy(Config.pancreasType));
+		histogram.addDataSet("Spine", this.getAnatomy(Config.bladderType));
+		histogram.addDataSet("Liver", this.getAnatomy(Config.rectumType));
+		histogram.addDataSet("Pancreas", this.getAnatomy(Config.urethraType));
 		histogram.addDataSet("Tumor", this.getAnatomy(Config.tumorType));
 		setHistogram(histogram);
 	}
