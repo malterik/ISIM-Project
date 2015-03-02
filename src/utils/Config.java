@@ -25,23 +25,23 @@ public class Config {
 	public static final double oarGoalDose = 30;
 	
 	public static final double normalGoalDose = 10; 	//max
-	public static final double spineGoalDose = 0; 		//max
-	public static final double liverGoalDose = 30; 		//max
-	public static final double pancreasGoalDose = 0; 	//max
+	public static final double bladderGoalDose = 0; 		//max
+	public static final double rectumGoalDose = 30; 		//max
+	public static final double urethraGoalDose = 0; 	//max
 	public static final double tumorGoalDose = 50; 		//min
 	
 	public static final double relaxDose = 5;
 	
 	public static final double normalMinDose = 0;
-	public static final double spineMinDose = 0;
-	public static final double liverMinDose = 0;
-	public static final double pancreasMinDose = 0;
+	public static final double bladderMinDose = 0;
+	public static final double rectumMinDose = 0;
+	public static final double urethraMinDose = 0;
 	public static final double tumorMinDose = 30;
 	
 	public static final double normalMaxDose = 40;
-	public static final double spineMaxDose = 30;
-	public static final double liverMaxDose = 50;
-	public static final double pancreasMaxDose = 30;
+	public static final double bladderMaxDose = 30;
+	public static final double rectumMaxDose = 50;
+	public static final double urethraMaxDose = 30;
 	public static final double tumorMaxDose = 70;
 	
 	public static final String[] bodyTypeDescriptions = {"Normal", "Spine", "Liver", "Pancreas", "Tumor"};
@@ -93,9 +93,9 @@ public class Config {
 	
 	//states
 	public static final int normalType 		= 1; //low dose
-	public static final int spineType 		= 2; //no dose
-	public static final int liverType 		= 3; //low-medium dose
-	public static final int pancreasType 	= 4; // no dose
+	public static final int bladderType 	= 2; //no dose (spine)
+	public static final int rectumType 		= 3; //low-medium dose (liver)
+	public static final int urethraType 	= 4; // no dose (pancreas)
 	public static final int tumorType 		= 5; // high dose
 	
 	//Multithreading
