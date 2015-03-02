@@ -150,7 +150,7 @@ public class Needle implements Serializable {
 	{
 		double distance = this.getTumorSurfacePointA().distanceToVoxel(this.getTumorSurfacePointB().getCoordinate());
 		Vector3D vDirection = this.tumorSurfacePointB.getCoordinate().ToVector().subtract(this.tumorSurfacePointA.getCoordinate().ToVector());
-		Coordinate seedCoordinate = Coordinate.getPointOnLine(this.getTumorSurfacePointA().getCoordinate(), vDirection, RandGenerator.randDouble(0, distance/Coordinate.GRID_RESOLUTION));
+		Coordinate seedCoordinate = Coordinate.getPointOnLine(this.getTumorSurfacePointA().getCoordinate(), vDirection, RandGenerator.randDouble(0, Config.gridResolution));
 		Seed seed = new Seed(seedCoordinate.getX(), seedCoordinate.getY(), seedCoordinate.getZ(), 0);
 		return seed;
 	}
