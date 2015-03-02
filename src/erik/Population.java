@@ -23,7 +23,7 @@ public class Population
 	private static int POP_SIZE;  // population size             // max number of iterations
     private static double MUTATION_RATE;     // probability of mutation
     private static double CROSSOVER_RATE;     // probability of crossover
-    public static double[] weighting_factors = new double[5];
+    public static double[] weighting_factors;
     public static double treatmentRange;
     
     private static Random m_rand = new Random();  // random-number generator

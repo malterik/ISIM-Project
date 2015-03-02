@@ -40,7 +40,7 @@ public class DoseEvaluator implements Callable<Double> {
 					Solver.body[x][y][z].addCurrentDosis(intensity);
 					
 				}	
-				temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2) * weightingFactor[Solver.body[x][y][z].getBodyType()-1];
+				temp += Math.pow((Solver.body[x][y][z].getGoalDosis()-Solver.body[x][y][z].getCurrentDosis()),2) * weightingFactor[Solver.body[x][y][z].getBodyType()];
 				
 			}	
 		}

@@ -275,7 +275,6 @@ public class Needle implements Serializable {
 			for (double d = 0.3; d <= (distanceInTumor-0.3); d += STEP_SIZE)
 			{
 				Coordinate coordinate = Coordinate.getPointOnLine(needle.getTumorSurfacePointA().getCoordinate(), vDirection, d);
-				//System.out.println(coordinate.getX() +  ", " + coordinate.getY() + ", " + coordinate.getZ());
 				
 				double minDist = Double.MAX_VALUE;
 				for (Seed seed : seeds)
@@ -348,6 +347,7 @@ public class Needle implements Serializable {
 		{
 			Voxel entryVoxel = entryVoxels[RandGenerator.randInt(0, entryVoxels.length - 1)];
 			Voxel tumorVoxel = tumorVoxels[RandGenerator.randInt(0, tumorVoxels.length - 1)];
+			
 			Needle needle = new Needle(tumorVoxel, entryVoxel, body);
 			
 			for (int j = 0; j < numSeedsPerNeedle; j++)

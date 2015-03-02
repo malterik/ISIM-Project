@@ -81,8 +81,10 @@ public class LPStepwise {
     	ArrayList<ArrayList<Entry<Voxel,Double>>> distanceMaps = new ArrayList<ArrayList<Entry<Voxel,Double>>>();
 	    for (int i = 0; i < (Config.tumorType-1); i++)
 	    	distanceMaps.add(new ArrayList<Entry<Voxel,Double>>());
+	    
+	    System.out.println(tumorSurface.length);
     	
-    	
+    	System.out.println("fct");
     	for (int x = xBounds[0]; x < xBounds[1]; x++)
     	{
         	for (int y = yBounds[0]; y < yBounds[1]; y ++)
@@ -103,6 +105,7 @@ public class LPStepwise {
         	}
     	}
     	
+    	System.out.println("comp");
 		Comparator<Entry<Voxel,Double>> distanceToTumorSurfaceComparator = new Comparator<Entry<Voxel,Double>>() {
 		   public int compare(Entry<Voxel,Double> e1, Entry<Voxel,Double> e2) {    
 		        return e1.getValue().compareTo(e2.getValue());

@@ -474,13 +474,42 @@ public class SimpleDB {
 					}
 					mlDouble = (MLDouble) mlArray;
 					for (int i = 0; i < dims[0]; i++) {
+						
+						
+						int btp = -1;
+						for (int j = 0; j < dims[1]; j++) {
+						  bodyArray[k - 1][i][j] = new Voxel(k - 1, i, j);
+						  btp = (int)(double) mlDouble.get(i, j);
+						  if (btp == 0) {  
+						    // Normal body
+						    bodyArray[k - 1][i][j].setBodyType (0);  
+						  }
+						  else if (btp % 1000 == 0) {
+						    // Prostate aka. tumor
+						    bodyArray[k - 1][i][j].setBodyType (5);
+						  }
+						  else if (btp % 100 == 0) {
+						    // Urethra
+						    bodyArray[k - 1][i][j].setBodyType (4);
+						  }
+						  else if (btp % 10 == 0) {
+						    // Rectum
+						    bodyArray[k - 1][i][j].setBodyType (3);
+						  }
+						  else if (btp % 1 == 0) {
+						    // Bladder
+						    bodyArray[k - 1][i][j].setBodyType (2);
+						  }
+						}
+
+						/*
 						for (int j = 0; j < dims[1]; j++) {
 							bodyArray[k - 1][i][j] = new Voxel(k - 1, i, j);
 							bodyArray[k - 1][i][j].setBodyType((int)(double) mlDouble.get(i, j));
 							if (maxType < bodyArray[k - 1][i][j].getBodyType()) {
 								maxType = bodyArray[k - 1][i][j].getBodyType();
 							}
-						}
+						}*/
 					}
 				}
 			} catch (IOException ioExc) {

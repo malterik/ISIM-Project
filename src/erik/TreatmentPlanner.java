@@ -2,14 +2,14 @@ package erik;
 
 import ilog.concert.IloException;
 
+import java.io.File;
+import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import laurin.TreatmentAnalyzer;
 import sebastian.BodyEntry;
-import sebastian.ScatterDisplay;
-import sebastian.ScatterDisplay.ChartType;
 import sebastian.SimpleDB;
 import utils.Config;
 import utils.Coordinate;
@@ -19,6 +19,7 @@ import utils.Seed;
 import utils.Voxel;
 
 public class TreatmentPlanner {
+	private static final boolean outputToFile = true;
 
 	private static void planTreatment(String algo, double doubleArgs[]) throws IloException {
 
@@ -34,8 +35,8 @@ public class TreatmentPlanner {
 
 		// Database test
 		SimpleDB db = new SimpleDB();
-		db.loadBody("data2593.4844");
-		BodyEntry entry = db.getBodyByName("data2593.4844");
+		db.loadBody("prostate0_25ppmm");
+		BodyEntry entry = db.getBodyByName("prostate0_25ppmm");
 		Voxel[][][] body = null;
 		if (entry != null) {
 
@@ -128,17 +129,21 @@ public class TreatmentPlanner {
 		}
 		else if(algo.equals("GA"))
 		{
-			double[] weighting_factors = new double[5];
+			double[] weighting_factors = new double[6];
 			weighting_factors[0] = doubleArgs[4];
-			weighting_factors[1] = doubleArgs[5];
-			weighting_factors[2] = doubleArgs[6];
-			weighting_factors[3] = doubleArgs[7];
-			weighting_factors[4] = doubleArgs[8];
+			weighting_factors[1] = 1;
+			weighting_factors[2] = doubleArgs[5];
+			weighting_factors[3] = doubleArgs[6];
+			weighting_factors[4] = doubleArgs[7];
+			weighting_factors[5] = doubleArgs[8];
+			Config.setScaleFactor( (int) doubleArgs[10]); 
 			solver.solveGeneticAlg((int) doubleArgs[0], (int) doubleArgs[1], doubleArgs[2], doubleArgs[3], weighting_factors,doubleArgs[9]);
+			
+		
 		}
 		else if(algo.equals("SA"))
 		{
-			solver.solveSA(doubleArgs);
+			//solver.solveSA();
                         //ToDo: solveSA so modden dass sie Parameter akzeptiert
                         // In meinem Fall MINDESTENS die Seedzahl
                         // Darueber hinaus gibt es nur varianten der
@@ -178,6 +183,7 @@ public class TreatmentPlanner {
 		
 		
 		
+		
 
 		
 		/*ScatterDisplay display5 = new ScatterDisplay(ChartType.BodyType);
@@ -207,6 +213,9 @@ public class TreatmentPlanner {
 	}
 
 	public static void main(String[] args) throws IloException {
+		
+		
+		
 		String algo = args[0];
 		int seedNumber = Integer.parseInt(args[1]);
 		
@@ -221,9 +230,27 @@ public class TreatmentPlanner {
 	            System.err.println("Failed trying to parse a non-numeric argument, " + args[i]);
 	         }
 	      }
-
+	    if( outputToFile) {
+	        String filename = "";
+			filename += algo + "_";
+			filename += Config.numberOfSeeds + "_";
+			
+			for (double dValue : doubleArgs)
+			{
+				filename += Double.toString(dValue) + "_";
+			}
+			filename += ".txt";
+			
+			
+			try {
+			    System.setOut(new PrintStream(new File(filename)));
+			} catch (Exception e) {
+			     e.printStackTrace();
+			}
+	    }
 		printTreatmentData();
 		planTreatment(algo, doubleArgs);
+		System.exit(0);				// necessary to terminate all threads 
 	}
 }
 

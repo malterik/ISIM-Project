@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,11 +39,11 @@ public class TreatmentAnalyzer implements Serializable {
 	private double conformalityIndex;
 	private double homogenityIndex;
 	private double coverage;
+	private Date runtime;
 	private Histogram histogram;
 	
 	private String sAlgorithm;
 	private double[] doubleArgs;
-	
 	
 	private transient ArrayList<Set<Voxel>> anatomies;
 	
@@ -99,6 +100,11 @@ public class TreatmentAnalyzer implements Serializable {
 		return title;
 	}
 	
+	public Date getRuntime()
+	{
+		return runtime;
+	}
+	
 	public String getSAlgorithm() {
 		return sAlgorithm;
 	}
@@ -150,6 +156,11 @@ public class TreatmentAnalyzer implements Serializable {
 	
 	public void setDoubleArgs(double[] doubleArgs) {
 		this.doubleArgs = doubleArgs;
+	}
+	
+	public void setRuntime(Date runtime)
+	{
+		this.runtime = runtime;
 	}
 	
 	/**
