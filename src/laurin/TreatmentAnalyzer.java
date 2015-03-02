@@ -367,9 +367,9 @@ public class TreatmentAnalyzer implements Serializable {
 		LogTool.print("Adding histogram data", "Notification");
 		Histogram histogram = new Histogram(this.title);
 		histogram.addDataSet("Normal", this.getAnatomy(Config.normalType));
-		histogram.addDataSet("Spine", this.getAnatomy(Config.bladderType));
-		histogram.addDataSet("Liver", this.getAnatomy(Config.rectumType));
-		histogram.addDataSet("Pancreas", this.getAnatomy(Config.urethraType));
+		histogram.addDataSet("Bladder", this.getAnatomy(Config.bladderType));
+		histogram.addDataSet("Rectum", this.getAnatomy(Config.rectumType));
+		histogram.addDataSet("Urethra", this.getAnatomy(Config.urethraType));
 		histogram.addDataSet("Tumor", this.getAnatomy(Config.tumorType));
 		setHistogram(histogram);
 	}
