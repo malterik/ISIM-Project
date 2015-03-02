@@ -1,5 +1,6 @@
 package utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,8 +17,12 @@ import erik.BodyAnalyzer;
  * @author Erik
  *
  */
-public class Seed extends Voxel {
+public class Seed extends Voxel implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Needle needle;
 	
 	public Seed(double x, double y, double z, double durationMilliSec) {

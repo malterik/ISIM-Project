@@ -3,6 +3,7 @@ package erik;
 import ilog.concert.IloException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,7 +20,7 @@ import utils.Seed;
 import utils.Voxel;
 
 public class TreatmentPlanner {
-	private static final boolean outputToFile = true;
+	private static final boolean outputToFile = false;
 
 	private static void planTreatment(String algo, double doubleArgs[]) throws IloException {
 
@@ -34,9 +35,40 @@ public class TreatmentPlanner {
 		 */
 
 		// Database test
+		Config.useLUT = true;
+		Voxel.setLUT(10, 10000);
+		
 		SimpleDB db = new SimpleDB();
+		
+		BodyEntry entry = null;
+		
+		/*// 0.25ppmm
 		db.loadBody("prostate0_25ppmm");
-		BodyEntry entry = db.getBodyByName("prostate0_25ppmm");
+		entry = db.getBodyByName("prostate0_25ppmm");
+		Config.gridResolution = 0.4;*/
+		
+		/*// 0.5ppmm
+		db.loadBody("prostate0_5ppmm");
+		entry = db.getBodyByName("prostate0_5ppmm");
+		Config.gridResolution = 0.2;*/
+		
+		// 1ppmm
+		db.loadBody("prostate1ppmm");
+		entry = db.getBodyByName("prostate1ppmm");
+		Config.gridResolution = 0.1;
+		
+		/*// 2ppmm
+		db.loadBody("prostate2ppmm");
+		entry = db.getBodyByName("prostate2ppmm");
+		Config.gridResolution = 0.05;*/
+		
+		/*// 4ppmm
+		db.loadBody("prostate4ppmm");
+		entry = db.getBodyByName("prostate4ppmm");
+		Config.gridResolution = 0.025;*/
+		
+    	//db.loadBody("data2593.4844");
+		//BodyEntry entry = db.getBodyByName("data2593.4844");
 		Voxel[][][] body = null;
 		if (entry != null) {
 
@@ -58,19 +90,19 @@ public class TreatmentPlanner {
 							body[x][y][z].setBodyType(Config.normalType);
 							break;
 						}
-						case Config.spineType: {
-							body[x][y][z].setGoalDosis(Config.spineGoalDose);
-							body[x][y][z].setBodyType(Config.spineType);
+						case Config.bladderType: {
+							body[x][y][z].setGoalDosis(Config.bladderGoalDose);
+							body[x][y][z].setBodyType(Config.bladderType);
 							break;
 						}
-						case Config.liverType: {
-							body[x][y][z].setGoalDosis(Config.liverGoalDose);
-							body[x][y][z].setBodyType(Config.liverType);
+						case Config.rectumType: {
+							body[x][y][z].setGoalDosis(Config.rectumGoalDose);
+							body[x][y][z].setBodyType(Config.rectumType);
 							break;
 						}
-						case Config.pancreasType: {
-							body[x][y][z].setGoalDosis(Config.pancreasGoalDose);
-							body[x][y][z].setBodyType(Config.pancreasType);
+						case Config.urethraType: {
+							body[x][y][z].setGoalDosis(Config.urethraGoalDose);
+							body[x][y][z].setBodyType(Config.urethraType);
 							break;
 						}
 						case Config.tumorType: {
@@ -143,7 +175,7 @@ public class TreatmentPlanner {
 		}
 		else if(algo.equals("SA"))
 		{
-			//solver.solveSA();
+			solver.solveSA(doubleArgs);
                         //ToDo: solveSA so modden dass sie Parameter akzeptiert
                         // In meinem Fall MINDESTENS die Seedzahl
                         // Darueber hinaus gibt es nur varianten der
@@ -151,15 +183,22 @@ public class TreatmentPlanner {
 		}
 
 		long end = System.currentTimeMillis();
+		
 		Date date = new Date(end - start);
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Runtime: " + dateFormatted);
 		
+		
+		
 		TreatmentAnalyzer ta = new TreatmentAnalyzer(Solver.body,
 				entry.getDimensions(), Solver.seeds);
 		//ta.analyzeAll();
-		String filename = "";
+		ta.setRuntime(date);
+		ta.setSAlgorithm(algo);
+		ta.setDoubleArgs(doubleArgs);
+		ta.setGridResolution(Config.gridResolution);
+		String filename = "treatments/";
 		filename += algo + "_";
 		filename += Config.numberOfSeeds + "_";
 		
@@ -171,6 +210,9 @@ public class TreatmentPlanner {
 		ta.writeToFile(filename);
 		//ta.printResults();
 		// runtime measurement
+		
+
+		
 		
 		
 		
@@ -222,7 +264,7 @@ public class TreatmentPlanner {
 	         }
 	      }
 	    if( outputToFile) {
-	        String filename = "";
+	        String filename = "logs/";
 			filename += algo + "_";
 			filename += Config.numberOfSeeds + "_";
 			
@@ -244,4 +286,3 @@ public class TreatmentPlanner {
 		System.exit(0);				// necessary to terminate all threads 
 	}
 }
-

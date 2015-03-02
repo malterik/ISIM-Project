@@ -68,17 +68,17 @@ public class BodyAnalyzer {
 							
 							break;
 						}
-						case Config.spineType:
+						case Config.bladderType:
 						{
 							
 							break;
 						}
-						case Config.liverType:
+						case Config.rectumType:
 						{
 							
 							break;
 						}
-						case Config.pancreasType:
+						case Config.urethraType:
 						{
 							
 							break;
@@ -151,8 +151,8 @@ public class BodyAnalyzer {
 			return xBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = xBoundsTumor[0] - (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
-			upperBound = xBoundsTumor[1] + (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
+			lowerBound = xBoundsTumor[0] - (int) (treatmentRange/Config.gridResolution);
+			upperBound = xBoundsTumor[1] + (int) (treatmentRange/Config.gridResolution);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
@@ -196,8 +196,8 @@ public class BodyAnalyzer {
 			return yBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = yBoundsTumor[0] - (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
-			upperBound = yBoundsTumor[1] + (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
+			lowerBound = yBoundsTumor[0] - (int) (treatmentRange/Config.gridResolution);
+			upperBound = yBoundsTumor[1] + (int) (treatmentRange/Config.gridResolution);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
@@ -240,8 +240,8 @@ public class BodyAnalyzer {
 			return zBoundsTumor;
 		} else if ( type == 2) {
 		
-			lowerBound = zBoundsTumor[0] - (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
-			upperBound = zBoundsTumor[1] + (int) (treatmentRange/Coordinate.GRID_RESOLUTION);
+			lowerBound = zBoundsTumor[0] - (int) (treatmentRange/Config.gridResolution);
+			upperBound = zBoundsTumor[1] + (int) (treatmentRange/Config.gridResolution);
 			
 			if(lowerBound > 0) {
 				result[0] = lowerBound;
@@ -291,8 +291,11 @@ public class BodyAnalyzer {
 		
 		for(int x = 0; x < body.length; x++) {				
 			for(int y = 0; y < body[0].length; y++) {		
-				for(int z = 0; z < body[0][0].length; z++) {		
-					anatomies.get(body[x][y][z].getBodyType()-1).add(body[x][y][z]);									
+				for(int z = 0; z < body[0][0].length; z++) {
+					if ((body[x][y][z].getBodyType()) != Config.dummyType)
+					{
+						anatomies.get(body[x][y][z].getBodyType()-1).add(body[x][y][z]);	
+					}
 				}
 			}	
 		}	

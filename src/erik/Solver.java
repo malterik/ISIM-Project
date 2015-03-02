@@ -44,19 +44,19 @@ public class Solver {
 							Solver.body[x][y][z].setBodyType(Config.normalType);
 							break;
 						}
-						case Config.spineType: {
-							Solver.body[x][y][z].setGoalDosis(Config.spineGoalDose);
-							Solver.body[x][y][z].setBodyType(Config.spineType);
+						case Config.bladderType: {
+							Solver.body[x][y][z].setGoalDosis(Config.bladderGoalDose);
+							Solver.body[x][y][z].setBodyType(Config.bladderType);
 							break;
 						}
-						case Config.liverType: {
-							Solver.body[x][y][z].setGoalDosis(Config.liverGoalDose);
-							Solver.body[x][y][z].setBodyType(Config.liverType);
+						case Config.rectumType: {
+							Solver.body[x][y][z].setGoalDosis(Config.rectumGoalDose);
+							Solver.body[x][y][z].setBodyType(Config.rectumType);
 							break;
 						}
-						case Config.pancreasType: {
-							Solver.body[x][y][z].setGoalDosis(Config.pancreasGoalDose);
-							Solver.body[x][y][z].setBodyType(Config.pancreasType);
+						case Config.urethraType: {
+							Solver.body[x][y][z].setGoalDosis(Config.urethraGoalDose);
+							Solver.body[x][y][z].setBodyType(Config.urethraType);
 							break;
 						}
 						case Config.tumorType: {
@@ -113,7 +113,7 @@ public class Solver {
             looper.setFinalSolution();
             Solver.body = looper.getBody();
             Solver.seeds = looper.getSeeds();
-            for(int i=0; i<Config.SAnumberOfSeeds;i++) {
+            for(int i=0; i<Config.numberOfSeeds;i++) {
 //                            Solver.seeds[i].setDurationMilliSec(looper.getGlobal_Lowest_state()[i]);
                             System.out.println("Verweildauer: "+ Solver.seeds[i].getDurationMilliSec() );
                     }

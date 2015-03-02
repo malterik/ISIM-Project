@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +28,10 @@ import utils.Voxel;
 
 public class TreatmentAnalyzer implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private transient Voxel[][][] body;
 	private int[] dimensions;
 	private Seed[] seeds;
@@ -38,11 +43,12 @@ public class TreatmentAnalyzer implements Serializable {
 	private double conformalityIndex;
 	private double homogenityIndex;
 	private double coverage;
+	private Date runtime;
+	private double gridResolution;
 	private Histogram histogram;
 	
 	private String sAlgorithm;
 	private double[] doubleArgs;
-	
 	
 	private transient ArrayList<Set<Voxel>> anatomies;
 	
@@ -99,12 +105,27 @@ public class TreatmentAnalyzer implements Serializable {
 		return title;
 	}
 	
+	public Date getRuntime()
+	{
+		return runtime;
+	}
+	
 	public String getSAlgorithm() {
 		return sAlgorithm;
 	}
 	
 	public double[] getDoubleArgs() {
 		return doubleArgs;
+	}
+	
+	public double getGridResolution()
+	{
+		return gridResolution;
+	}
+	
+	public Histogram getHistogram()
+	{
+		return histogram;
 	}
 	
 	public void setMinDoses(double[] minDoses) {
@@ -152,6 +173,20 @@ public class TreatmentAnalyzer implements Serializable {
 		this.doubleArgs = doubleArgs;
 	}
 	
+	public void setRuntime(Date runtime)
+	{
+		this.runtime = runtime;
+	}
+	
+	public void setGridResolution(double gridResolution)
+	{
+		this.gridResolution = gridResolution;
+	}
+	
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
 	/**
 	 * Calculates dose for each voxel.
 	 */
@@ -332,9 +367,9 @@ public class TreatmentAnalyzer implements Serializable {
 		LogTool.print("Adding histogram data", "Notification");
 		Histogram histogram = new Histogram(this.title);
 		histogram.addDataSet("Normal", this.getAnatomy(Config.normalType));
-		histogram.addDataSet("Spine", this.getAnatomy(Config.spineType));
-		histogram.addDataSet("Liver", this.getAnatomy(Config.liverType));
-		histogram.addDataSet("Pancreas", this.getAnatomy(Config.pancreasType));
+		histogram.addDataSet("Bladder", this.getAnatomy(Config.bladderType));
+		histogram.addDataSet("Rectum", this.getAnatomy(Config.rectumType));
+		histogram.addDataSet("Urethra", this.getAnatomy(Config.urethraType));
 		histogram.addDataSet("Tumor", this.getAnatomy(Config.tumorType));
 		setHistogram(histogram);
 	}
@@ -370,7 +405,7 @@ public class TreatmentAnalyzer implements Serializable {
 		String conformalityLine = String.format("%-15s%s", "Conformality", spacing);
 		String homogeinityLine = String.format("%-15s%s", "Homogeinity", spacing);
 		String coverageLine = String.format("%-15s%s", "Coverage", spacing);
-		DecimalFormat decimalFormat = new DecimalFormat("#####0.0000");
+		DecimalFormat decimalFormat = new DecimalFormat("#####0.000E00");
 		
 		for(int i = 0; i < Config.tumorType; i++)
 		{

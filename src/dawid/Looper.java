@@ -9,6 +9,7 @@ import utils.Seed;
 import utils.Voxel;
 import java.lang.Math;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -34,12 +35,12 @@ public class Looper {
  */
     
     private  Voxel [][][] body; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
-    private  Seed[] seeds = new Seed[Config.SAnumberOfSeeds];
+    private  Seed[] seeds = new Seed[Config.numberOfSeeds];
     private  Voxel [][][] body2; //Thobi hat das als ganz einfache Variable in seiner Loesermethode...nicht so OOP
-    private  Seed[] seeds2 = new Seed[Config.SAnumberOfSeeds];
-    public double[] Cur_state = new double[Config.SAnumberOfSeeds];
-    public double[] New_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
-    public double[] Global_Lowest_state = new double[Config.SAnumberOfSeeds]; // Do I even need this ?
+    private  Seed[] seeds2 = new Seed[Config.numberOfSeeds];
+    public double[] Cur_state = new double[Config.numberOfSeeds];
+    public double[] New_state = new double[Config.numberOfSeeds]; // Do I even need this ?
+    public double[] Global_Lowest_state = new double[Config.numberOfSeeds]; // Do I even need this ?
     public GlobalState GLowestState;
     double[] cliarguments;
     
@@ -94,7 +95,7 @@ public class Looper {
     private void initState() {
         double metaintensity=0;
         double diffr=0;
-         for(int ii=0; ii < Config.SAnumberOfSeeds; ii++)
+         for(int ii=0; ii < Config.numberOfSeeds; ii++)
             {
                 Cur_state[ii] = this.seeds[ii].getDurationMilliSec();
 //                Zeit2 = this.seeds[1].getDurationMilliSec();
@@ -115,7 +116,7 @@ public class Looper {
 //                      for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 //                          this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
                         this.body2[x][y][z].metavalue = 0.0;
-                        for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                        for(int i=0; i<Config.numberOfSeeds;++i) { 
                             // Calculate intensity based based on current dwelltime
                             metaintensity = this.body2[x][y][z].radiationIntensityNoTime((this.seeds2[i].getCoordinate()));
     //                                radiationIntensityNoTime(this.seeds2[i].getCoordinate(), New_state[i]);
@@ -129,18 +130,21 @@ public class Looper {
                 }    
             }
         }
-        this.body = this.body2;
+//        this.body = this.body2;
          } else {
          
     //        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
-            for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+//              for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {                     
+                    for(int x=0; x < Solver.dimensions[0]; x+= Config.scaleFactor) {
     //            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
-                for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+//                for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+                        for(int y=0; y < Solver.dimensions[1]; y+= Config.scaleFactor) {
     //                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
-                    for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+//                    for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+                            for(int z=0; z < Solver.dimensions[2]; z+= Config.scaleFactor) {
     //                    this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
                         this.body2[x][y][z].metavalue = 0.0;
-                            for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                            for(int i=0; i<Config.numberOfSeeds;++i) { 
                                 // Calculate intensity based based on current dwelltime
                                 metaintensity = this.body2[x][y][z].radiationIntensityNoTime((this.seeds2[i].getCoordinate()));
         //                                radiationIntensityNoTime(this.seeds2[i].getCoordinate(), New_state[i]);
@@ -148,13 +152,15 @@ public class Looper {
         //                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
                                                         }
         //                        this.body2[x][y][z].addCurrentDosis(metaintensity);
-                                  this.body2[x][y][z].metavalue += metaintensity;           
+                                  this.body2[x][y][z].metavalue += metaintensity;
+                                  this.body[x][y][z].metavalue = 0; 
+                                  this.body[x][y][z].metavalue += this.body2[x][y][z].metavalue;
     //                              Das ist implementation one
                             }   
                     }    
                 }
             }
-            this.body = this.body2;
+//            this.body = this.body2;
             diffr = ((this.body[43][43][43].metavalue)-(this.body2[43][43][43].metavalue));
             LogTool.print("Shallowcopy Check, value should be 0 :" + diffr + "@ 43,43,43 ","notification");
          }
@@ -162,27 +168,29 @@ public class Looper {
     /**
     * Works. Randomly determines a new state vector
     * @param New_state Contains randomized dwelltimes
-    * @param Config.SAnumberOfSeeds Contains randomized dwelltimes
+    * @param Config.numberOfSeeds Contains randomized dwelltimes
     */
     
     /**
      * Works.Randomly determines a new state vector
      * @param New_state Contains randomized dwelltimes
-     * @param Config .SAnumberOfSeeds Contains randomized dwelltimes
+     * @param Config .numberOfSeeds Contains randomized dwelltimes
      * @return
      */
     public double[] newstater (){
-        double[] styles = new double[Config.SAnumberOfSeeds];
-        for(int iii=0; iii < Config.SAnumberOfSeeds; iii++)
+        double[] styles = new double[Config.numberOfSeeds];
+        for(int iii=0; iii < Config.numberOfSeeds; iii++)
             {
-                styles[iii] = RandGenerator.randDouble(0, 5);
+                Random randomr = new Random();
+                styles[iii] = 0 + (5 - 0) * randomr.nextDouble();
+//                        RandGenerator.randDouble(0, 5);
         }
         return styles;
     }
     
   
     private void newState() {
-         for(int iii=0; iii < Config.SAnumberOfSeeds; iii++)
+         for(int iii=0; iii < Config.numberOfSeeds; iii++)
             {
                 New_state[iii] = RandGenerator.randDouble(0, 10);
 //                LogTool.print("newState: Dwelltime Seed  " + iii + " : " + Cur_state[iii], "notification");
@@ -220,7 +228,7 @@ public class Looper {
     
     public String getGlobal_Lowest_state_string() {
         String Global_Lowest_state_string = new String();
-        for (int cc = 0; cc < Config.SAnumberOfSeeds; cc++) {
+        for (int cc = 0; cc < Config.numberOfSeeds; cc++) {
             Global_Lowest_state_string = Global_Lowest_state_string.concat(" " + cc + ") " + Global_Lowest_state[cc]);
             }
         return Global_Lowest_state_string;
@@ -239,7 +247,7 @@ public class Looper {
  */
     public String getNew_state_string() {
         String NewState = new String();
-        for (int aa = 0; aa < Config.SAnumberOfSeeds; aa++) {
+        for (int aa = 0; aa < Config.numberOfSeeds; aa++) {
             NewState = NewState.concat(" " + aa + ") " + New_state[aa]);
             }
 //        NewState = "1: " + New_state[0] + " 2: " + New_state[1] + " 3: " + New_state[2] + "";
@@ -264,7 +272,7 @@ public class Looper {
     public String getCur_state_string() {
         String CurState = new String();
 //        CurState = "1: " + Cur_state[0] + " 2: " + Cur_state[1] + " 3: " + Cur_state[2] + "";
-        for (int aa = 0; aa < Config.SAnumberOfSeeds; aa++) {
+        for (int aa = 0; aa < Config.numberOfSeeds; aa++) {
             CurState = CurState.concat(" " + aa + ") " + Cur_state[aa]);
             }
         return CurState;
@@ -295,27 +303,53 @@ public class Looper {
         initState();
         for (int ab = 0; ab < Config.NumberOfMetropolisResets; ab++) {
             LogTool.print("==================== INACTIVE: START CALC FOR OUTER ROUND " + ab + "=========================","notification");
-            LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
 
                 if (Config.SAverboselvl>1) {
+                    //<editor-fold defaultstate="collapsed" desc="My custom code folding">
                     LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
                     LogTool.print("Debug: GLS get before loop only once each reset: " + this.getGlobal_Lowest_state_string(),"notification");
+                    LogTool.print("Debug: GLC_field get before loop only once each reset: " + Cur_cost,"notification");
+                    LogTool.print("Debug: GLC_getter get before loop only once each reset: " + this.getCur_cost(),"notification");
+                    LogTool.print("Debug: NXC_field get before loop only once each reset: " + New_cost,"notification");
+                    LogTool.print("Debug: NXC_getter get before loop only once each reset: " + this.getNew_cost(),"notification");
+                    //</editor-fold>
                 }
-            
-            setCur_cost(costCURsuper());
-//              setCur_cost(costCUR());
-//            setcurfitnessValue(evaluate());
-
-            /* [Newstate] with random dwelltimes */
+            setCur_cost(costCURsuperfinal()); //One of four possible costNEX variants
+            //<editor-fold defaultstate="collapsed" desc="My custom code folding">
+                    LogTool.print("CUR COST SUPER FINAL ","notification");
+                    LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
+                    LogTool.print("Debug: GLS get before loop only once each reset: " + this.getGlobal_Lowest_state_string(),"notification");
+                    LogTool.print("Debug: GLC_field get before loop only once each reset: " + Cur_cost,"notification"); 
+                    LogTool.print("Debug: GLC_getter get before loop only once each reset: " + this.getCur_cost(),"notification");
+                    LogTool.print("Debug: NXC_field get before loop only once each reset: " + New_cost,"notification");
+                    LogTool.print("Debug: NXC_getter get before loop only once each reset: " + this.getNew_cost(),"notification");
+                    //</editor-fold>
+                /* [Newstate] with random dwelltimes */
             New_state = newstater(); 
+            //<editor-fold defaultstate="collapsed" desc="My custom code folding">
+                    LogTool.print("NEW STATE ","notification");
+                    LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
+                    LogTool.print("Debug: GLS get before loop only once each reset: " + this.getGlobal_Lowest_state_string(),"notification");
+                    LogTool.print("Debug: GLC_field get before loop only once each reset: " + Cur_cost,"notification"); 
+                    LogTool.print("Debug: GLC_getter get before loop only once each reset: " + this.getCur_cost(),"notification");
+                    LogTool.print("Debug: NXC_field get before loop only once each reset: " + New_cost,"notification");
+                    LogTool.print("Debug: NXC_getter get before loop only once each reset: " + this.getNew_cost(),"notification");
+            //</editor-fold>
+//            newstater();
             if (Config.SAverboselvl>1) {
                 LogTool.print("SolveSA: New State before Metropolis: A)" + New_state[0] + " B) " + New_state[1] + " C) " + New_state[2],"notification");
             }
             
-            setNew_cost(costNEXsuper());
-//            setNew_cost(costNEX());
-//            setnewFitnessValue(evaluate());
-            
+            setNew_cost(costNEXsuperfinal()); //One of four possible costNEX variants
+            //<editor-fold defaultstate="collapsed" desc="My custom code folding">
+                    LogTool.print("NEW COST SUPER FINAL ","notification");
+                    LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
+                    LogTool.print("Debug: GLS get before loop only once each reset: " + this.getGlobal_Lowest_state_string(),"notification");
+                    LogTool.print("Debug: GLC_field get before loop only once each reset: " + Cur_cost,"notification"); 
+                    LogTool.print("Debug: GLC_getter get before loop only once each reset: " + this.getCur_cost(),"notification");
+                    LogTool.print("Debug: NXC_field get before loop only once each reset: " + New_cost,"notification");
+                    LogTool.print("Debug: NXC_getter get before loop only once each reset: " + this.getNew_cost(),"notification");
+                    //</editor-fold>
             if (Config.SAverboselvl>1) {
                 LogTool.print("SolveSA: New Cost : " + New_cost,"notification");
             }
@@ -333,25 +367,31 @@ public class Looper {
                        LogTool.print("Fall 1 START","notification");
                    }
                    
-                   if (Config.SAdebug) {                      
+                   if (Config.SAdebug) {
+                       //<editor-fold defaultstate="collapsed" desc="My custom code folding">
                           LogTool.print("SolveSA: (Fall 1) Metropolis NewCost : " + this.getNew_cost(),"notification");
                           LogTool.print("SolveSA: (Fall 1) Metropolis CurCost : " + this.getCur_cost(),"notification");
                           LogTool.print("SolveSA Cost delta " + (Cur_cost - New_cost) + " ","notification");
+                          //</editor-fold>
                    }
                    Cur_state = New_state;
                    Cur_cost = New_cost;
                    if (Config.SAverboselvl>1) {
+                       //<editor-fold defaultstate="collapsed" desc="My custom code folding">
                    LogTool.print("SolveSA: (Fall 1 nach set) Metropolis NewCost : " + this.getNew_cost(),"notification");
                    LogTool.print("SolveSA: (Fall 1 nach set) Metropolis CurCost : " + this.getCur_cost(),"notification");
                    LogTool.print("SolveSA: (Fall 1 nach set): NewState : " + this.getNew_state_string(),"notification");
                    LogTool.print("SolveSA: (Fall 1 nach set): CurState : " + this.getCur_state_string(),"notification");
+                   //</editor-fold>
                    }
                    New_state = newstater();
                    if (Config.SAdebug) {
+                       //<editor-fold defaultstate="collapsed" desc="My custom code folding">
                            LogTool.print("SolveSA C1 after generate: NewCost : " + this.getNew_cost(),"notification");
                            LogTool.print("SolveSA C1 after generate: CurCost : " + this.getCur_cost(),"notification");
                            LogTool.print("SolveSA C1 after generate: NewState : " + this.getNew_state_string(),"notification");
                            LogTool.print("SolveSA C1 after generate: CurState : " + this.getCur_state_string(),"notification");
+                           //</editor-fold>
                    }
                    if (Config.SAverboselvl>1) {
                        LogTool.print("Fall 1 STOP ","notification");
@@ -361,23 +401,30 @@ public class Looper {
                            LogTool.print("Fall 2 START: Zufallsgenerierter Zustand traegt hoehere Kosten als vorhergehender Zustand. Iteration: " + x,"notification");
                        }
                        if (Config.SAdebug) {
+                           //<editor-fold defaultstate="collapsed" desc="My custom code folding">
                            LogTool.print("SolveSA C2 before set: NewCost : " + this.getNew_cost(),"notification");
                            LogTool.print("SolveSA C2 before set: CurCost : " + this.getCur_cost(),"notification");
                            LogTool.print("SolveSA C2 before set: NewState : " + this.getNew_state_string(),"notification");
                            LogTool.print("SolveSA C2 before set: CurState : " + this.getCur_state_string(),"notification");
+                           //</editor-fold>
                        }
                        Cur_state = New_state;
                        Cur_cost = New_cost;
+                       
                        if (Config.SAdebug) {
+                           //<editor-fold defaultstate="collapsed" desc="My custom code folding">
                            LogTool.print("SolveSA C2 after set: NewCost : " + this.getNew_cost(),"notification");
                            LogTool.print("SolveSA C2 after set: CurCost : " + this.getCur_cost(),"notification");
+                           //</editor-fold>
                        }
                        New_state = newstater();
                        if (Config.SAdebug) {
+                           //<editor-fold defaultstate="collapsed" desc="My custom code folding">
                            LogTool.print("SolveSA C2 after generate: NewCost : " + this.getNew_cost(),"notification");
                            LogTool.print("SolveSA C2 after generate: CurCost : " + this.getCur_cost(),"notification");
                            LogTool.print("SolveSA C2 after generate: NewState : " + this.getNew_state_string(),"notification");
                            LogTool.print("SolveSA C2 after generate: CurState : " + this.getCur_state_string(),"notification");
+                           //</editor-fold>
                        }
                        if (Config.SAverboselvl>1) {
                            LogTool.print("Fall 2 STOP: Zufallsgenerierter Zustand traegt hoehere Kosten als vorhergehender Zustand. Iteration: " + x,"notification");
@@ -390,8 +437,16 @@ public class Looper {
                    break;
                }
                
-               setNew_cost(costNEXsuper());
-//               setNew_cost(costNEX());
+               setNew_cost(costNEXsuperfinal());
+               LogTool.print("NEW COST SUPER FINAL ","notification");
+               //<editor-fold defaultstate="collapsed" desc="My custom code folding">
+                    LogTool.print("SolveSA: Cur_State Read before Metropolis : A)" + Cur_state[0] + " B) " + Cur_state[1] + " C) " + Cur_state[2],"notification");
+                    LogTool.print("Debug: GLS get before loop only once each reset: " + this.getGlobal_Lowest_state_string(),"notification");
+                    LogTool.print("Debug: GLC_field get before loop only once each reset: " + Cur_cost,"notification"); 
+                    LogTool.print("Debug: GLC_getter get before loop only once each reset: " + this.getCur_cost(),"notification");
+                    LogTool.print("Debug: NXC_field get before loop only once each reset: " + New_cost,"notification");
+                    LogTool.print("Debug: NXC_getter get before loop only once each reset: " + this.getNew_cost(),"notification");
+//</editor-fold>
                if ((x==58)&(ab==0)) {
                LogTool.print("Last internal Iteration Checkpoint","notification");
                 if ((Cur_cost - New_cost)>0) {
@@ -403,7 +458,7 @@ public class Looper {
                LogTool.print("Last internal Iteration Checkpoint","notification");
                }
             }
-            
+            //<editor-fold defaultstate="collapsed" desc="Auskommentierter GLowestState Object Class">
 //            if (ab==9) {
 //                double diff=0;
 //            }
@@ -411,18 +466,20 @@ public class Looper {
             // Hier wird kontrolliert, ob das minimalergebnis des aktuellen
             // Metropolisloops kleiner ist als das bsiher kleinste
             
-            if (Cur_cost<Global_lowest_cost) {
-                this.setGlobal_lowest_cost(Cur_cost);
-                GlobalState GLowestState = new GlobalState(this.Cur_state);
-                LogTool.print("GLS DEDICATED OBJECT STATE OUTPUT  -- " + GLowestState.getGlobal_Lowest_state_string(),"notification");
-                this.setGlobal_Lowest_state(GLowestState.getDwelltimes());
-                LogTool.print("READ FROM OBJECT OUTPUT  -- " + this.getGlobal_Lowest_state_string(),"notification");
+//            if (Cur_cost<Global_lowest_cost) {
+//                this.setGlobal_lowest_cost(Cur_cost);
+//                GlobalState GLowestState = new GlobalState(this.Cur_state);
+//                String rGLSOvalue = GLowestState.getGlobal_Lowest_state_string();
+//                LogTool.print("GLS DEDICATED OBJECT STATE OUTPUT  -- " + GLowestState.getGlobal_Lowest_state_string(),"notification");
+//                this.setGlobal_Lowest_state(GLowestState.getDwelltimes());
+              //  LogTool.print("READ FROM OBJECT OUTPUT  -- " + this.getGlobal_Lowest_state_string(),"notification");
 //                LogTool.print("DEBUG: CurCost direct : " + this.getCur_cost(),"notification");        
 //                LogTool.print("Debug: Cur<global CurState get : " + this.getCur_state_string(),"notification");
 //                LogTool.print("Debug: Cur<global GLS get : " + this.getGlobal_Lowest_state_string(),"notification");
 //                this.setGlobal_Lowest_state(this.getCur_state(Cur_state));
 //                LogTool.print("Debug: Cur<global GLS get after set : " + this.getGlobal_Lowest_state_string(),"notification");        
-            }
+//            }
+            //</editor-fold>
             LogTool.print("SolveSA: Outer Iteration : " + ab,"notification");
             LogTool.print("SolveSA: Last Calculated New State/Possible state inner loop (i.e. 99) : " + this.getNew_state_string(),"notification");
 //            LogTool.print("SolveSA: Best Solution : " + this.getCur_state_string(),"notification");
@@ -437,6 +494,8 @@ public class Looper {
  * 
  * @return Returns the cost as a SSD (Sum of squared differences)
  */
+    
+    //<editor-fold defaultstate="collapsed" desc="Unused COST FUNCTION ALTERNATIVES">
     public double costNEX() {
         double diff=0;
         double intensity=0;
@@ -449,7 +508,7 @@ public class Looper {
 //                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
                                                 if (intensity>0) {
@@ -478,7 +537,7 @@ public class Looper {
                 for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
                                                 if (intensity>0) {
@@ -507,7 +566,7 @@ public class Looper {
 //                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].metavalue * New_state[i];
                                                 if (intensity>0) {
@@ -523,20 +582,23 @@ public class Looper {
         return Math.sqrt(diff);
 //        return Math.random();
     }
-    
+    //</editor-fold>
     public double costNEXsuperfinal() {
         double diff=0;
         double intensity=0;
         
 //        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
-        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+            for(int x=0; x < Solver.dimensions[0]; x+= Config.scaleFactor) {
 //            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
-            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+                for(int y=0; y < Solver.dimensions[1]; y+= Config.scaleFactor) {
 //                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
-                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+                    for(int z=0; z < Solver.dimensions[2]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
                                                 if (intensity>0) {
@@ -552,7 +614,7 @@ public class Looper {
         return Math.sqrt(diff);
 //        return Math.random();
     }
-    
+    //<editor-fold defaultstate="collapsed" desc="UNSUSED cost function alternatives">
     public double costCURsuper() {
         double diff=0;
         double intensity=0;
@@ -565,7 +627,7 @@ public class Looper {
 //                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body[x][y][z].radiationIntensity(this.seeds[i].getCoordinate(), Cur_state[i]);
                                                 if (intensity>0) {
@@ -594,38 +656,9 @@ public class Looper {
                 for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body[x][y][z].radiationIntensity(this.seeds[i].getCoordinate(), Cur_state[i]);
-                                                if (intensity>0) {
-//                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
-                                                }
-                        this.body[x][y][z].addCurrentDosis(intensity);
-                    }   
-                    diff += Math.pow((this.body[x][y][z].getGoalDosis()-this.body[x][y][z].getCurrentDosis()),2);
-//                                        LogTool.print(" diffdose " + (Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),"notification");
-                }    
-            }
-        }
-        return Math.sqrt(diff);
-//        return Math.random();
-    }
-    
-    public double costCURsuperfinal() {
-        double diff=0;
-        double intensity=0;
-        
-//        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
-        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
-//            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
-            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
-//                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
-                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
-
-                    this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
-                        // Calculate intensity based based on current dwelltime
-                        intensity = this.body[x][y][z].metavalue * Cur_state[i];
                                                 if (intensity>0) {
 //                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
                                                 }
@@ -652,7 +685,7 @@ public class Looper {
                 for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
 
                     this.body2[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
-                    for(int i=0; i<Config.SAnumberOfSeeds;++i) { 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
                         // Calculate intensity based based on current dwelltime
                         intensity = this.body2[x][y][z].radiationIntensity(this.seeds2[i].getCoordinate(), New_state[i]);
                                                 if (intensity>0) {
@@ -667,40 +700,39 @@ public class Looper {
         }
         return Math.sqrt(diff);
 //        return Math.random();
-    }
-    
-    public double evaluate() {
-        double fitness = 0;
-        ExecutorService threadPool = Executors.newFixedThreadPool(Config.numberOfThreads);
-        CompletionService<Double> pool = new ExecutorCompletionService<Double>(threadPool);
+    }   
+    //</editor-fold>
+    public double costCURsuperfinal() {
+        double diff=0;
+        double intensity=0;
+        
+//        for(int x=Config.ptvXLow-0; x < Config.ptvXHigh+0; x++) {
+//        for(int x=Solver.xBoundsTumor[0]; x < Solver.xBoundsTumor[1]; x+= Config.scaleFactor) {
+        for(int x=0; x < Solver.dimensions[0]; x+= Config.scaleFactor) {
+//            for(int y=Config.ptvYLow-0; y < Config.ptvYHigh+0; y++) {
+//            for(int y=Solver.yBoundsTumor[0]; y < Solver.yBoundsTumor[1]; y+= Config.scaleFactor) {
+            for(int y=0; y < Solver.dimensions[1]; y+= Config.scaleFactor) {
+//                for(int z=Config.ptvZLow-0; z < Config.ptvZHigh+0; z++) {
+//                for(int z=Solver.zBoundsTumor[0]; z < Solver.zBoundsTumor[1]; z+= Config.scaleFactor) {
+                for(int z=0; z < Solver.dimensions[2]; z+= Config.scaleFactor) {
 
-        
-        //TODO bound calculation
-        // Create tasks and submit them to the pool
-        for(int i = Solver.xBoundsTumor[0]; i < Solver.xBoundsTumor[1]; i++){
-           pool.submit(new DoseEvaluator(Solver.dimensions, Cur_state,i));
+                    this.body[x][y][z].setCurrentDosis(0.0);  //Set currentPtvVoxel Dose to 0 
+                    for(int i=0; i<Config.numberOfSeeds;++i) { 
+                        // Calculate intensity based based on current dwelltime
+                        intensity = this.body[x][y][z].metavalue * Cur_state[i];
+                                                if (intensity>0) {
+//                                                LogTool.print("Cost: Intensity :" + intensity + "@ " + x + " " + y + " " + z,"notification");
+                                                }
+                        this.body[x][y][z].addCurrentDosis(intensity);
+                    }   
+                    diff += Math.pow((this.body[x][y][z].getGoalDosis()-this.body[x][y][z].getCurrentDosis()),2);
+//                                        LogTool.print(" diffdose " + (Looper.body[x][y][z].getGoalDosis()-Looper.body[x][y][z].getCurrentDosis()),"notification");
+                }    
+            }
         }
-        // The results will be stored here
-        double[] partial_result = new double[(Solver.xBoundsTumor[1] - Solver.xBoundsTumor[0])];
-        
-        for(int i = 0; i < (Solver.xBoundsTumor[1] - Solver.xBoundsTumor[0]) ; i++){
-          try {
-            partial_result[i] = pool.take().get();
-            //System.out.println(i+" Threads finished;");
-            fitness += partial_result[i];
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        }
-        fitness = Math.sqrt(fitness);
-        this.setnewFitnessValue(fitness);
-        return fitness;
+        return Math.sqrt(diff);
+//        return Math.random();
     }
-    
 
     private void setnewFitnessValue(double fitnessValue) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -727,9 +759,10 @@ public class Looper {
     Sets the field cur_cost which contains the cost ot the current best solution
     */    
     public void setFinalSolution() {
-        for(int i=0; i<Config.SAnumberOfSeeds;i++) {
-                this.seeds[i].setDurationMilliSec(GLowestState.getDwelltimes()[i]);
-                Cur_state[i] = GLowestState.getDwelltimes()[i];
+        for(int i=0; i<Config.numberOfSeeds;i++) {
+//                this.seeds[i].setDurationMilliSec(GLowestState.getDwelltimes()[i]);
+//                Cur_state[i] = GLowestState.getDwelltimes()[i];
+            Cur_state[i] = this.seeds[i].getDurationMilliSec();
             }
         if (Config.SACostFunctionType==3) {
             setCur_cost(costCUR());

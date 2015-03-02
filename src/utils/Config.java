@@ -25,30 +25,29 @@ public class Config {
 	public static final double oarGoalDose = 30;
 	
 	public static final double normalGoalDose = 10; 	//max
-	public static final double spineGoalDose = 0; 		//max
-	public static final double liverGoalDose = 30; 		//max
-	public static final double pancreasGoalDose = 0; 	//max
-	public static final double tumorGoalDose = 50; 		//min
+	public static final double bladderGoalDose = 32.0*0.75; 		//max
+	public static final double rectumGoalDose = 32.0*0.75; 		//max
+	public static final double urethraGoalDose = 32.0*1.5; 	//max
+	public static final double tumorGoalDose = 32; 		//min
 	
 	public static final double relaxDose = 5;
 	
 	public static final double normalMinDose = 0;
-	public static final double spineMinDose = 0;
-	public static final double liverMinDose = 0;
-	public static final double pancreasMinDose = 0;
+	public static final double bladderMinDose = 0;
+	public static final double rectumMinDose = 0;
+	public static final double urethraMinDose = 0;
 	public static final double tumorMinDose = 30;
 	
 	public static final double normalMaxDose = 40;
-	public static final double spineMaxDose = 30;
-	public static final double liverMaxDose = 50;
-	public static final double pancreasMaxDose = 30;
+	public static final double bladderMaxDose = 30;
+	public static final double rectumMaxDose = 50;
+	public static final double urethraMaxDose = 30;
 	public static final double tumorMaxDose = 70;
 	
-	public static final String[] bodyTypeDescriptions = {"Normal", "Spine", "Liver", "Pancreas", "Tumor"};
+	public static final String[] bodyTypeDescriptions = {"Normal", "Bladder", "Rectum", "Urethra", "Tumor"};
 	
 	
 	// Parameters for classification
-	public static final double VOXEL_DIST = 0.1; // in cm
 	public static final int TUMOR = 5; // BodyType for Tumor
 	
         // Parameters for the Simulated Annealing algorithm
@@ -93,10 +92,11 @@ public class Config {
 	
 	//states
 	public static final int normalType 		= 1; //low dose
-	public static final int spineType 		= 2; //no dose
-	public static final int liverType 		= 3; //low-medium dose
-	public static final int pancreasType 	= 4; // no dose
+	public static final int bladderType 	= 2; //no dose (spine)
+	public static final int rectumType 		= 3; //low-medium dose (liver)
+	public static final int urethraType 	= 4; // no dose (pancreas)
 	public static final int tumorType 		= 5; // high dose
+	public static final int dummyType 		= 0; // high dose
 	
 	//Multithreading
 	
@@ -104,11 +104,12 @@ public class Config {
 	
 	public static final int treatmentRange = 8; // indicates the range in cm for the region around the tumor which shall be treated by radiation
 	
-	public static  int scaleFactor = 1;
+	public static int scaleFactor = 1;
 	
 	public static final double cancelValue = 1;
 
 	//other
+	public static boolean useLUT = false;
 	public static final int LUTSize = 10000; // size of lookup table for fast dose approximation
 	
 	public static void setNumberOfSeeds(int number)
@@ -121,6 +122,8 @@ public class Config {
 		scaleFactor = number;
 		
 	}
+	
+	public static double gridResolution = 0.05;
 	
 	
 	

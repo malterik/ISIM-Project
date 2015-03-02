@@ -247,47 +247,47 @@ public class LPStepwiseGUI extends JFrame implements ActionListener{
 				}
 				break;
 			}
-			case Config.spineType: {
+			case Config.bladderType: {
 				switch (doseGoalType)
 				{
 					case GOAL_DOSE:
-						dose = Config.spineGoalDose;
+						dose = Config.bladderGoalDose;
 						break;
 					case MAX_DOSE:
-						dose = Config.spineMaxDose;
+						dose = Config.bladderMaxDose;
 						break;
 					case MIN_DOSE:
-						dose = Config.spineMinDose;
+						dose = Config.bladderMinDose;
 						break;
 				}
 				break;
 			}
-			case Config.liverType: {
+			case Config.rectumType: {
 				switch (doseGoalType)
 				{
 					case GOAL_DOSE:
-						dose = Config.liverGoalDose;
+						dose = Config.rectumGoalDose;
 						break;
 					case MAX_DOSE:
-						dose = Config.liverMaxDose;
+						dose = Config.rectumMaxDose;
 						break;
 					case MIN_DOSE:
-						dose = Config.liverMinDose;
+						dose = Config.rectumMinDose;
 						break;
 				}
 				break;
 			}
-			case Config.pancreasType: {
+			case Config.urethraType: {
 				switch (doseGoalType)
 				{
 					case GOAL_DOSE:
-						dose = Config.pancreasGoalDose;
+						dose = Config.urethraGoalDose;
 						break;
 					case MAX_DOSE:
-						dose = Config.pancreasMaxDose;
+						dose = Config.urethraMaxDose;
 						break;
 					case MIN_DOSE:
-						dose = Config.pancreasMinDose;
+						dose = Config.urethraMinDose;
 						break;
 				}
 				break;

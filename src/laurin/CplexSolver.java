@@ -48,7 +48,7 @@ public class CplexSolver {
 	private IloRange[] t_upper_ranges; // upper slack range per body part
 	private IloRange[][] voi_lower_ranges; // lower dose ranges
 	private IloRange[][] voi_upper_ranges; // upper dose ranges
-	private IloRange[][] voi_ranges;
+
 
 	public CplexSolver(Voxel[][] voxels, Seed[] seeds) throws IloException, IOException
 	{
@@ -221,12 +221,12 @@ public class CplexSolver {
 			{
 				t_lower_ranges[bodyTypeIndex].setUB(goalDose);
 			}
-			else if (boundType == BoundType.LOWER_BOUND)
+			else if (boundType == BoundType.UPPER_BOUND)
 			{
-				t_upper_ranges[bodyTypeIndex].setUB(goalDose);
+				t_upper_ranges[bodyTypeIndex].setUB(voi_upper_ranges[bodyTypeIndex][0].getUB()-goalDose);
 			}
 		}
-		
+		cplex.exportModel("step.lp");
 		if(cplex.solve())
 		{				
 			// set new lower ptv bound to old lower bound minus slack value
@@ -289,7 +289,7 @@ public class CplexSolver {
 					{
 						for (int j = 0; j < voxels[bodyTypeIndex].length; j++)
 						{
-							voi_upper_ranges[bodyTypeIndex][j].setLB(voi_upper_ranges[bodyTypeIndex][j].getLB() + obj_value);
+							voi_upper_ranges[bodyTypeIndex][j].setUB(voi_upper_ranges[bodyTypeIndex][j].getLB() + obj_value);
 						}
 						t_upper_ranges[bodyTypeIndex].setUB(0);
 					}
@@ -427,17 +427,17 @@ public class CplexSolver {
 						b_voi_lower = Config.normalMinDose;;
 						b_voi_upper = Config.normalMaxDose;
 						break;
-					case Config.spineType: 
-						b_voi_lower = Config.spineMinDose;
-						b_voi_upper = Config.spineMaxDose;
+					case Config.bladderType: 
+						b_voi_lower = Config.bladderMinDose;
+						b_voi_upper = Config.bladderMaxDose;
 						break;
-					case Config.liverType: 
-						b_voi_lower = Config.liverMinDose;
-						b_voi_upper = Config.liverMaxDose;
+					case Config.rectumType: 
+						b_voi_lower = Config.rectumMinDose;
+						b_voi_upper = Config.rectumMaxDose;
 						break;
-					case Config.pancreasType: 
-						b_voi_lower = Config.pancreasMinDose;
-						b_voi_upper = Config.pancreasMaxDose;
+					case Config.urethraType: 
+						b_voi_lower = Config.urethraMinDose;
+						b_voi_upper = Config.urethraMaxDose;
 						break;
 				}
 				

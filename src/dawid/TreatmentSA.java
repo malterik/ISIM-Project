@@ -167,7 +167,8 @@ public class TreatmentSA {
         
     /* Attack the problem using SA */
         
-        Looper looper = new Looper(body,seeds);        
+        double[] obsolete = new double[1];
+        Looper looper = new Looper(body,seeds,obsolete);        
         // Dawid inslucde the verbose switch pls
         LogTool.print("Initialized Looper Object!","notification");
         LogTool.print("Beginning Annealing...","notification");
