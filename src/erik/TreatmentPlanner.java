@@ -20,7 +20,7 @@ import utils.Seed;
 import utils.Voxel;
 
 public class TreatmentPlanner {
-	private static final boolean outputToFile = true;
+	private static final boolean outputToFile = false;
 
 	private static void planTreatment(String algo, double doubleArgs[]) throws IloException {
 
@@ -175,7 +175,7 @@ public class TreatmentPlanner {
 		}
 		else if(algo.equals("SA"))
 		{
-			//solver.solveSA();
+			solver.solveSA(doubleArgs);
                         //ToDo: solveSA so modden dass sie Parameter akzeptiert
                         // In meinem Fall MINDESTENS die Seedzahl
                         // Darueber hinaus gibt es nur varianten der

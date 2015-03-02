@@ -126,7 +126,7 @@ public class Voxel implements Serializable {
         public double radiationIntensityNoTime(Coordinate position){
             double temp = radiationIntensityNoTimeCALC(position, 90);
             if (temp>0.0) {
-                LogTool.print("Wert in nOtIME " + temp, "notification");
+                //LogTool.print("Wert in nOtIME " + temp, "notification");
             }
 		return temp;
 	}

@@ -113,7 +113,7 @@ public class Solver {
             looper.setFinalSolution();
             Solver.body = looper.getBody();
             Solver.seeds = looper.getSeeds();
-            for(int i=0; i<Config.SAnumberOfSeeds;i++) {
+            for(int i=0; i<Config.numberOfSeeds;i++) {
 //                            Solver.seeds[i].setDurationMilliSec(looper.getGlobal_Lowest_state()[i]);
                             System.out.println("Verweildauer: "+ Solver.seeds[i].getDurationMilliSec() );
                     }
