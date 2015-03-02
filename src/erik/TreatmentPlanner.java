@@ -3,6 +3,7 @@ package erik;
 import ilog.concert.IloException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,7 +20,7 @@ import utils.Seed;
 import utils.Voxel;
 
 public class TreatmentPlanner {
-	private static final boolean outputToFile = true;
+	private static final boolean outputToFile = false;
 
 	private static void planTreatment(String algo, double doubleArgs[]) throws IloException {
 
@@ -34,9 +35,40 @@ public class TreatmentPlanner {
 		 */
 
 		// Database test
+		//Config.useLUT = true;
+		//Voxel.setLUT(10, 10000);
+		
 		SimpleDB db = new SimpleDB();
+		
+		BodyEntry entry = null;
+		
+		/*// 0.25ppmm
 		db.loadBody("prostate0_25ppmm");
-		BodyEntry entry = db.getBodyByName("prostate0_25ppmm");
+		entry = db.getBodyByName("prostate0_25ppmm");
+		Config.gridResolution = 0.4;*/
+		
+		/*// 0.5ppmm
+		db.loadBody("prostate0_5ppmm");
+		entry = db.getBodyByName("prostate0_5ppmm");
+		Config.gridResolution = 0.2;*/
+		
+		// 1ppmm
+		db.loadBody("prostate1ppmm");
+		entry = db.getBodyByName("prostate1ppmm");
+		Config.gridResolution = 0.1;
+		
+		/*// 2ppmm
+		db.loadBody("prostate2ppmm");
+		entry = db.getBodyByName("prostate2ppmm");
+		Config.gridResolution = 0.05;*/
+		
+		/*// 4ppmm
+		db.loadBody("prostate4ppmm");
+		entry = db.getBodyByName("prostate4ppmm");
+		Config.gridResolution = 0.025;*/
+		
+    	//db.loadBody("data2593.4844");
+		//BodyEntry entry = db.getBodyByName("data2593.4844");
 		Voxel[][][] body = null;
 		if (entry != null) {
 
@@ -165,6 +197,7 @@ public class TreatmentPlanner {
 		ta.setRuntime(date);
 		ta.setSAlgorithm(algo);
 		ta.setDoubleArgs(doubleArgs);
+		ta.setGridResolution(Config.gridResolution);
 		String filename = "treatments/";
 		filename += algo + "_";
 		filename += Config.numberOfSeeds + "_";
