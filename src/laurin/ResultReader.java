@@ -51,7 +51,6 @@ public class ResultReader {
 	    }
 	    final Pattern p = Pattern.compile(regex); // careful: could also throw an exception!
 	    return root.listFiles(new FileFilter(){
-	        @Override
 	        public boolean accept(File file) {
 	            return p.matcher(file.getName()).matches();
 	        }
@@ -72,8 +71,8 @@ public class ResultReader {
 	}
 	
 	public static void main(String[] args) {
-		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "LP_50_.*");   
-		compareHistogramsByBodyType(treatments, "Rectum");
+		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "LP_100_1.*");   
+		compareHistogramsByBodyType(treatments, "Tumor");
 		printTreatmentComparison(treatments, false);
 		
 		
