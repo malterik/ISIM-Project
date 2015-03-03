@@ -86,8 +86,9 @@ public class TreatmentPlanner {
 
 						switch (entry.getBodyArray()[x][y][z].getBodyType()) {
 						case Config.normalType: {
-							body[x][y][z].setGoalDosis(Config.normalGoalDose);
-							body[x][y][z].setBodyType(Config.normalType);
+							//body[x][y][z].setGoalDosis(Config.normalGoalDose);
+							//body[x][y][z].setBodyType(Config.normalType);
+							body[x][y][z].setBodyType(Config.dummyType);
 							break;
 						}
 						case Config.bladderType: {
@@ -111,8 +112,9 @@ public class TreatmentPlanner {
 							break;
 						}
 						default: {
-							body[x][y][z].setGoalDosis(Config.normalGoalDose);
-							body[x][y][z].setBodyType(Config.normalType);
+							//body[x][y][z].setGoalDosis(Config.normalGoalDose);
+							//body[x][y][z].setBodyType(Config.normalType);
+							body[x][y][z].setBodyType(Config.dummyType);
 							break;
 						}
 						}
@@ -162,8 +164,8 @@ public class TreatmentPlanner {
 		else if(algo.equals("GA"))
 		{
 			double[] weighting_factors = new double[6];
-			weighting_factors[0] = doubleArgs[4];
-			weighting_factors[1] = 1;
+			weighting_factors[0] = 0;
+			weighting_factors[1] = doubleArgs[4];
 			weighting_factors[2] = doubleArgs[5];
 			weighting_factors[3] = doubleArgs[6];
 			weighting_factors[4] = doubleArgs[7];
@@ -175,7 +177,7 @@ public class TreatmentPlanner {
 		}
 		else if(algo.equals("SA"))
 		{
-			solver.solveSA(doubleArgs);
+			//solver.solveSA();
                         //ToDo: solveSA so modden dass sie Parameter akzeptiert
                         // In meinem Fall MINDESTENS die Seedzahl
                         // Darueber hinaus gibt es nur varianten der
@@ -286,3 +288,4 @@ public class TreatmentPlanner {
 		System.exit(0);				// necessary to terminate all threads 
 	}
 }
+
