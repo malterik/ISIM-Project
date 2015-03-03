@@ -54,7 +54,6 @@ public class ResultReader {
 		{
 			Histogram histogram = treatment.getKey().getHistogram();
 			histogramComparison.addDataSet(treatment.getValue(), histogram.getDataSets().get(bodyType));
-			HashMap<String, double[]> datasets = histogram.getDataSets();
 		}
 		
 		histogramComparison.display(1, 5000);
