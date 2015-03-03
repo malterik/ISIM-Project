@@ -6,16 +6,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+/**
+ * ResultReader
+ * 
+ * Provides methods for comparison of results
+ * @author Laurin Mordhorst
+ */
 public class ResultReader {
 
 	/**
-	 * @param args
+	 * Get files in folder that match regular expression.
+	 * 
+	 * @param folderName 	name of folder relative to workspace
+	 * @param regex			regular expression
+	 * 
+	 * @return filenames and corresponding TreatmentAnalyzers
 	 */
-	
 	public static HashMap<TreatmentAnalyzer, String> getFiles(String folderName, String regex)
 	{
-		ArrayList<TreatmentAnalyzer> treatmentAnalyzers = new ArrayList<TreatmentAnalyzer>();
-		
 		HashMap<TreatmentAnalyzer, String> treatments = new HashMap<TreatmentAnalyzer, String>();
 		
 		final File folder = new File(folderName);		
@@ -31,6 +40,12 @@ public class ResultReader {
 	    return treatments;
 	}
 	
+	/**
+	 * Create Histogram for given body part from multiple treatment analyzers
+	 * 
+	 * @param treatments		set of treatments
+	 * @param bodyType			body type
+	 */
 	public static void compareHistogramsByBodyType(HashMap<TreatmentAnalyzer, String> treatments, String bodyType)
 	{
 		Histogram histogramComparison = new Histogram("Comparison of " + bodyType);
@@ -42,10 +57,10 @@ public class ResultReader {
 			HashMap<String, double[]> datasets = histogram.getDataSets();
 		}
 		
-		histogramComparison.display(100, 5000);
+		histogramComparison.display(1, 5000);
 	}
 	
-	public static File[] listFilesMatching(File root, String regex) {
+	private static File[] listFilesMatching(File root, String regex) {
 	    if(!root.isDirectory()) {
 	        throw new IllegalArgumentException(root+" is no directory.");
 	    }
@@ -57,6 +72,12 @@ public class ResultReader {
 	    });
 	}
 	
+	/**
+	 * Print comparison of treatments
+	 * 
+	 * @param treatments		set of treatments
+	 * @param showHistograms	if true, histograms will be displayed
+	 */
 	public static void printTreatmentComparison(HashMap<TreatmentAnalyzer, String> treatments, boolean showHistograms)
 	{
 		ArrayList<TreatmentAnalyzer> treatmentAnalyzers = new ArrayList<TreatmentAnalyzer>();
@@ -71,11 +92,9 @@ public class ResultReader {
 	}
 	
 	public static void main(String[] args) {
-		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "LP_100_1.*");   
+		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "LP_100_.*");   
 		compareHistogramsByBodyType(treatments, "Tumor");
 		printTreatmentComparison(treatments, false);
-		
-		
 	}
 
 }
