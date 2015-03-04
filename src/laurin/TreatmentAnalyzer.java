@@ -197,8 +197,7 @@ public class TreatmentAnalyzer implements Serializable {
 					double dose = 0.0;
 					for (Seed seed : seeds)
 					{
-						dose += seed.radiationIntensity(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
-						//dose += body[x][y][z].radiationIntensityLUT(seed.getCoordinate(), seed.getDurationMilliSec(), 90);
+						dose += body[x][y][z].radiationIntensity(seed.getCoordinate(), seed.getDurationMilliSec());
 					}
 					body[x][y][z].setCurrentDosis(dose);									
 				}
