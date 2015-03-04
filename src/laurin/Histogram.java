@@ -1,6 +1,9 @@
 package laurin;
 
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -252,5 +255,34 @@ public class Histogram extends JFrame implements Serializable {
 					max = number;
 			}
 		return max;
+	}
+	
+	public void writeSeriesToFile(String fileName, double normalizationFactor, int numBins)
+	{
+		writeSeriesToFile(fileName, normalizationFactor, numBins, getMin(), getMax());
+	}
+	
+	public void writeSeriesToFile(String fileName, double normalizationFactor, int numBins, double min, double max)
+	{
+		for (Map.Entry<String, double[]> entry : dataSets.entrySet())
+		{
+			System.out.println(numBins);
+			XYSeries xySeries = calcHistogram(entry.getKey(), entry.getValue(), normalizationFactor, numBins, min, max);
+			double[][] xyArray = xySeries.toArray();
+			File file = new File(fileName + "_" + entry.getKey() + ".dat");
+		    try {
+		    	 FileWriter writer = new FileWriter(file, false);
+		    	 for (int i = 0; i < xyArray[0].length; i++)
+		    	 {
+		    		 writer.write(Double.toString(xyArray[0][i]) + " " + Double.toString(xyArray[1][i]) + " \\\\\n");
+		    	 }
+		       writer.flush();
+		       
+		       // Schließt den Stream
+		       writer.close();
+		    } catch (IOException e) {
+		      e.printStackTrace();
+		    }
+		}
 	}
 }
