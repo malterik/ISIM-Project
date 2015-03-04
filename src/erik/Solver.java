@@ -1,5 +1,8 @@
 package erik;
 
+import java.io.IOException;
+
+import laurin.LPStepwiseTreatment;
 import dawid.Looper;
 import ilog.concert.IloException;
 import thobi.LPTreatment;
@@ -158,6 +161,13 @@ public class Solver {
 		System.out.println("tumorpoint 50-50-50 dose: " + LPTreatment.getBody()[50][50][50].getCurrentDosis());
 		System.out.println("zentrum");
 		*/
+	}
+	
+	public void solveLPSW() throws IloException, IOException
+	{
+		BodyAnalyzer ba = new BodyAnalyzer(body, dimensions, Config.treatmentRange);
+		LPStepwiseTreatment lpStepwiseTreatment = new LPStepwiseTreatment(body, seeds, ba);
+		lpStepwiseTreatment.startGUI();
 	}
 
 
