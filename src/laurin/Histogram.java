@@ -129,6 +129,7 @@ public class Histogram extends JFrame implements Serializable {
         setContentPane(chartPanel);
         pack();
         RefineryUtilities.centerFrameOnScreen(this);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
 	}
 	
