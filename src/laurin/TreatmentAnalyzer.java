@@ -6,15 +6,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import erik.BodyAnalyzer;
-
 import utils.Config;
 import utils.LogTool;
 import utils.Seed;
@@ -197,8 +197,7 @@ public class TreatmentAnalyzer implements Serializable {
 					double dose = 0.0;
 					for (Seed seed : seeds)
 					{
-						dose += seed.radiationIntensity(body[x][y][z].distanceToVoxel(seed.getCoordinate()), seed.getDurationMilliSec());
-						//dose += body[x][y][z].radiationIntensityLUT(seed.getCoordinate(), seed.getDurationMilliSec(), 90);
+						dose += body[x][y][z].radiationIntensity(seed.getCoordinate(), seed.getDurationMilliSec());
 					}
 					body[x][y][z].setCurrentDosis(dose);									
 				}
@@ -405,7 +404,12 @@ public class TreatmentAnalyzer implements Serializable {
 		String conformalityLine = String.format("%-15s%s", "Conformality", spacing);
 		String homogeinityLine = String.format("%-15s%s", "Homogeinity", spacing);
 		String coverageLine = String.format("%-15s%s", "Coverage", spacing);
+		String runtimeLine = String.format("%-15s%s", "Runtime", spacing);
 		DecimalFormat decimalFormat = new DecimalFormat("#####0.000E00");
+		DateFormat dateFormat = new SimpleDateFormat("mm:ss:SSS");
+		//Formatter to convert Date to String
+		
+
 		
 		for(int i = 0; i < Config.tumorType; i++)
 		{
@@ -433,6 +437,7 @@ public class TreatmentAnalyzer implements Serializable {
 			conformalityLine += String.format("%15s%s", decimalFormat.format(ta.getConformalityIndex()), spacing);
 			homogeinityLine += String.format("%15s%s", decimalFormat.format(ta.getHomogenityIndex()), spacing);
 			coverageLine += String.format("%15s%s", decimalFormat.format(ta.getCoverage()), spacing);
+			runtimeLine += String.format("%15s%s", dateFormat.format(ta.getRuntime()), spacing);
 		}
 		
 		
@@ -457,6 +462,7 @@ public class TreatmentAnalyzer implements Serializable {
 		System.out.println(conformalityLine);
 		System.out.println(homogeinityLine);
 		System.out.println(coverageLine);
+		System.out.println(runtimeLine);
 		System.out.println();
 		
 		if (showHistograms)

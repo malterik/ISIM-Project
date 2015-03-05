@@ -111,6 +111,7 @@ public class Config {
 	//other
 	public static boolean useLUT = false;
 	public static final int LUTSize = 10000; // size of lookup table for fast dose approximation
+	public static final double maxLUTDistance = 10.0;
 	
 	public static void setNumberOfSeeds(int number)
 	{

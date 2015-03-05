@@ -35,7 +35,7 @@ public class Voxel implements Serializable {
 		for (int i = 0; i <= num; i++)
 		{
 			double distance = i*(maxDist/(double)(num+1));
-			lut[i] = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) );  
+			lut[i] = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) );
 		}
 	}
 	
@@ -81,7 +81,7 @@ public class Voxel implements Serializable {
 		if(distance == 0) {
 			dose = this.getGoalDosis();
 		} else if (Config.useLUT == true){
-			radiationIntensityLUT(position, durationMilliSec, phi);
+			dose = radiationIntensityLUT(distance, durationMilliSec);
 		} else {
 			dose = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ) * durationMilliSec ; 
 		}
@@ -93,24 +93,8 @@ public class Voxel implements Serializable {
 		return radiationIntensity(position, durationMilliSec, 90);
 	}
 	
-	public double radiationIntensityLUT(Coordinate position, double durationMilliSec, double phi){
-		double distance = distanceToVoxel(position);
-		
-		double dose= 0;
-		
-		if(distance > 10) {
-			return 0.0;
-		}
-
-		//  Interpolation for dose function 
-		
-		if(distance == 0) {
-			dose = this.getGoalDosis();
-		} else {
-			dose = lut[(int)(distance/10.0*Config.LUTSize)] * durationMilliSec;
-		}
-		
-		return dose;
+	public double radiationIntensityLUT(double distance, double durationMilliSec){	
+		return lut[(int)(distance/10.0*Config.LUTSize)] * durationMilliSec;
 	}
 	
 	/*public double radiationIntensity(Coordinate position, double durationMilliSec){
@@ -146,6 +130,14 @@ public class Voxel implements Serializable {
 			dose = this.getGoalDosis();
 		} else {
 			dose = ( (1.12 * GL(1,90)/100) * Config.SK  * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ) * durationMilliSec ; 
+		}
+		
+		if(distance == 0) {
+			dose = this.getGoalDosis();
+		} else if (Config.useLUT == true){
+			radiationIntensityLUT(distance, durationMilliSec);
+		} else {
+			dose = ((1.12 * GL(1,90)/100) * Config.SK * (GL(distance, phi)/GL(1,90)) * gl(distance) * F(phi,distance) ) * durationMilliSec ; 
 		}
 		
 		

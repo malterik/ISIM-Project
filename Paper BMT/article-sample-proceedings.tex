@@ -1,0 +1,117 @@
+\documentclass[USenglish,twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[big,online]{dgruyter}
+\usepackage{hypernat}
+\setcitestyle{numbers,square,comma,sort&compress}
+
+\begin{document}
+
+%%%--------------------------------------------%%%
+%%% Please do not alter the following 7 lines: %%%
+%%%--------------------------------------------%%%
+	\articletype{Proceedings}
+  \journalname{Current~Directions~in~Biomedical~Engineering}
+  \journalyear{2015}
+  \journalvolume{1}
+  \journalissue{???}
+  \startpage{1}
+  %\aop
+  \DOI{10.1515/bmt-XXXX}
+%%%--------------------------------------------%%%
+
+\title{On optimisation in HDR brachytherapy}
+\runningtitle{On optimisation in HDR brachytherapy}
+%\subtitle{Insert subtitle if needed}
+\author[1]{Laurin Mordhorst}
+\author[2]{Thobias Karthe}
+\author[2]{Sebastian Elm}
+\author[2]{Dawid Golebiewski} 
+\author[2]{Malte Erik Schröder}
+\runningauthor{Mordhorst, L.; Karthe, T.; Elm, S.; Golebiewski, D.; Schröder, M. E.}
+
+\affil[1]{\protect\raggedright 
+  TUHH,  e-mail: laurin.mordhorst@tuhh.de}
+\affil[2]{\protect\raggedright 
+  TUHH,  e-mail: thobias.karthe@tuhh.de, sebastian.elm@tuhh.de, dawid.golebiewski@tuhh.de, malte.schroeder@tuhh.de}
+	
+
+\abstract{Hallo na Please insert your abstract here. Remember that online
+systems rely heavily on the content of titles and abstracts to
+identify articles in electronic bibliographic databases and search
+engines. We ask you to take great care in preparing the abstract.}
+
+\keywords{Optimisation, Treatment planning, Brachytherapy, Genetic Algorithm, Simulated Annealing, Linear Programmin}
+
+\maketitle
+
+\section{Introduction} 
+
+The aim of this article is to compare three different approaches in HDR-Brachytherapy treatment planning. The three analysed algorithms are linear programming, simulated annealing and genetic algorithms. The results are evaluated by analysing the conformity and homogeneity of the dose-distribution as well as runtime for different parameters.  
+
+\section{Model description}
+HDR brachytherapy consists of several radioactive sources being placed inside the patient's body by needles. These sources will eradiate into the surrounding tissues, treating tumor cells and other critical volumes. Therefore, it relies heavily on optimal algorithms to determine the dwell times for certain, predefined goals. \\
+The body is represented by an equidistant grid of voxels, defining the single body cell type. The seeds are randomly positioned within the tumor voxels. Hence, the dosis in a voxel is calculated as a sum of each seed by evaluating the dose-function up to a fixed limit, where the influence gets negligible.
+
+\section{Genetic Algorithm}
+The Genetic Algorithm as introduced in \citep{1} has a lot of paramters which are described in the following. 
+
+\subsection{Parameters}
+
+\subsubsection{Weights}
+The Fitness-Function used in the Genetic Algorithm is implemented as a sum of squared distances. But every tissue type can be weighted with an individual coefficent. Different weightings for the tissue types should clearly visible in the DVH. 
+
+\subsubsection{Probabilities} 
+There are two important probabilites within the algorithm. The first one is the crossover rate. It describes how likely it is for two individuals to reproduce. The second one is the mutation rate. It describes, analogous to the crossover rate, the probability for an individual to perform a mutation. \\
+Higher probabilties should cause higher fluctuations within the population. This may effect the runtime, because the individuals may change even when a steady state is reached, so the termination criterion is not fullfilled.   
+
+\subsubsection{Scaling and Accuracy}
+The fitness-function for the given optimisation problem has very high computational complexity. Hence two scaling parameters are introduced to achieve shorter runtimes. The challenge here is to find a compromise between good accuracy for the optimisation and practicable runtimes.\\ The first parameter is called the \textit{treatment range}. It chooses the range around the PTV which shall be evaluated by the algorithm. The second parameter is a simple scaling value which defines that just every  $n^{th}$ voxel is evaluated. Within the treatment range of course.
+
+
+\subsection{Results}
+
+
+\subsubsection{Weights}
+The results have shown that the best CI and HI is achieved by a weighting composition of bla bla bla. But it should be mentioned, that the weightings should be different for every patient. It seems very unlikely to find a set of weighting coefficents, which achieves equally good results for a broader spectrum of patients.
+
+\subsubsection{Probabilities} 
+The results have shown, that some values are better than others.
+
+\subsubsection{Scaling and Accuracy}
+The dose distribution of a radioactive seed shows that the dose at a radius of 10 cm is negligible small. So any treatment range higher than 10 cm wouldn't lead to better results anyway. (TODO: which range is acceptable)
+
+\section{Linear Programming}
+bla
+
+\subsection{Constraints}
+bla bla
+
+\subsection{Results}
+bla bla bla
+
+
+\begin{acknowledgement}
+Please insert acknowledgments of the assistance of colleagues or similar notes of appreciation here.
+\end{acknowledgement}
+
+\def\acknowledgementname{Funding}
+\begin{acknowledgement}
+Please insert information concerning research grant support here
+\end{acknowledgement}
+
+%\bibliographystyle{...}
+%\bibliography{...}
+
+\begin{thebibliography}{9}
+%---------------------------------------------------------------------------------------------------------------------%
+% The Reference list at the end of the manuscript should be in alphanumerical order (see samples below).							%
+%---------------------------------------------------------------------------------------------------------------------%
+
+% Books
+
+
+\bibitem{1}
+Koza, John R. Genetic Programming. 3rd ed. Cambridge: MIT Press 1992.
+
+\end{thebibliography}
+\end{document}

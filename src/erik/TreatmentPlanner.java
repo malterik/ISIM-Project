@@ -4,6 +4,7 @@ import ilog.concert.IloException;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,7 +23,7 @@ import utils.Voxel;
 public class TreatmentPlanner {
 	private static final boolean outputToFile = true;
 
-	private static void planTreatment(String algo, double doubleArgs[]) throws IloException {
+	private static void planTreatment(String algo, double doubleArgs[]) throws IloException, IOException {
 
 		/*
 		 * // Start visualization Voxel[][][] testData = new Voxel[1][1][5];
@@ -157,9 +158,9 @@ public class TreatmentPlanner {
 		{
 			solver.solveLP(doubleArgs[0]);
 		}
-		else if(algo.equals("LPWS"))
+		else if(algo.equals("LPSW"))
 		{
-			
+			solver.solveLPSW();
 		}
 		else if(algo.equals("GA"))
 		{
@@ -247,7 +248,7 @@ public class TreatmentPlanner {
 		db.close();
 	}
 
-	public static void main(String[] args) throws IloException {
+	public static void main(String[] args) throws IloException, IOException {
 		
 		
 		
