@@ -58,11 +58,10 @@ The Genetic Algorithm as introduced in \citep{1} has a lot of parameters which a
 \subsection{Parameters}
 
 \subsubsection{Weights}
-The Fitness-Function used in the Genetic Algorithm is implemented as a sum of squared distances. But every tissue type can be weighted with an individual coefficent. Different weightings for the tissue types should clearly visible in the DVH. 
+The Fitness-Function used in the Genetic Algorithm is implemented as a sum of squared distances. But every tissue type can be weighted with an individual coefficent. 
 
 \subsubsection{Probabilities} 
-There are two important probabilites within the algorithm. The first one is the crossover rate. It describes how likely it is for two individuals to reproduce. The second one is the mutation rate. It describes, analogous to the crossover rate, the probability for an individual to perform a mutation. \\
-Higher probabilties should cause higher fluctuations within the population. This may effect the runtime, because the individuals may change even when a steady state is reached, so the termination criterion is not fullfilled.   
+There are two important probabilites within the algorithm. The first one is the crossover rate. It describes how likely it is for two individuals to reproduce. The second one is the mutation rate. It describes, analogous to the crossover rate, the probability for an individual to perform a mutation. 
 
 \subsubsection{Scaling and Accuracy}
 The fitness-function for the given optimisation problem has very high computational complexity. Hence two scaling parameters are introduced to achieve shorter runtimes. The challenge here is to find a compromise between good accuracy for the optimisation and practicable runtimes.\\ The first parameter is called the \textit{treatment range}. It chooses the range around the PTV which shall be evaluated by the algorithm. The second parameter is a simple scaling value which defines that just every  $n^{th}$ voxel is evaluated. Within the treatment range of course.
@@ -72,10 +71,10 @@ The fitness-function for the given optimisation problem has very high computatio
 
 
 \subsubsection{Weights}
-The results have shown that the best CI and HI is achieved by a weighting composition of bla bla bla. But it should be mentioned, that the weightings should be different for every patient. It seems very unlikely to find a set of weighting coefficents, which achieves equally good results for a broader spectrum of patients.
+It seems hard to examine a specific sets of weights, that is applicable to any type of patients. The experiment has shown, that a higher weighted treatment has a much higher runtime and the convergency decreases.  
 
 \subsubsection{Probabilities} 
-The results have shown, that some values are better than others.
+The results have shown, that a high mutation rate leads to a very low tumor coverage. Furthermore the algorithm often doesn't converges, because the changes of the individuals accure too often. A stable state becomes less likely. \\ For the crossover rate the results showed, that the value should be between 0.7 and 0.9.
 
 \subsubsection{Scaling and Accuracy}
 The dose distribution of a radioactive seed shows that the dose at a radius of 10 cm is negligible small. So any treatment range higher than 10 cm wouldn't lead to better results anyway. (TODO: which range is acceptable)
