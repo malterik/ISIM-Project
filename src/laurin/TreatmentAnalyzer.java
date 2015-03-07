@@ -73,6 +73,7 @@ public class TreatmentAnalyzer implements Serializable {
 		this.anatomies = BodyAnalyzer.splitBodyTypes(body);
 		this.sAlgorithm = "";
 		this.doubleArgs = null;
+		this.runtime = new Date(0);
 		irradiate();
 		analyzeAll();
 	}
