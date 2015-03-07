@@ -1,7 +1,12 @@
 \documentclass[USenglish,twocolumn]{article}
+\usepackage{etex}
 \usepackage[utf8]{inputenc}
 \usepackage[big,online]{dgruyter}
 \usepackage{hypernat}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
 \setcitestyle{numbers,square,comma,sort&compress}
 
 \begin{document}
@@ -88,6 +93,41 @@ The objective function sums up the dose for every organ at risk voxel and is the
 \subsection{Results}
 bla bla bla
 unsure bla bla
+\section{Stepwise Approach}
+The use of Linear Programming for HDR brachytherapy treatment planning is extended to a stepwise approach as described in \citep{3}.
+
+	\subsection{Principle}
+		Based on a initial solution the planner can take a variable number of steps until an appropiate solution is determined. By relaxing bounds for one VOI, an improvement in another VOI might be possible. Therefore, the method can be used to identify tradeoffs for conflicting goals by specyfying dose bounds rather than weighting factors.
+
+	\subsection{Sampling}
+		To reduce computational complexity only a subset of voxels is taken into account for the underlying linear program. A selection mechanism approximates the significance of voxels as a function of their distance to the closest seed.
+		While distant voxels are more likely to conflict with dose constraints for the PTV, voxels close to a seed are expected to be more informative for the OAR.  
+	
+	\subsection{Results}
+		The results in table \ref{table:LPSW_results} show different measurements after minimizing the upper dose bound for the OAR while relaxing the PTV lower bound. Clearly, OAR sparing and therefore an improvement in conformality comes at the cost of a decreasement in PTV coverage.
+		\begin{table}[ht]
+			\centering		
+		 	\caption{Fixed Pattern Rauschens bei Erhöhung der Umgebungstemperatur}
+		 	\label{table:LPSW_results}
+			\begin{tabular}{ccc}
+				PTV lower bound [Gy] 	& Coverage 	& Conformality Index\\	\hline
+				32.0 					& 1.000		& 1.70\\
+				31.5 					& 0.993 	& 1.61\\
+				31.0 					& 0.979 	& 1.53\\
+				30.5 					& 0.959 	& 1.47\\
+				30.0 					& 0.926		& 1.41\\		
+			\end{tabular}
+		\end{table}	
+		
+		The quality of the treatment plan depends on the number of seeds that is used for optimization.
+		The steepness of the curves for higher numbers of seeds in figure \ref{fig:LPSW_DVH_numberOfSeeds} indicates better conformality.
+		\begin{figure}[ht]
+			\centering
+			\input{graphics/LPSW_numberOfSeeds.tikz} 
+			\caption{Dose Volume Histograms of the PTV for different numbers of seeds.}
+			\label{fig:LPSW_DVH_numberOfSeeds}
+		\end{figure}
+
 
 \begin{acknowledgement}
 Please insert acknowledgments of the assistance of colleagues or similar notes of appreciation here.
@@ -114,6 +154,10 @@ Koza, John R. Genetic Programming. 3rd ed. Cambridge: MIT Press 1992.
 
 \bibitem{2}
 Williams, H. Paul Model Building in Mathmetical Programming, 4th ed., 1999.
+
+\bibitem{3}
+Schlaefer, A. and Schweikard, A. Stepwise multi-criteria optimization for robotic radiosurgery. Med. Phys. 2008.
+
 
 
 \end{thebibliography}
