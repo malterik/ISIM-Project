@@ -92,8 +92,13 @@ public class ResultReader {
 	}
 	
 	public static void main(String[] args) {
-		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "GA_50_2.0_10.0_0.55_0.8_1.0_1.0_1.0_1.0_1.0_9.0_.*");   
-		compareHistogramsByBodyType(treatments, "Rectum");
+		HashMap<TreatmentAnalyzer, String> treatments = getFiles("treatments/", "LP_100_[0-3][.]{1}.*");   
+		//compareHistogramsByBodyType(treatments, "Tumor");
+		
+		HashMap<TreatmentAnalyzer, String> treatments2 = getFiles("treatments/", "LP_50_[0-3][.]{1}.*");
+		HashMap<TreatmentAnalyzer, String> treatments3 = getFiles("treatments/", "LP_75_[0-3][.]{1}.*");
+		printTreatmentComparison(treatments2, true);
+		printTreatmentComparison(treatments3, true);
 		printTreatmentComparison(treatments, true);
 	}
 

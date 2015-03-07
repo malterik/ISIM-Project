@@ -91,8 +91,37 @@ In Linear Programming a objective function and constraints are used to compute t
 The objective function sums up the dose for every organ at risk voxel and is then minimized. The constraints restrict the optimization so that the level of radiation in the tumor does not fall under a fixed value. The contraints can be relaxed to lower the level of radiation in the surrounding organs at the cost of lowering the radiation at the border of the tumor.
 
 \subsection{Results}
-bla bla bla
-unsure bla bla
+As shown in tabel \ref{table:LP_results50} and \ref{table:LP_results100}, the relaxation of the PTV increases the conformality, while letting the coverage of the PTV drop. 
+		\begin{table}[h]
+			\centering		
+		 	\caption{LP 50 seeds}
+		 	\label{table:LP_results50}
+			\begin{tabular}{ccc}
+			PTV lower bound [Gy] 	& Coverage 	& Conformality Index\\	\hline
+				32.0 	& 0.999		& 1.23\\
+				31.0 	& 0.988 	& 1.20\\
+				30.0 	& 0.953		& 1.17\\		
+				29.0 	& 0.899		& 1.14\\
+			\end{tabular}
+		\end{table}
+		
+Using more initial seeds, the algorithm can achieve higher conformality without losing coverage.
+
+				\begin{table}[h]
+			\centering		
+		 	\caption{LP 100 seeds}
+		 	\label{table:LP_results100}
+			\begin{tabular}{ccc}
+			PTV lower bound [Gy] 	& Coverage 	& Conformality Index\\	\hline
+				32.0 	& 0.999		& 1.16\\
+				31.0 	& 0.981 	& 1.13\\
+				30.0 	& 0.931		& 1.10\\		
+				29.0 	& 0.851		& 1.08\\
+			\end{tabular}
+		\end{table}
+
+mehr tabellen bla. ahh ohh vergleich		
+		
 \section{Stepwise Approach}
 The use of Linear Programming for HDR brachytherapy treatment planning is extended to a stepwise approach as described in \citep{3}.
 
