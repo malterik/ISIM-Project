@@ -5,6 +5,7 @@
 \usepackage{hypernat}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
+\usepackage{multirow}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \setcitestyle{numbers,square,comma,sort&compress}
@@ -77,10 +78,258 @@ The fitness-function for the given optimisation problem has very high computatio
 
 \subsubsection{Weights}
 It seems hard to examine a specific sets of weights, that is applicable to any type of patients. The experiment has shown, that a higher weighted treatment has a much higher runtime and the convergency decreases.  
+\begin{figure}[ht]
+\caption{Difference between the goal dose and the average dose}
+\begin{tikzpicture}
+  \begin{axis}[
+  	name=one,
+  	width=0.86 \columnwidth,
+  	height=1.0in, 
+  	scale only axis,
+  	xmajorticks=false,
+  	xtick={0,10,20,30,40},
+  	ytick={-20,-10,...,10},
+  	minor ytick={-20,-15,...,10},
+  	legend style={anchor=north,at={(0.5,1.4)},font=\small},
+  	legend columns=2,
+    xmin=0,
+    xmax=40,
+  	ymax = 5,
+  	ymin = -20,
+    grid=both,
+    y label style={at={(axis description cs:0.1,.5)},anchor=south},
+    ylabel = {Diff. to GD [Gy]}
+    ]
+	\addplot [color=black,dashed,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 -7.4061373\\
+						20 -7.3660937\\
+						30 -7.16107\\
+						40 -7.5223036\\	};
+	\addlegendentry{Bladder};	
+	
+
+	
+	\addplot [color=black,dotted,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 -6.6003648\\
+						20 -7.250544\\
+						30 -8.3557603\\
+						40 -5.8634733\\ };
+	\addlegendentry{Rectum};   
+   
+    
+	
+	\addplot [color=black,dash pattern=on 7pt off 7pt,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 -17.7968793\\
+						20 -16.8252388\\
+						30 -17.5772547\\
+						40 -15.4201025\\ };
+	\addlegendentry{Urethra};
+	
+	\addplot [color=black,solid,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+	 					10 -1.0171151\\
+	 					20 -1.1222384\\
+				 		30 -1.0559538\\
+	 					40  0.6725971\\};
+	\addlegendentry{Tumor};					
+  \node at (rel axis cs:1,1) [anchor=north east] {Bladder weighted};	
+  \end{axis}
+  
+  \begin{axis}[
+  	name=two,
+  	width=0.86 \columnwidth,
+  	height=1.0in, 
+  	scale only axis,
+  	at=(one.below south),
+    anchor=above north,
+  	xmajorticks=false,
+  	xtick={0,10,20,30,40},
+  	ytick={-20,-0,...,100},
+  	minor ytick={-10,0,...,100},
+    xmin=0,
+    xmax=40,
+  	ymax = 95,
+  	ymin = -20,
+    grid=both,
+    y label style={at={(axis description cs:0.1,.5)},anchor=south},
+    ylabel = {Diff. to GD [Gy]}
+    ]
+	\addplot [color=black,dashed,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 46.8163804\\
+						20 -6.5099569\\
+						30 -6.4596163\\
+						40 45.5999754\\ };
+
+	%\addlegendentry{Bladder};	
+	
+	\addplot [color=black,dotted,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 46.4315353\\
+						20 -7.0846292\\
+						30 -8.312817\\
+						40 44.4589502\\ };
+
+	%\addlegendentry{Rectum};   
+   
+    
+	
+	\addplot [color=black,dash pattern=on 7pt off 7pt,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 73.834936\\
+						20 -16.600937\\
+						30 -15.1440168\\
+						40	80.79331\\  };
+	%\addlegendentry{Urethra};
+	
+	\addplot [color=black,solid,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+	 					10 95.820661\\
+	 					20 -0.5231224\\
+	 					30 -1.3135843\\
+	 					40	94.652913\\ };
+	%\addlegendentry{Tumor};					
+  \node at (rel axis cs:1,1) [anchor=north east] {Rectum weighted};	
+  \end{axis}
+  \begin{axis}[
+  	name=three,
+  	width=0.86 \columnwidth,
+  	height=1.0in, 
+  	scale only axis,
+  	at=(two.below south),
+    anchor=above north,
+  	xmajorticks=false,
+  	xtick={0,10,20,30,40},
+  	ytick={-20,-0,...,100},
+  	minor ytick={-10,0,...,100},
+  	legend style={anchor=north,at={(0.5,1.3)},font=\small},
+  	legend columns=2,
+    xmin=0,
+    xmax=40,
+  	ymax = 95,
+  	ymin = -20,
+    grid=both,
+    y label style={at={(axis description cs:0.1,.5)},anchor=south},
+    ylabel = {Diff. to GD [Gy]}
+    ]
+	\addplot [color=black,dashed,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 46.8163804\\
+						20 -6.5099569\\
+						30 45.5999754\\
+						40 -6.4596163\\ };
+
+	%\addlegendentry{Bladder};	
+	
+	\addplot [color=black,dotted,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 46.4315353\\
+						20 -7.0846292\\
+						30 44.4589502\\
+						40 -8.312817\\ };
+
+	%\addlegendentry{Rectum};   
+   
+    
+	
+	\addplot [color=black,dash pattern=on 7pt off 7pt,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 73.834936\\
+						20 -16.600937\\
+						30 80.79331\\
+						40 -15.1440168\\ };
+	%\addlegendentry{Urethra};
+	
+	\addplot [color=black,solid,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+	 					10 95.820661\\
+	 					20 -0.5231224\\
+	 					30 94.652913\\
+	 					40 -1.3135843\\ };
+	%\addlegendentry{Tumor};					
+  \node at (rel axis cs:1,1) [anchor=north east] {Urethra weighted};	
+  \end{axis}
+  \begin{axis}[
+  	name=four,
+  	width=0.86 \columnwidth,
+  	height=1.0in, 
+  	scale only axis,
+  	at=(three.below south),
+    anchor=above north,
+  	xmajorticks=true,
+  	xtick={0,10,20,30,40},
+  	ytick={-20,-10,...,10},
+  	minor ytick={-15,-10,...,5},
+    xmin=0,
+    xmax=40,
+  	ymax = 10,
+  	ymin = -20,
+    grid=both,
+    xlabel = {Weighting Factor},
+    y label style={at={(axis description cs:0.1,.5)},anchor=south},
+    ylabel = {Diff. to GD [Gy]}
+    ]
+	\addplot [color=black,dashed,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 -7.9814571\\
+						20 -2.0920392\\
+						30 -6.5044591\\
+						40 -6.4056077\\ };
+
+	%\addlegendentry{Bladder};	
+	
+	\addplot [color=black,dotted,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 -8.2390329\\
+						20 -3.2641176\\
+						30 -6.7960123\\
+						40 -6.5058489\\ };
+
+	%\addlegendentry{Rectum};   
+   
+    
+	
+	\addplot [color=black,dash pattern=on 7pt off 7pt,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+						10 -18.198227\\
+						20 -6.5576085\\
+						30 -18.4460054\\
+						40 -16.7663932\\ };
+	%\addlegendentry{Urethra};
+	
+	\addplot [color=black,solid,line width=1.0pt]
+	table[row sep=crcr]{0 0\\
+	 					10 -1.8981359\\
+	 					20 7.2659238\\
+	 					30 -0.6839885\\
+	 					40 -0.955956\\ };
+	%\addlegendentry{Tumor};					
+  \node at (rel axis cs:1,1) [anchor=north east] {Tumor weighted};	
+  \end{axis}
+  
+\end{tikzpicture}
+\end{figure}
 
 \subsubsection{Probabilities} 
 The results have shown, that a high mutation rate leads to a very low tumor coverage. Furthermore the algorithm often doesn't converges, because the changes of the individuals accure too often. A stable state becomes less likely. \\ For the crossover rate the results showed, that the value should be between 0.7 and 0.9.
-
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+\begin{tabular}{c|ccccc}
+\textbf{MR}          & \textbf{CR :}     & 0.3   & 0.5   & 0.7   & 0.9   \\ \hline
+\multirow{2}{*}{0.3} & \textbf{CI}       & 1,092 & 1,019 & 1,683 & 1,101 \\
+                     & \textbf{Coverage} & 0,778 & 0,387 & 1,000 & 0,770 \\ \hline
+\multirow{2}{*}{0.5} & \textbf{CI}       & 1,028 & 1,032 & 1,022 & 1,079 \\
+                     & \textbf{Coverage} & 0,360 & 0,410 & 0,395 & 0,403 \\ \hline
+\multirow{2}{*}{0.7} & \textbf{CI}       & 1,007 & 1,046 & 1,012 & 1,035 \\
+                     & \textbf{Coverage} & 0,281 & 0,316 & 0,011 & 0,341 \\ \hline
+\multirow{2}{*}{0.9} & \textbf{CI}       & 1,034 & 1,000 & 1,109 & 1,043 \\
+                     & \textbf{Coverage} & 0,256 & 0,001 & 0,736 & 0,273 \\
+\end{tabular}
+\end{table}
 \subsubsection{Scaling and Accuracy}
 The dose distribution of a radioactive seed shows that the dose at a radius of 10 cm is negligible small. So any treatment range higher than 10 cm wouldn't lead to better results anyway. (TODO: which range is acceptable)
 
