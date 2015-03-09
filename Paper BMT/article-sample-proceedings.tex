@@ -126,36 +126,36 @@ mehr tabellen bla. ahh ohh vergleich
 The use of Linear Programming for HDR brachytherapy treatment planning is extended to a stepwise approach as described in \citep{3}.
 
 	\subsection{Principle}
-		Based on a initial solution the planner can take a variable number of steps until an appropiate solution is determined. By relaxing bounds for one VOI, an improvement in another VOI might be possible. Therefore, the method can be used to identify tradeoffs for conflicting goals by specyfying dose bounds rather than weighting factors.
+		Based on an initial solution the planner can take a variable number of steps until an appropiate solution is determined. By relaxing bounds for one VOI, an improvement in another VOI might be achieved. Therefore, the method can be used to identify tradeoffs for conflicting goals by specyfying dose bounds rather than weighting factors.
 
 	\subsection{Sampling}
-		To reduce computational complexity only a subset of voxels is taken into account for the underlying linear program. A selection mechanism approximates the significance of voxels as a function of their distance to the closest seed.
-		While distant voxels are more likely to conflict with dose constraints for the PTV, voxels close to a seed are expected to be more informative for the OAR.  
+		To reduce computational complexity only a subset of voxels is taken into account for the underlying linear program. A selection mechanism approximates the significance of voxels as a function of their distance to the closest seed. While distant voxels are more likely to conflict with dose constraints for the PTV, voxels close to a seed are expected to be more informative for the OAR.  
 	
 	\subsection{Results}
-		The results in table \ref{table:LPSW_results} show different measurements after minimizing the upper dose bound for the OAR while relaxing the PTV lower bound. Clearly, OAR sparing and therefore an improvement in conformality comes at the cost of a decreasement in PTV coverage.
-		\begin{table}[ht]
-			\centering		
-		 	\caption{Fixed Pattern Rauschens bei Erhöhung der Umgebungstemperatur}
-		 	\label{table:LPSW_results}
-			\begin{tabular}{ccc}
-				PTV lower bound [Gy] 	& Coverage 	& Conformality Index\\	\hline
-				32.0 					& 1.000		& 1.70\\
-				31.5 					& 0.993 	& 1.61\\
-				31.0 					& 0.979 	& 1.53\\
-				30.5 					& 0.959 	& 1.47\\
-				30.0 					& 0.926		& 1.41\\		
-			\end{tabular}
-		\end{table}	
+		The results in Table \ref{table:LPSW_results} show measurements after various optimization steps. Based on a coverage optimized solution the urethra and other tissue's upper bound is minimized while the PTV lower bound is relaxed. The values for coverage and conformality index (CI) indicate the conflicting multicriteria nature of the problem since one comes at another's cost.
 		
-		The quality of the treatment plan depends on the number of seeds that is used for optimization.
-		The steepness of the curves for higher numbers of seeds in figure \ref{fig:LPSW_DVH_numberOfSeeds} indicates better conformality.
+		Improved treatment plans can be achieved by raising the number of seeds for the optimization process as demonstrated in table \ref{table:LPSW_results} and the corresponding dose volume histograms (Figure \ref{fig:LPSW_compare}).
+
 		\begin{figure}[ht]
 			\centering
-			\input{graphics/LPSW_numberOfSeeds.tikz} 
-			\caption{Dose Volume Histograms of the PTV for different numbers of seeds.}
-			\label{fig:LPSW_DVH_numberOfSeeds}
+			\input{graphics/LPSW_compare.tikz} 
+			\caption{Final DVH for 50 and 100 seeds after multiple optimization steps.}
+			\label{fig:LPSW_compare}
 		\end{figure}
+
+		\begin{table}[ht]
+			\centering		
+		 	\caption{Treatment quality measurements after multiple optimization steps.}
+		 	\label{table:LPSW_results}
+			\begin{tabular}{p{0.24\columnwidth}|p{0.13\columnwidth}|p{0.18\columnwidth}|p{0.13\columnwidth}|p{0.13\columnwidth}}
+					Step 					  	& Seeds  & Tumor LB 	& Coverage 	& CI\\	\hline
+					Optimization for coverage 	& ~50 	 & 32.0 		& 0.995		& 2.14\\ \hline
+					Min. of urethra UB 		  	& ~50	 & 31.0 		& 0.993		& 1.74\\ \hline
+					Min. of other UB 			& ~50	 & 30.5			& 0.972		& 1.53\\ \hline \hline
+					Min. of other UB 			& 100	 & 30.5			& 0.973		& 1.28\\
+			\end{tabular}
+		\end{table}	
+
 
 
 \begin{acknowledgement}
