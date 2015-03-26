@@ -9,10 +9,17 @@
 \usepackage{multirow}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
+\usepackage{amssymb}
 
 
 \begin{document}
 \tableofcontents
+
+\section{Model description}
+HDR brachytherapy consists of several radioactive sources being placed inside the patient's body by needles. These sources will eradiate into the surrounding tissues, treating tumor cells and other critical volumes. Therefore, it relies heavily on optimal algorithms to determine the dwell times for certain, predefined goals. \\
+The body is represented by an equidistant grid of voxels, defining the single body cell type. The seeds are randomly positioned within the tumor voxels. Hence, the dosis in a voxel is calculated as a sum of each seed by evaluating the dose-function up to a fixed limit, where the influence gets negligible.
+
+
 \section{Dose-Function}
 The dose-distribution within the patient's body is the accumulation of all the radiation-seeds. Therefore it is mandatory to know the radiation intensity of each seed. Equation \eqref{eq:dosefunction} shows the general approach to approximate the dose intensity function and \eqref{eq:dosefunction2} shows the used implementation of that equation.
 \begin{equation}
@@ -514,6 +521,60 @@ The results have shown, that a high mutation rate leads to a very low tumor cove
 \end{table}
 \subsubsection{Scaling and Accuracy}
 The dose distribution of a radioactive seed shows that the dose at a radius of 10 cm is negligible small. So any treatment range higher than 10 cm wouldn't lead to better results. 
+
+
+\section{Linear Programming}
+In Linear Programming an objective function and constraints are used to compute the optimal solution to a minimization or maximization problem, as described in [?]. The problem consists of a certain number of variables and a feasible region, which is defined by the contraints. 
+Equation \eqref{eq:LPMatrix} shows the standard form of a linear problem. The objective function, modeled with \textit{c},  is to be minimized, while the constraints, modeled with \textit{A} and \textit{b}, are satisfied. The used algorithm yields a vector x for the optimal solution.
+
+ \begin{equation}
+ \label{eq:LPMatrix}
+ \begin{aligned}
+ A \in \mathbb{R}^{m,n}, \ \ \ b \in \mathbb{R}^m, \ \ \ c \in \mathbb{R}^n, \ \ \ x \in \mathbb{R}^n \\
+ objective function \ \ \ c^Tx = Min! \\
+ min\{c^Tx|Ax \leq b, x \geq 0\}
+\end{aligned}
+ \end{equation}
+ 
+ 
+ 
+ \subsection{Implementation}
+ 
+For our problem we used CPLEX, an implementation of the simplex algorithm by IBM[?]. In simplex the feasible region is considered a polyhedron. The optimal solution must be in one of the vertices of the polyhedron. Simplex finds a start vertex and approaches the optimal solution by going on an edge from vertex to vertex, until there is no better solution.
+The constraints allow us a good modelling of the tumor, since we are able to define a constraint with certain limits for each body type.
+
+\paragraph{Basic Funtionality}
+The basic functionality is depicted in algorithm \ref{alg:cplex}. This implementation checks every voxel of the body, if it is a tumor voxel or not. In case of a tumor voxel the influence of the radiation of every seed will be summed up, building a greater-equal constraint. For body voxel the influence of the radiation builds a term for the objective function. 
+\begin{algorithm}
+\label{alg:cplex}
+ \For{x=0; x $\textless$ body.xDim; x++}{
+ 	\For{y=0; y $\textless$ body.yDim; y++}{
+ 		\For{z=0; z $\textless$ body.zDim; z++}{
+			\If{$body[x][y][z].getBodyType() == tumorType$} {
+				\For{i=0; i $\textless$ numberOfSeeds; i++}{
+					$dosepart[i] \gets cplex.prod(dose(x,y,z,i),time[i])$	
+				}
+				$cplex.addGe(cplex.sum(dosepart),goalDosis(x,y,z));$
+				}
+			\Else{\For{i=0; i $\textless$ numberOfSeeds; i++}{
+					$objective.addTerm(dose(x,y,z,i),time[i]);$	
+				}
+				
+				
+				}
+ 			
+  		}
+  	}
+  }
+  $cplex.addMinimize(objective);$\\
+  $cplex.solve();$
+ \caption{basic functionality}
+ \end{algorithm}
+
+
+
+\subsection{Stepwise Approach}
+
 
 
 
