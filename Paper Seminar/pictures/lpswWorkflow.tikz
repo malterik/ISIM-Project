@@ -1,0 +1,25 @@
+% Define block styles
+
+\tikzstyle{decision} = [diamond, aspect=2, draw, 
+    text width=6em, text badly centered, node distance=4.5cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, 
+    text width=6em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+    
+\begin{tikzpicture}[scale=0.71, every node/.style={transform shape}]
+
+	\node [block] (init) {Initial solution};
+	\node [block, right of=init, node distance=3.5cm] (bounds) {Relax bounds};
+	\node [block, right of=bounds, node distance=3.5cm] (optimization) {Optimization step};
+	\node [decision, right of=optimization, node distance=4.5cm] (tradeoff) {Acceptable Tradeoff?};
+	\node [block, right of=tradeoff, node distance=4.5cm] (final) {Final solution};
+
+	\begin{scope} [every path/.style=line]
+		\path (init) -- (bounds);
+		\path (bounds) -- (optimization);
+		\path (optimization) -- (tradeoff);
+		\path (tradeoff)   --++  (0,-2.2) node [near start, right] {no} -| (bounds);
+		\path (tradeoff)  --  node [near start, above] {yes}  (final);
+	 \end{scope}
+	 
+\end{tikzpicture}

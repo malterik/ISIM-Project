@@ -10,7 +10,11 @@
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \usepackage{amssymb}
+\usepackage{subcaption}
 
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 \begin{document}
 \tableofcontents
@@ -19,6 +23,29 @@
 HDR brachytherapy consists of several radioactive sources being placed inside the patient's body by needles. These sources will eradiate into the surrounding tissues, treating tumor cells and other critical volumes. Therefore, it relies heavily on optimal algorithms to determine the dwell times for certain, predefined goals. \\
 The body is represented by an equidistant grid of voxels, defining the single body cell type. The seeds are randomly positioned within the tumor voxels. Hence, the dosis in a voxel is calculated as a sum of each seed by evaluating the dose-function up to a fixed limit, where the influence gets negligible.
 
+\section{Evaluation criteria}
+	Reflecting the multicriteria nature of the problem, several measurements are considered for treatment evaluation.
+	\begin{description}
+		\item[Coverage (CO)]~\\
+			The fraction of PTV volume that receives at least the prescription dose. Therefore, the CO is always smaller than or equal to 1 and becomes 1 ideally.
+		\item[Homogeneity (HI)]~\\
+			The upper PTV bound divided by lower PTV bound. Therefore, the HI is always greater than or equal to 1 and becomes 1 ideally.
+		\item[Conformality Index (CI)]~\\
+			The volume receiving at least the prescription dose divided by the PTV volume receiving at least the prescription dose. Therefore, the CI is always greater than or equal to 1 and becomes 1 ideally.
+		\item[Minimum, maximum and average values]~\\
+			The extreme and average values per volume of interest.
+		\item[Dose Volume Histogram (DVH)]~\\
+			A two-dimensional representation of the dose distribution. For a given dose, the cumulative DVH shows the fraction of a volume that is exposed to at least the given dose. Figure \ref{fig:evalCritDVH} shows a typical DVH.
+			\begin{figure}[ht]
+				\centering
+				\input{pictures/EvalCrit_DVH.tikz} 
+				\caption{A cumulative Dose Volume Histogram}
+				\label{fig:evalCritDVH}
+			\end{figure}
+			
+
+
+\end{description}	
 
 \section{Dose-Function}
 The dose-distribution within the patient's body is the accumulation of all the radiation-seeds. Therefore it is mandatory to know the radiation intensity of each seed. Equation \eqref{eq:dosefunction} shows the general approach to approximate the dose intensity function and \eqref{eq:dosefunction2} shows the used implementation of that equation.
@@ -574,10 +601,84 @@ The basic functionality is depicted in algorithm \ref{alg:cplex}. This implement
 
 
 \subsection{Stepwise Approach}
-
-
+	The use of linear programming for HDR brachytherapy treatment planning is extended to a stepwise approach as described in \cite{schlaefer}.
+	 
+	\subsubsection{Idea}
+		\label{subsec:lpswIdea}
+		Based on an initial solution the planner can take a variable number of steps until an appropiate solution is determined. By relaxing bounds for one VOI, an improvement in another VOI might be achieved. Therefore, the method can be used to identiy tradeoffs for conflicting goals by specyfying dose bounds rather than weighting factors. Figure \ref{fig:lpswWorkflow} presents the basic workflow of this method.
+		
+		\begin{figure}[ht]
+			\centering
+			\input{pictures/lpswWorkflow.tikz} 
+			\caption{Workflow for the Stepwise Approach}
+			\label{fig:lpswWorkflow}
+		\end{figure}
+		
+	\subsubsection{Optimization problem}
+		The underlying linear program as formulated in equation \ref{eq:LPMatrix} is modified to meet the requirements arising from section \ref{subsec:lpswIdea}. Equation \ref{eq:lpswMatrix} shows the resulting linear problem. The slack variables $\hat{t}$, $\check{t}$, $\hat{s}$ and $\check{s}$ measure the deviation from the desired lower or upper bound. While $\hat{t}$ and $\check{t}$ are valid for a whole VOI, $\hat{s}$ and $\check{s}$ correspond to a single voxel of a VOI. In an optimization step only one VOI is taken into account by setting the coefficient values to 1, specyfying the desired bounds and minimizing the objective function.
+		\begin{equation}
+			\label{eq:lpswMatrix}
+			\begin{matrix}
+			\textit{min} &            & ~\hat{c}_s^T\hat{s} & +\check{c}_s^T\check{s}    & +\hat{c}_t^T\hat{t} & +\check{c}_t^T\check{t} & & \\\\
+			\textit{s.t.} & Ax         & -\hat{s}            &            & -\hat{t}  &            & \leq & b_u\\
+     & Ax         & 		            & +\check{s} &           & +\check{t} & \geq & b_l\\
+			   	 & \hat{s}    & 		            &            &           &            & \leq & b_{\hat{s}}\\
+          & \check{s}  & 	                &            &           &            & \leq & b_{\check{s}}\\
+          & \hat{t}    & 		            &            &           &            & \leq & b_{\hat{t}}\\
+          & \check{t}  & 	                &            &           &            & \leq & b_{\check{t}}\\
+				 & \multicolumn{2}{c}{x,\hat{s},\check{s},\hat{t},\check{t}} & & & & \geq & 0
+			\end{matrix}		
+		\end{equation}
+	
+	\subsubsection{Sampling}
+		To reduce computational complexity only a subset of voxels is taken into account for the linear program. A selection mechanism approximates the significance of voxels as a function of their distance to the closest seed. Distant voxels are more likely to conflict with dose constraints for the PTV. Therefore, the voxels with the greatest distance are chosen. In contrast, voxels close to a seed are expected to be more informative for the OAR since they are more likely to conflict with the upper bound dose constraints of the corresponding VOI.
+	
+	\subsubsection{Results}
+		The results in Table \ref{table:lpswTable} show measurements after various optimization steps. Based on a coverage optimized solution the urethra and other tissue's upper bound is minimized while the PTV lower bound is relaxed. Figure \ref{fig:lpswComparison} shows a comparison of the dose volume histograms after the last optimization step for 50 and 100 seeds.
+		
+		\begin{table}[ht]	
+		 	\caption{Treatment quality measurements after multiple optimization steps}
+		 	\label{table:lpswTable}
+			\begin{tabular}{L{0.35\textwidth}|C{0.1\textwidth}|C{0.18\textwidth}|C{0.1\textwidth}|C{0.1\textwidth}}
+					\textbf{Step} 			& \textbf{Seeds}  & \textbf{Tumor LB} 	& \textbf{CO} 	& \textbf{CI}\\	\hline
+					Optimization for coverage 	& ~50 	 & 32.0 		& 0.995		& 2.14\\ \hline
+					Min. of urethra UB 		  	& ~50	 & 31.0 		& 0.993		& 1.74\\ \hline
+					Min. of other UB 			& ~50	 & 30.5			& 0.972		& 1.53\\ \hline
+					Min. of other UB 			& 100	 & 30.5			& 0.973		& 1.28\\
+			\end{tabular}
+		\end{table}
+		
+		\begin{figure}[htbp]
+					\begin{subfigure}[t]{\textwidth}
+						%\centering
+						\input{pictures/lpsw50.tikz} 
+						\caption{50 seeds}
+						\label{fig:lpswComparison50Seeds}
+					\end{subfigure}
+					\begin{subfigure}[t]{\textwidth}
+						%\centering
+						\input{pictures/lpsw100.tikz} 
+						\caption{100 seeds}
+						\label{fig:lpswComparison10Seeds}
+					\end{subfigure}
+			\caption{Final dose volume histograms with different numbers of seeds used for optimization}
+			\label{fig:lpswComparison}
+		\end{figure}
+		
+	\subsubsection{Discussion}
+		The values for coverage and conformality index (CI) listed in Table \ref{table:lpswTable} indicate the conflicting multicriteria nature of the problem since one comes at another's cost. Therefore, the balancing of goals by relaxing dose constraints seems to be a reasonable approach to this problem.
+			
+		Improved treatment plans can be achieved by raising the number of seeds for the optimization process as demonstrated in the last two rows of Table \ref{table:lpswTable} and the corresponding dose volume histograms (Figure \ref{fig:lpswComparison}). The increased quality of a treatment plan comes at the cost of more computational complexity and therefore a longer computation time. 
 
 
 \bibliographystyle{plain}
 \bibliography{lit}
+
+\begin{thebibliography}{9}
+\bibitem{schlaefer}
+	Schlaefer, A. and Schweikard, A. Stepwise multi-criteria optimization for robotic radiosurgery. Med. Phys. 2008.
+
+
+
+\end{thebibliography}
 \end{document}
