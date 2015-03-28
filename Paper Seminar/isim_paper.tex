@@ -584,11 +584,11 @@ Equation \eqref{eq:LPMatrix} shows the standard form of a linear problem. The ob
  
  \subsection{Implementation}
  
-For our problem we used CPLEX, an implementation of the simplex algorithm by IBM[?]. In simplex the feasible region is considered a polyhedron. The optimal solution must be in one of the vertices of the polyhedron. Simplex finds a start vertex and approaches the optimal solution by going on an edge from vertex to vertex, until there is no better solution.
+For our problem we used CPLEX, an implementation of the simplex algorithm by IBM[?]. In simplex the feasible region is considered a polyhedron. The optimal solution must be in one of the vertices of the polyhedron. Simplex finds a start vertex and approaches the optimal solution by moving from vertex to vertex on an edge, until there is no better solution.
 The constraints allow us a good modelling of the tumor, since we are able to define a constraint with certain limits for each body type.
 
-\paragraph{Basic Funtionality}
-The basic functionality is depicted in algorithm \ref{alg:cplex}. This implementation checks every voxel of the body, if it is a tumor voxel or not. In case of a tumor voxel the influence of the radiation of every seed will be summed up, building a greater-equal constraint. For body voxel the influence of the radiation builds a term for the objective function. 
+\subsubsection{Basic Funtionality}
+
 \begin{algorithm}[H]
 \label{alg:cplex}
  \For{x=0; x $\textless$ body.xDim; x++}{
@@ -613,7 +613,41 @@ The basic functionality is depicted in algorithm \ref{alg:cplex}. This implement
  \caption{basic functionality}
  \end{algorithm}
 
+The basic functionality is depicted in algorithm \ref{alg:cplex}. This implementation checks every voxel of the body, if it is a tumor voxel or not. In case of a tumor voxel the influence of the radiation of every seed will be summed up, building a greater-equal constraint. For body voxels the influence of the radiation builds a term for the objective function. 
 
+ 
+ \subsubsection{Results}
+ The constraints restrict the optimization so that the level of radiation in the PTV does not fall under a fixed value. The contraints can be relaxed to lower the level of radiation in the surrounding OAR at the cost of lowering the radiation at the border of the PTV.
+ 
+ As shown in table \ref{table:LP_results50} and \ref{table:LP_results100}, the relaxation of the PTV increases the conformality, while letting the coverage of the PTV drop. 
+		\begin{table}[h]
+			\centering		
+		 	\caption{Treatment quality with 50 seeds and relaxation}
+		 	\label{table:LP_results50}
+			\begin{tabular}{C{0.35\textwidth}|C{0.11\textwidth}|C{0.1\textwidth}}
+			\textbf{PTV lower bound [Gy]} 	& \textbf{CO} 	& \textbf{CI}\\	\hline
+				32.0 	& 0.999		& 1.23\\	\hline
+				31.0 	& 0.988 	& 1.20\\	\hline
+				30.0 	& 0.953		& 1.17\\	\hline		
+				29.0 	& 0.899		& 1.14\\
+			\end{tabular}
+		\end{table}
+		
+Using more initial seeds, the algorithm can achieve higher conformality without losing coverage.
+
+				\begin{table}[h]
+			\centering		
+		 	\caption{Treatment quality with 100 seeds and relaxation}
+		 	\label{table:LP_results100}
+			\begin{tabular}{C{0.35\textwidth}|C{0.11\textwidth}|C{0.1\textwidth}}
+			\textbf{PTV lower bound [Gy]} 	& \textbf{CO} 	& \textbf{CI}\\	\hline
+				32.0 	& 0.999		& 1.16\\ \hline
+				31.0 	& 0.981 	& 1.13\\ \hline
+				30.0 	& 0.931		& 1.10\\ \hline	
+				29.0 	& 0.851		& 1.08\\
+			\end{tabular}
+		\end{table}
+ 
 
 \subsection{Stepwise Approach}
 	The use of linear programming for HDR brachytherapy treatment planning is extended to a stepwise approach as described in \cite{schlaefer}.
