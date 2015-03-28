@@ -10,11 +10,11 @@ In table \ref{tbl:classification_parameters}, the various parameters measured in
 \begin{table}
 \centering
 \caption{Parameters and Influences in classification}
-\begin{tabular}[htbp]{l | c | r}
-\textbf{Parameter} & \textbf{Influence Type} & \textbf{Weight} \\
-volume size  & relative & 0.1\\
-volume center & relative & 0.2 \\
-distance tumor-center & absolute & 0.2\\
+\begin{tabular}[htbp]{l | c | c}
+\textbf{Parameter} & \textbf{Influence Type} & \textbf{Weight} \\ \hline
+volume size  & relative & 0.1\\ \hline
+volume center & relative & 0.2 \\ \hline
+distance tumor-center & absolute & 0.2\\ \hline
 closest distance & absolute & 0.5
 \end{tabular}
 \label{tbl:classification_parameters}
@@ -38,7 +38,7 @@ Additionally to the weights of the various weights of the measurement parameters
 \centering
 \caption{Influences of Body Types}
 \begin{tabular}[htbp]{c | c | c | c | c}
-\textbf{normal} & \textbf{spine} & \textbf{liver} & \textbf{pancreas} & \textbf{tumor} \\
+\textbf{normal} & \textbf{spine} & \textbf{liver} & \textbf{pancreas} & \textbf{tumor} \\ \hline
 1 & 5 & 0.5 & 5 & 3
 \end{tabular}
 \label{tbl:classification_type_weights}
@@ -49,30 +49,27 @@ The algorithm is shown in algorithm \ref{alg:classification}. It consists of a m
 First, the body type counter for the current voxel is incremented (line 2). Second, the x-, y- and z-coordinate of the voxel is added to total coordinate of the body type (line 3). This aims at the calculation of the volume center. If the body type is of \textit{tumor}, then the voxel coordinate is stored for later usage, i.e. the calculation of the closest distance parameter (line 4 \& 5). Afterwards, the parameter volume center and distance tumor-center are calculated by division and euclidian norm (line 6 \& 7).\\
 To calculate the closest distance between the volumes, it's necessary cross-compare the voxels. Therefore, another loop iterates through the complete body, and, within, iterates over all previously stored tumor coordinates. For each pair of voxel and tumor coordinate, the distance is calculated and, if less then before, the closest distance is updated (line 8-12).
 
-%\begin{algorithm}[H]
-%\label{alg:classification}
-%\ForAll{voxels in body}
-%	count body_type \;
-%	sum up coordinates \;
-%	\If{body_type == tumor}
-%		store coordinate for later usage \;
-%	\EndIf
-%\EndFor
-%volumeCenter = coordinates / body_type \;
-%centerDistance = euclid_norm (tumorCenter, volumeCenter) \;
-%\ForAll{voxels in body}
-%	\ForAll{voxels in tumor stored}
-%		calculated distance (voxel, tumor) \;
-%		\If{distance $\textless$ closestDistance}
-%			update closestDistance \;
-%		\EndIf
-%	\EndFor
-%\EndFor
-%\caption{Measurement algorithm in pseudo code}
-%\end{algorithm}
+\ForAll{$voxels\ in\ body$}{
+	$count\ body\_type;$ \\
+	$sum\ up\ coordinates;$\\
+	\If{$body\_type == tumor$}{
+		$store\ coordinate\ for\ later\ usage;$
+	}
+}
+$volumeCenter = coordinates / body\_type;$ \\
+$centerDistance = euclid\_norm (tumorCenter, volumeCenter);$ \\
+\ForAll{$voxels\ in\ body$}{
+	\ForAll{$voxels\ stored\ in\ tumor$}{
+		$calculated\ distance (voxel, tumor);$\\
+		\If{distance $\textless$ closestDistance}{
+			$update\ closestDistance;$
+		}
+	}
+}
+\caption{Measurement algorithm in pseudo code}
+\end{algorithm}
 
 \subsection{Performance evalution and prospects}
 Without the calculation of the closest distance in between the tumor volume and all other volumes, the performance is linear. The computing takes only a few seconds (2-4s), using a body similar to dimensions of 110x110x200. Alas, the computing time increases exponentially when performing the cross-comparison of each voxel in the body with all voxels of type \textit{tumor}. A first step of optimization has been taken when introducing a cache for the tumor voxel (already included in the algorithm above). Another step towards lower runtimes contains the implementation of a multi-threaded cross-comparison or completely multi-threaded algorithm. The multi-threaded cross-comparison has been implemented and it indicates a speed up by approximately the number of processor cores used, but has not beend thoroughly tested yet. \\
 Like the multi-threading, at the time of this paper, the classification and the results of it are not properly tested. Therefore, no scientific statement can be made. However, for linear programming no influence upon the runtime has been observed. When using the genetic algorithm or simulating annealing, only a small deviation of runtime has been observed. Unluckily it is not clear, whether the deviation is caused by the standard variation of the algorithms runtime, or by the influence of classification.\\
 Therefore, a major part of future work should contain the testing of the classification. Afterwards, a founded evaluation and adaptions according to the evaluation can be made.
-
