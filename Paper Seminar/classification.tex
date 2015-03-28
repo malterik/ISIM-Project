@@ -49,6 +49,7 @@ The algorithm is shown in algorithm \ref{alg:classification}. It consists of a m
 First, the body type counter for the current voxel is incremented (line 2). Second, the x-, y- and z-coordinate of the voxel is added to total coordinate of the body type (line 3). This aims at the calculation of the volume center. If the body type is of \textit{tumor}, then the voxel coordinate is stored for later usage, i.e. the calculation of the closest distance parameter (line 4 \& 5). Afterwards, the parameter volume center and distance tumor-center are calculated by division and euclidian norm (line 6 \& 7).\\
 To calculate the closest distance between the volumes, it's necessary cross-compare the voxels. Therefore, another loop iterates through the complete body, and, within, iterates over all previously stored tumor coordinates. For each pair of voxel and tumor coordinate, the distance is calculated and, if less then before, the closest distance is updated (line 8-12).
 
+\begin{algorithm}
 \ForAll{$voxels\ in\ body$}{
 	$count\ body\_type;$ \\
 	$sum\ up\ coordinates;$\\
@@ -67,6 +68,7 @@ $centerDistance = euclid\_norm (tumorCenter, volumeCenter);$ \\
 	}
 }
 \caption{Measurement algorithm in pseudo code}
+\label{alg:classification}
 \end{algorithm}
 
 \subsection{Performance evalution and prospects}
