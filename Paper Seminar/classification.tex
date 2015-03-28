@@ -1,4 +1,70 @@
 While using computer aided systems to create treatment plans, this involves time-consuming calculations during optimizations (as seen in this project). Therefore, a classification attempt is proposed, using prior knowledge to reduce the amount of time taken to process.
 
-\subsection{General Idea}
-When classifying, you search for similarities or analogies in your given set of data. These provide a basis for a comparison among previously created optimiziations
+\subsection{General Idea and Application}
+When classifying, you search for similarities or analogies in your given set of data. These provide a basis for a comparison among previously created optimizations. The former result being the most similar (or closest with respect to the comparison) can be taken as a starting point for the next iteration.
+
+In treatment planning, there are several steps to be executed when trying to classify. First, the body to be treated ("treated body") needs to be analyzed (i.e. measured in various variables). Second, these measurements build a formula providing a norm (like the euclidian norm), which then can be used to compare the bodies. Afterwards, the body with the smallest distance to the treated body is taken. If it has an optimization result stored ("stored body), this will be used during the next iteration. This aims at lower runtimes for at least an equal coverage.
+
+\subsection{Parameters and Influences}
+In table \ref{tbl:classification_parameters}, the various parameters measured in order to compare are displayed. Further on, their influence in the norm is shown. Additionally, in table \ref{tbl:classification_type_weights}, the weighted influence of the five different body types are presented.
+\begin{table}
+\centering
+\caption{Parameters and Influences in classification}
+\begin{tabular}[htbp]{l | c | r}
+\textbf{Parameter} & \textbf{Influence Type} & \textbf{Weight} \\
+volume size  & relative & 0.1\\
+volume center & relative & 0.2 \\
+distance tumor-center & absolute & 0.2\\
+closest distance & absolute & 0.5
+\end{tabular}
+\label{tbl:classification_parameters}
+\end{table}
+
+\begin{description}
+\item[Volume Size]~\\
+The plain count of all voxels respective to the different body types. As the body is given as an equidistant 3D-array, it's comparable without calculation of the real volume.
+\item[Volume Center]~\\ The center of the volume of each body type, with respect to the coordinates within the 3D-array. For calculation, all coordinates of the body type's voxels are summed up and divided by the volume size.
+\item[Distance Tumor-Center]~\\ The distance between the center of the tumor center and the center of the other body type volumes, calculated by a simple substraction.
+\item[Closest Distance]~\\ The closest distance between two volumes in units, corresponding to the 3D-array's distance inbetween the voxels.
+\end{description}
+
+The four parameters descripted above are calculated in a measuring algorithm, detailed further in section \ref{classification:algorithm}. They contain two types of influence onto the norm: textit{relative} and \textit{absolute}. \textit{relative} depicts a comparison with respect to the treated body's values of the same parameter. For example, the tumor volume size of the stored body will be divided by the tumor volume size of the treated body. In constrast, the \textit{absolute} comparison omits the division completely. This is due to division by 0, when the tumor overlaps with other body type volumes. \\
+
+They each share a weight parameter, which sums up to 1 in total. The values shown in table \ref{tbl:classification_parameters} represent a multiplication factor within the norm. The norm itself is a sum of the different parameters multiplied with their weight, corresponding to the smallest error between the stored and treated bodies. The weights correspond to a simple consideration about how much each parameter should influence the the classification. To allow for small to medium deviations within the three first parameters (volume size, volume center and distance tumor-center), they have been chosen small. This enables a few transformations (i.e. translation of single/all volumes) of the body volumes resulting in a similar classification. Therefore, the weight for closest distance has been chosen larger, to prevent extreme transformations to distort the result. \\
+
+Additionally to the weights of the various weights of the measurement parameters, it's possible to change the influence of the different body types (compare table \ref{tbl:classification_type_weights}). This leads to a more detailed and precise representation of the aims during the treatment planning. In this case, a high focus has been set upon not damaging the spine and the pancreas whilst treating the tumor properly. 
+
+\begin{table}
+\centering
+\caption{Influences of Body Types}
+\begin{tabular}[htbp]{c | c | c | c | c}
+\textbf{normal} & \textbf{spine} & \textbf{liver} & \textbf{pancreas} & \textbf{tumor} \\
+1 & 5 & 0.5 & 5 & 3
+\end{tabular}
+\label{tbl:classification_type_weights}
+\end{table}
+
+\subsection{Algorithm and Performance}\label{classification:algorithm}
+The algorithm is shown in algorithm \ref{alg:classification}. It consists of a main loop, iterating through the stored body
+
+\begin{algorithm}[H]
+\label{alg:classification}
+\ForAll{voxels in body}
+	count body_type \;
+	sum up coordinates \;
+	\If{body_type == tumor}
+		store coordinate for later usage \;
+	\EndIf
+\EndFor
+volumeCenter = coordinates / body_type \;
+centerDistance = euclid_norm (tumorCenter, volumeCenter) \;
+\ForAll{voxels in body}
+	\ForAll{voxels in tumor stored}
+		calculated distance (voxel, tumor) \;
+		\If{distance $\textless$ closestDistance}
+			update closestDistance \;
+		\EndIf
+	\EndFor
+\EndFor
+\caption{Measurement algorithm in pseudo code}
+\end{algorithm}
