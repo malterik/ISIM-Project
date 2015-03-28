@@ -10,11 +10,11 @@ In table \ref{tbl:classification_parameters}, the various parameters measured in
 \begin{table}
 \centering
 \caption{Parameters and Influences in classification}
-\begin{tabular}[htbp]{l | c | r}
-\textbf{Parameter} & \textbf{Influence Type} & \textbf{Weight} \\
-volume size  & relative & 0.1\\
-volume center & relative & 0.2 \\
-distance tumor-center & absolute & 0.2\\
+\begin{tabular}[htbp]{l | c | c}
+\textbf{Parameter} & \textbf{Influence Type} & \textbf{Weight} \\ \hline
+volume size  & relative & 0.1\\ \hline
+volume center & relative & 0.2 \\ \hline
+distance tumor-center & absolute & 0.2\\ \hline
 closest distance & absolute & 0.5
 \end{tabular}
 \label{tbl:classification_parameters}
@@ -38,7 +38,7 @@ Additionally to the weights of the various weights of the measurement parameters
 \centering
 \caption{Influences of Body Types}
 \begin{tabular}[htbp]{c | c | c | c | c}
-\textbf{normal} & \textbf{spine} & \textbf{liver} & \textbf{pancreas} & \textbf{tumor} \\
+\textbf{normal} & \textbf{spine} & \textbf{liver} & \textbf{pancreas} & \textbf{tumor} \\ \hline
 1 & 5 & 0.5 & 5 & 3
 \end{tabular}
 \label{tbl:classification_type_weights}
@@ -49,22 +49,24 @@ The algorithm is shown in algorithm \ref{alg:classification}. It consists of a m
 
 \begin{algorithm}[H]
 \label{alg:classification}
-\ForAll{voxels in body}
-	count body_type \;
-	sum up coordinates \;
-	\If{body_type == tumor}
-		store coordinate for later usage \;
-	\EndIf
-\EndFor
-volumeCenter = coordinates / body_type \;
-centerDistance = euclid_norm (tumorCenter, volumeCenter) \;
-\ForAll{voxels in body}
-	\ForAll{voxels in tumor stored}
-		calculated distance (voxel, tumor) \;
-		\If{distance $\textless$ closestDistance}
-			update closestDistance \;
-		\EndIf
-	\EndFor
-\EndFor
+\ForAll{$voxels\ in\ body$}{
+	$count\ body\_type;$ \\
+	$sum\ up\ coordinates;$\\
+	\If{$body\_type == tumor$}{
+		$store\ coordinate\ for\ later\ usage;$
+	}
+}
+$volumeCenter = coordinates / body\_type;$ \\
+$centerDistance = euclid\_norm (tumorCenter, volumeCenter);$ \\
+\ForAll{$voxels\ in\ body$}{
+	\ForAll{$voxels\ stored\ in\ tumor$}{
+		$calculated\ distance (voxel, tumor);$\\
+		\If{distance $\textless$ closestDistance}{
+			$update\ closestDistance;$
+		}
+	}
+}
 \caption{Measurement algorithm in pseudo code}
 \end{algorithm}
+
+
