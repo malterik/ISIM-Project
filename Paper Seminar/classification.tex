@@ -28,7 +28,7 @@ The plain count of all voxels respective to the different body types. As the bod
 \item[Closest Distance]~\\ The closest distance between two volumes in units, corresponding to the 3D-array's distance inbetween the voxels.
 \end{description}
 
-The four parameters descripted above are calculated in a measuring algorithm, detailed further in section \ref{classification:algorithm}. They contain two types of influence onto the norm: textit{relative} and \textit{absolute}. \textit{relative} depicts a comparison with respect to the treated body's values of the same parameter. For example, the tumor volume size of the stored body will be divided by the tumor volume size of the treated body. In constrast, the \textit{absolute} comparison omits the division completely. This is due to division by 0, when the tumor overlaps with other body type volumes. \\
+The four parameters descripted above are calculated in a measuring algorithm, detailed further in section \ref{classification:algorithm}. They contain two types of influence onto the norm: \textit{relative} and \textit{absolute}. \textit{relative} depicts a comparison with respect to the treated body's values of the same parameter. For example, the tumor volume size of the stored body will be divided by the tumor volume size of the treated body. In constrast, the \textit{absolute} comparison omits the division completely. This is due to division by 0, when the tumor overlaps with other body type volumes. \\
 
 They each share a weight parameter, which sums up to 1 in total. The values shown in table \ref{tbl:classification_parameters} represent a multiplication factor within the norm. The norm itself is a sum of the different parameters multiplied with their weight, corresponding to the smallest error between the stored and treated bodies. The weights correspond to a simple consideration about how much each parameter should influence the the classification. To allow for small to medium deviations within the three first parameters (volume size, volume center and distance tumor-center), they have been chosen small. This enables a few transformations (i.e. translation of single/all volumes) of the body volumes resulting in a similar classification. Therefore, the weight for closest distance has been chosen larger, to prevent extreme transformations to distort the result. \\
 
@@ -44,27 +44,35 @@ Additionally to the weights of the various weights of the measurement parameters
 \label{tbl:classification_type_weights}
 \end{table}
 
-\subsection{Algorithm and Performance}\label{classification:algorithm}
-The algorithm is shown in algorithm \ref{alg:classification}. It consists of a main loop, iterating through the stored body
+\subsection{Algorithm}\label{classification:algorithm}
+The algorithm is shown in algorithm \ref{alg:classification}. It consists of a main loop, iterating through the stored body and performing the following measurements and additional tasks. \\
+First, the body type counter for the current voxel is incremented (line 2). Second, the x-, y- and z-coordinate of the voxel is added to total coordinate of the body type (line 3). This aims at the calculation of the volume center. If the body type is of \textit{tumor}, then the voxel coordinate is stored for later usage, i.e. the calculation of the closest distance parameter (line 4 \& 5). Afterwards, the parameter volume center and distance tumor-center are calculated by division and euclidian norm (line 6 \& 7).\\
+To calculate the closest distance between the volumes, it's necessary cross-compare the voxels. Therefore, another loop iterates through the complete body, and, within, iterates over all previously stored tumor coordinates. For each pair of voxel and tumor coordinate, the distance is calculated and, if less then before, the closest distance is updated (line 8-12).
 
-\begin{algorithm}[H]
-\label{alg:classification}
-\ForAll{voxels in body}
-	count body_type \;
-	sum up coordinates \;
-	\If{body_type == tumor}
-		store coordinate for later usage \;
-	\EndIf
-\EndFor
-volumeCenter = coordinates / body_type \;
-centerDistance = euclid_norm (tumorCenter, volumeCenter) \;
-\ForAll{voxels in body}
-	\ForAll{voxels in tumor stored}
-		calculated distance (voxel, tumor) \;
-		\If{distance $\textless$ closestDistance}
-			update closestDistance \;
-		\EndIf
-	\EndFor
-\EndFor
-\caption{Measurement algorithm in pseudo code}
-\end{algorithm}
+%\begin{algorithm}[H]
+%\label{alg:classification}
+%\ForAll{voxels in body}
+%	count body_type \;
+%	sum up coordinates \;
+%	\If{body_type == tumor}
+%		store coordinate for later usage \;
+%	\EndIf
+%\EndFor
+%volumeCenter = coordinates / body_type \;
+%centerDistance = euclid_norm (tumorCenter, volumeCenter) \;
+%\ForAll{voxels in body}
+%	\ForAll{voxels in tumor stored}
+%		calculated distance (voxel, tumor) \;
+%		\If{distance $\textless$ closestDistance}
+%			update closestDistance \;
+%		\EndIf
+%	\EndFor
+%\EndFor
+%\caption{Measurement algorithm in pseudo code}
+%\end{algorithm}
+
+\subsection{Performance evalution and prospects}
+Without the calculation of the closest distance in between the tumor volume and all other volumes, the performance is linear. The computing takes only a few seconds (2-4s), using a body similar to dimensions of 110x110x200. Alas, the computing time increases exponentially when performing the cross-comparison of each voxel in the body with all voxels of type \textit{tumor}. A first step of optimization has been taken when introducing a cache for the tumor voxel (already included in the algorithm above). Another step towards lower runtimes contains the implementation of a multi-threaded cross-comparison or completely multi-threaded algorithm. The multi-threaded cross-comparison has been implemented and it indicates a speed up by approximately the number of processor cores used, but has not beend thoroughly tested yet. \\
+Like the multi-threading, at the time of this paper, the classification and the results of it are not properly tested. Therefore, no scientific statement can be made. However, for linear programming no influence upon the runtime has been observed. When using the genetic algorithm or simulating annealing, only a small deviation of runtime has been observed. Unluckily it is not clear, whether the deviation is caused by the standard variation of the algorithms runtime, or by the influence of classification.\\
+Therefore, a major part of future work should contain the testing of the classification. Afterwards, a founded evaluation and adaptions according to the evaluation can be made.
+
