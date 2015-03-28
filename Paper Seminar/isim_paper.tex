@@ -17,11 +17,25 @@
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 \begin{document}
+
+\title{Treatment planning for HDR Brachytherapy}
+\date{March 30, 2015}
+\author{S.~Elm \and
+T.~Karthe \and
+M.~E.~Schroeder \and
+D.~Golebiewski \and
+L.~Mordhorst}
+
+\maketitle
+\newpage
+
+
 \tableofcontents
 
 \section{Model description}
 HDR brachytherapy consists of several radioactive sources being placed inside the patient's body by needles. These sources will eradiate into the surrounding tissues, treating tumor cells and other critical volumes. Therefore, it relies heavily on optimal algorithms to determine the dwell times for certain, predefined goals. \\
-The body is represented by an equidistant grid of voxels, defining the single body cell type. The seeds are randomly positioned within the tumor voxels. Hence, the dosis in a voxel is calculated as a sum of each seed by evaluating the dose-function up to a fixed limit, where the influence gets negligible.
+The body is represented by an equidistant grid of voxels, defining the single body cell type. The seeds are randomly positioned within the tumor voxels. Hence, the dosis in a voxel is calculated as a sum of each seed by evaluating the dose-function up to a fixed limit, where the influence gets negligible. \\
+In the model the tumor is called the planning target volume (PTV) and the surrounding organs are called organs at risk (OAR). The different body types might also be referred as volume of interest (VOI).
 
 \section{Evaluation criteria}
 	Reflecting the multicriteria nature of the problem, several measurements are considered for treatment evaluation.
@@ -572,7 +586,7 @@ The constraints allow us a good modelling of the tumor, since we are able to def
 
 \paragraph{Basic Funtionality}
 The basic functionality is depicted in algorithm \ref{alg:cplex}. This implementation checks every voxel of the body, if it is a tumor voxel or not. In case of a tumor voxel the influence of the radiation of every seed will be summed up, building a greater-equal constraint. For body voxel the influence of the radiation builds a term for the objective function. 
-\begin{algorithm}
+\begin{algorithm}[H]
 \label{alg:cplex}
  \For{x=0; x $\textless$ body.xDim; x++}{
  	\For{y=0; y $\textless$ body.yDim; y++}{
@@ -586,8 +600,6 @@ The basic functionality is depicted in algorithm \ref{alg:cplex}. This implement
 			\Else{\For{i=0; i $\textless$ numberOfSeeds; i++}{
 					$objective.addTerm(dose(x,y,z,i),time[i]);$	
 				}
-				
-				
 				}
  			
   		}
