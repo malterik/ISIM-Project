@@ -40,7 +40,7 @@ The focus of this article is set upon optimizing the dwell times for a fixed see
 \section{Model description}
 As a data basis for the optimization, a simple body model is used. 
 
-\subsection{Body modle}
+\subsection{Body model}
 The body model is supplied as a three-dimensional array ("body array"), containing the type of the body cells, within a matlab file (.mat). The body array is set up as an equidistant point cloud of cells (1 unit $\widehat{=}$ 0.2cm), being transformed into 3D-array of voxels (compare algorithm \ref{model:voxel}). Besides the coordinate, a voxel contains several dosis variables (like extreme dosis, goal dosis) and the body type (normal tissue, spine, liver, pancreas and tumor tissue). \\
 \begin{algorithm}[H]
 maxDosis: \textit{double} [cGy] \\
