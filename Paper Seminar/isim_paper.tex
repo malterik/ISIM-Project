@@ -35,14 +35,35 @@ L.~Mordhorst
 
 \section{Introduction}
 High dose rate brachytherapy (abbreviated: hdr brachytherapy) as a conformal radiation therapy allows a much higher cancer tissue ratio, compared to other treatment approaches. During hdr brachytherapy, radioactive sources (i.e. seeds) are placed within the patient's body, in, close to and around the cancer tissue. Then, the seeds eradiate into the surrounding tissues, remaining a pre-calculated time frame (dwell time). Therefore, seed placement and dwell times are the most important factors when analyzing brachytherapy treatments \cite{brachytherapy}. \\
-The focus of this article is set upon optimizing the dwell times for a fixed seed placement using computer aided algorithms, i.e. genetic algorithms and linear programming, as well as step-wise linear programming. The different algorithms will be described. Further on, they are analyzed and evaluated upon their adjustment possibilities (like parameters). Additionally, conclusions about the quality of the resulting treatment plans are drawn. Lastly, a possible approach to reduce runtim complexity and reuse of prior knowledge is presented.
+The focus of this article is set upon optimizing the dwell times for a fixed seed placement using computer aided algorithms, i.e. genetic algorithms and linear programming, as well as step-wise linear programming. The different algorithms will be described. Further on, they are analyzed and evaluated upon their adjustment possibilities (like parameters), subject to different treatment goals. Additionally, conclusions about the quality of the resulting treatment plans are drawn. Lastly, a possible approach to reduce runtim complexity and reuse of prior knowledge is presented.
 
 \section{Model description}
-HDR brachytherapy consists of several radioactive sources being placed inside the patient's body by needles. These sources will eradiate into the surrounding tissues, treating tumor cells and other critical volumes. Therefore, it relies heavily on optimal algorithms to determine the dwell times for certain, predefined goals. \\
-The body is represented by an equidistant grid of voxels, defining the single body cell type. The seeds are randomly positioned within the tumor voxels. Hence, the dosis in a voxel is calculated as a sum of each seed by evaluating the dose-function up to a fixed limit, where the influence gets negligible. \\
-In the model the tumor is called the planning target volume (PTV) and the surrounding organs are called organs at risk (OAR). The different body types might also be referred as volume of interest (VOI).
+As a data basis for the optimization, a simple body model is used. 
 
-\section{Evaluation criteria}
+\subsection{Body modle}
+The body model is supplied as a three-dimensional array ("body array"), containing the type of the body cells, within a matlab file (.mat). The body array is set up as an equidistant point cloud of cells (1 unit $\widehat{=}$ 0.2cm), being transformed into 3D-array of voxels (compare algorithm \ref{model:voxel}). Besides the coordinate, a voxel contains several dosis variables (like extreme dosis, goal dosis) and the body type (normal tissue, spine, liver, pancreas and tumor tissue). \\
+\begin{algorithm}[H]
+maxDosis: \textit{double} [cGy] \\
+minDosis: \textit{double} [cGy] \\
+goalDosis: \textit{double} [cGy] \\
+currentDosis: \textit{double} [cGy] \\
+coordinate: \textit{Coordinate} [x: units, y: units, z: units] \\
+bodyType: int
+\label{model:voxel}
+\caption{Properties of a voxel}
+\end{algorithm}
+
+An example body is displayed in figure \ref{model:body}. Here, the planning target volume (PTV, i.e. the tumor) and the other volumes of interest (VOI) are displayed. The VOIs might also be referred to as organs at risk (OAR). The ptv is in the middle of the figure (drawn red), surrounded by the liver (green). The yellow, cylindric volume behind the liver on the right represents the spine. At last, the pancreas is drawn as a black sphere (bottom right from the tumor).
+\begin{figure}
+\centering
+\includegraphics[width=.7\textwidth]{pictures/body}
+\caption{Example body with tumor}
+\label{model:body}
+\end{figure}
+
+Inside the body, the seeds are positioned randomly within the tumor voxels. When eradiating into the surrounding tissue, the seeds influence overlap and form a superposition. Hence, the dosis in a voxel is calculated as a sum of each seed by evaluating the dose-function up to a fixed limite, where the influence gets negligible (see chapter \ref{dose_function}).
+
+\subsection{Evaluation criteria}
 	Reflecting the multicriteria nature of the problem, several measurements are considered for treatment evaluation.
 	\begin{description}
 		\item[Coverage (CO)]~\\
@@ -66,7 +87,7 @@ In the model the tumor is called the planning target volume (PTV) and the surrou
 
 \end{description}
 
-\section{Dose-Function}
+\section{Dose-Function}\label{dose_function}
 The dose-distribution within the patient's body is the accumulation of all the radiation-seeds. Therefore it is mandatory to know the radiation intensity of each seed. Equation \eqref{eq:dosefunction} shows the general approach to approximate the dose intensity function and \eqref{eq:dosefunction2} shows the used implementation of that equation.
 \begin{equation}
 \label{eq:dosefunction}
