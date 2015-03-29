@@ -23,7 +23,7 @@
 \author{S.~Elm \and
 T.~Karthe \and
 M.~E.~Schroeder \and
-D.~Golebiewski \and
+%D.~Golebiewski \and
 L.~Mordhorst}
 
 \maketitle
@@ -568,7 +568,7 @@ The dose distribution of a radioactive seed shows that the dose at a radius of 1
 
 
 \section{Linear Programming}
-In Linear Programming an objective function and constraints are used to compute the optimal solution to a minimization or maximization problem, as described in [?]. The problem consists of a certain number of variables and a feasible region, which is defined by the contraints. 
+In Linear Programming an objective function and constraints are used to compute the optimal solution to a minimization or maximization problem, as described in [\cite{matprog}]. The problem consists of a certain number of variables and a feasible region, which is defined by the contraints. 
 Equation \eqref{eq:LPMatrix} shows the standard form of a linear problem. The objective function, modeled with \textit{c},  is to be minimized, while the constraints, modeled with \textit{A} and \textit{b}, are satisfied. The used algorithm yields a vector x for the optimal solution.
 
  \begin{equation}
@@ -584,7 +584,7 @@ Equation \eqref{eq:LPMatrix} shows the standard form of a linear problem. The ob
  
  \subsection{Implementation}
  
-For our problem we used CPLEX, an implementation of the simplex algorithm by IBM[?]. In simplex the feasible region is considered a polyhedron. The optimal solution must be in one of the vertices of the polyhedron. Simplex finds a start vertex and approaches the optimal solution by moving from vertex to vertex on an edge, until there is no better solution.
+For our problem we used CPLEX, an implementation of the simplex algorithm by IBM[\cite{cplex}]. In simplex the feasible region is considered a polyhedron. The optimal solution must be in one of the vertices of the polyhedron. Simplex finds a start vertex and approaches the optimal solution by moving from vertex to vertex on an edge, until there is no better solution.
 The constraints allow us a good modelling of the tumor, since we are able to define a constraint with certain limits for each body type.
 
 \subsubsection{Basic Funtionality}
@@ -719,7 +719,7 @@ Using more initial seeds, the algorithm can achieve higher conformality without 
 			
 		Improved treatment plans can be achieved by raising the number of seeds for the optimization process as demonstrated in the last two rows of Table \ref{table:lpswTable} and the corresponding dose volume histograms (Figure \ref{fig:lpswComparison}). The increased quality of a treatment plan comes at the cost of more computational complexity and therefore a longer computation time. 
 
-
+\newpage
 \bibliographystyle{plain}
 \bibliography{lit}
 
