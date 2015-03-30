@@ -14,21 +14,14 @@
 
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1
+]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
 \begin{document}
 
-\title{Treatment planning for HDR Brachytherapy}
-\date{March 31st, 2015}
-\author{S.~Elm \and
-T.~Karthe \and
-M.~E.~Schroeder \and
-D.~Golebiewski \and
-L.~Mordhorst
-}
-
-\maketitle
-\newpage
+\input{title.tex}
 
 \tableofcontents
 \newpage
@@ -201,9 +194,9 @@ The individual is implemented as a $n$-dimensional vector of dwell times, where 
  f(individual) = \sum_{body}w_{bodytype}(GD-CD)^2
  \end{equation}
 
-\subsubsection{Optimisation}
-\label{subsubsec:optimisation}
-The calculation of the fitness-function, as described in equation \eqref{eq:fifu}, is shown in algorithm \ref{alg:fifu}. It is easily seen that it iterates over every voxel in the body. This results in a very high computational complexity and runtime. To improve the performance of the algorithm, three different optimisation approaches are introduced. \\
+\subsubsection{Optimization}
+\label{subsubsec:optimization}
+The calculation of the fitness-function, as described in equation \eqref{eq:fifu}, is shown in algorithm \ref{alg:fifu}. It is easily seen that it iterates over every voxel in the body. This results in a very high computational complexity and runtime. To improve the performance of the algorithm, three different optimization approaches are introduced. \\
 
 \begin{algorithm}[H]
 \label{alg:fifu}
@@ -314,7 +307,7 @@ The fitness-function as described in \ref{fifu} uses individual weighting factor
 There are two important probabilities within the algorithm. The first one is the crossover rate. It describes how likely it is for two individuals to reproduce. The second one is the mutation rate. It describes, analogous to the crossover rate, the probability for an individual to perform a mutation. 
 
 \paragraph{Scaling and Accuracy}~\\
-The fitness-function for the given optimisation problem has very high computational complexity. Hence, two scaling parameters are introduced to achieve shorter runtimes. The challenge here is to find a compromise between good accuracy for the optimisation and practicable runtimes.\\ The first parameter is the treatment range. It chooses the range around the PTV which shall be evaluated by the algorithm. The second parameter is a simple scaling value which defines that just every  n$th$ voxel is evaluated within the treatment range.
+The fitness-function for the given optimization problem has very high computational complexity. Hence, two scaling parameters are introduced to achieve shorter runtimes. The challenge here is to find a compromise between good accuracy for the optimization and practicable runtimes.\\ The first parameter is the treatment range. It chooses the range around the PTV which shall be evaluated by the algorithm. The second parameter is a simple scaling value which defines that just every  n$th$ voxel is evaluated within the treatment range.
 
 
 
