@@ -586,11 +586,10 @@ The Simulated Annealing algorithm is comprised of
 \begin{description}
 \item[State]~\\
 \label{state}
-A state is any viable solution from the set of viable solutions for a problem. It can take be of any type.
+A state is any viable solution from the set of viable solutions for a problem. It can be of any type.
 \item[Cost Function]~\\
 \label{cofu}
-The cost function is at the center of the Simulated Annealing algorithm. It determines the quality of a computed state with respect to certain criteria which embody the cost function. Since the cost is what is minmized (or maximized) during the iterative process, the cost function is the function whose global minimum is sought by Simulated Annealing. \\
-that maps from the solution space to $\mathbb{R}$ 
+The cost function is at the center of the Simulated Annealing algorithm. It determines the quality of a computed state with respect to certain criteria which embody the cost function. Since the cost is what is minimized (or maximized) during the iterative process, the cost function is the function whose global minimum is sought by Simulated Annealing. \\
 \item[Metropolis Function, Metropolis Loop]~\\
 \label{metro}
 The \emph{Metropolis Function} is the function that determines how states of higher cost than the previous iteration's candidate solution state are handled. The \emph{Metropolis Loop} is the main loop which determines the cost of a candidate solution, compares it to the current best solution, accepts or discards it according to the Metropolis Function, computes a new candidate state and adjusts the annealing schedule.
@@ -605,16 +604,16 @@ Simulated Annealing is an iterative algorithm. Each iteration consists of four s
 \item[1. Next candidate state generation step]~\\
 This step consists of one operation: a random generation of a state vector or any other data structure to hold the values determining a solution to the optimization problem.
 \item[2. Cost calculation step]~\\
-This step calculates the cost of the randomly selected solution and stores it as a numerical value for efficent processing. The cost function is called with the candidate state as the argument.
+This step calculates the cost of the randomly selected solution and stores it as a numerical value for efficient processing. The cost function is called with the candidate state as the argument.
 \item[3. Decision step]~\\
-The decision step determines if the currently best solution should be overwritten. If the cost of the candidate solution is better than the current best, the candidate solution becomes the current best and the candidate cost becomes the current best as well. \\ If the the candidate cost is lower than the current best, a random number between 0 and 1 (excluding those) is drawn and if that number lies below the value of the Metropolis Function then the current best cost and state are updated regardless. \\ In any other case, the candidate solution is rejected. 
+The decision step determines if the currently best solution should be overwritten. If the cost of the candidate solution is better than the current best, the candidate solution becomes the current best and the candidate cost becomes the current best as well. \\ If the candidate cost is lower than the current best, a random number between 0 and 1 (excluding those) is drawn and if that number lies below the value of the Metropolis Function then the current best cost and state are updated regardless. \\ In any other case, the candidate solution is rejected. 
 \item[4. Annealing schedule adaptation step]~\\
-In this last step of an iteration, the virtual temperature is updated to a new value according to a predefined annealing schedule that determines the rate at wich the annealing temperature is meant to fall. This temperature is used in the next iteration to determine the value of the Metropolis Function.
+In this last step of an iteration, the virtual temperature is updated to a new value according to a predefined annealing schedule that determines the rate at which the annealing temperature is meant to fall. This temperature is used in the next iteration to determine the value of the Metropolis Function.
 \end{description} 
 
 \subsection{Implementation}
 \label{subsec:impl}
-The state is defined as the $n$-dimensional vector of all current dwelltimes, with $n$ denoting the number of seeds. Equation \eqref{eq:SAstate} shows a state vector for $n$ seeds.
+The state is defined as the $n$-dimentional vector of all current dwelltimes, with $n$ denoting the number of seeds. Equation \eqref{eq:SAstate} shows a state vector for $n$ seeds.
  \begin{equation}
  \label{eq:SAstate}
  State \ \ s := \begin{pmatrix}
@@ -622,7 +621,7 @@ The state is defined as the $n$-dimensional vector of all current dwelltimes, wi
 \end{pmatrix}   
 \end{equation} 
  
-The cost-function calculates the sum of squared differences between the goal dose and the current dose within the whole body, since the incurred radiation dose needs to be determined to evaluate the 
+The cost-function calculates the sum of squared differences between the goal dose and the current dose within the whole body, since the incurred radiation dose needs to be determined to evaluate the cost function.
  \begin{equation}
  f(state) = \sum_{body}(GD-CD)^2
  \end{equation}
@@ -682,7 +681,7 @@ The implementation of the cost-function, as described in equation \eqref{eq:cofu
  
 \subsubsection{Stopping Criterion}
 \label{subsubsec: SAstopcrit}	
-An integral Part of the Simulated Annealing algorithm is its known stopping condition: the algorithm stops once the "temperature" has reached zero. This is determined by the so-called "annealing schedule", which determines the drop in temperature. Since it is a function with the current iteration as its only input, it can be fashioned in any way desired. \\
+An integral part of the Simulated Annealing algorithm is its known stopping condition: the algorithm stops once the "temperature" has reached zero. This is determined by the so-called "annealing schedule", which determines the drop in temperature. Since it is a function with the current iteration as its only input, it can be fashioned in any way desired. \\
 
 \begin{algorithm}[H]
 	$T_{i+1} = T_{i} \cdot \frac{1}{i}$~\\
