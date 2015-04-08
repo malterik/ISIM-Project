@@ -575,7 +575,144 @@ The results have shown, that a high mutation rate leads to a very low tumor cove
 \end{table}
 \subsubsection{Scaling and Accuracy}
 The dose distribution of a radioactive seed shows that the dose at a radius of 10 cm is negligible small. So any treatment range higher than 10 cm wouldn't lead to better results. 
+\section{Simulated Annealing}
+\label{sec:SAIntro}
 
+Simulated Annealing \cite{genpro} describes a Monte Carlo (deterministic runtime) approach to minimization of multivariate functions. The idea of Simulated Annealing has been first proposed in a paper published by Metropolis et al. in 1953. The algorithm in said paper simulated the cooling of solids in a heat bath. This cooling process is known as annealing.
+
+The idea of the Simulated Annealing algorithm is to find the global minimum of a cost function by randomly selecting a valid solution from the set of viable solutions and determining its cost and keeping solutions which are more optimal than the previous iteration's solution. Following the annealing analogy, a less optimal solution can be accepted following a certain transition probability. This serves to prevent falling into local minima. \\ 
+The Simulated Annealing algorithm is comprised of
+
+\begin{description}
+\item[State]~\\
+\label{state}
+A state is any viable solution from the set of viable solutions for a problem. It can take be of any type.
+\item[Cost Function]~\\
+\label{cofu}
+The cost function is at the center of the Simulated Annealing algorithm. It determines the quality of a computed state with respect to certain criteria which embody the cost function. Since the cost is what is minmized (or maximized) during the iterative process, the cost function is the function whose global minimum is sought by Simulated Annealing. \\
+that maps from the solution space to $\mathbb{R}$ 
+\item[Metropolis Function, Metropolis Loop]~\\
+\label{metro}
+The \emph{Metropolis Function} is the function that determines how states of higher cost than the previous iteration's candidate solution state are handled. The \emph{Metropolis Loop} is the main loop which determines the cost of a candidate solution, compares it to the current best solution, accepts or discards it according to the Metropolis Function, computes a new candidate state and adjusts the annealing schedule.
+\item[Annealing Schedule]~\\
+\label{anneal}
+As Simulated Annealing is modeled on the annealing of solids, the annealing schedule emulates the influence of temperature on the mobility of molecular structures in solids. The further the virtual temperature drops, the less likely a less optimal state is accepted as the current best. The speed of the temperature decrease is called the \emph{annealing schedule}.
+\end{description} 
+
+Simulated Annealing is an iterative algorithm. Each iteration consists of four steps, which are described in the following:                                                           
+
+\begin{description}
+\item[1. Next candidate state generation step]~\\
+This step consists of one operation: a random generation of a state vector or any other data structure to hold the values determining a solution to the optimization problem.
+\item[2. Cost calculation step]~\\
+This step calculates the cost of the randomly selected solution and stores it as a numerical value for efficent processing. The cost function is called with the candidate state as the argument.
+\item[3. Decision step]~\\
+The decision step determines if the currently best solution should be overwritten. If the cost of the candidate solution is better than the current best, the candidate solution becomes the current best and the candidate cost becomes the current best as well. \\ If the the candidate cost is lower than the current best, a random number between 0 and 1 (excluding those) is drawn and if that number lies below the value of the Metropolis Function then the current best cost and state are updated regardless. \\ In any other case, the candidate solution is rejected. 
+\item[4. Annealing schedule adaptation step]~\\
+In this last step of an iteration, the virtual temperature is updated to a new value according to a predefined annealing schedule that determines the rate at wich the annealing temperature is meant to fall. This temperature is used in the next iteration to determine the value of the Metropolis Function.
+\end{description} 
+
+\subsection{Implementation}
+\label{subsec:impl}
+The state is defined as the $n$-dimensional vector of all current dwelltimes, with $n$ denoting the number of seeds. Equation \eqref{eq:SAstate} shows a state vector for $n$ seeds.
+ \begin{equation}
+ \label{eq:SAstate}
+ State \ \ s := \begin{pmatrix}
+ t_{1} \\ \vdots \\ t_{n} 	
+\end{pmatrix}   
+\end{equation} 
+ 
+The cost-function calculates the sum of squared differences between the goal dose and the current dose within the whole body, since the incurred radiation dose needs to be determined to evaluate the 
+ \begin{equation}
+ f(state) = \sum_{body}(GD-CD)^2
+ \end{equation}
+ To allow for tuning of the algorithm, the cost-function is extended by a weight factor for each subclass of voxel (i.e. tumor, liver, spine).
+ \begin{equation}
+ \label{eq:cofu}
+ f(state) = \sum_{body}w_{bodytype}(GD-CD)^2
+ \end{equation}
+
+\subsubsection{Optimization}
+\label{subsubsec:SAoptimization}
+The implementation of the cost-function, as described in equation \eqref{eq:cofu}, is shown in algorithm \ref{alg:cofu}. It iterates over every voxel in the body. This is computationally inefficient. To improve the performance of the cost calculation, an extension to the dose calculation process is introduced. \\
+
+\begin{algorithm}[H]
+\label{alg:cofu}
+ $diffcost=0$\;
+ $tempintensity=0$\;
+ \For{x=0; x $\textless$ body.xDim; x++}{
+ 	\For{y=0; y $\textless$ body.yDim; y++}{
+ 		\For{z=0; z $\textless$ body.zDim; z++}{
+ 			\For{j=0; j $\textless$ numberOfSeeds; j++} {
+				 	$tempintensity\ \ = tempintensity +  dosebyseed(x,y,z,j) $\;		
+ 			}
+  		}
+  		$diffcost += {w_{bodytype}\cdot(GoalDose-CurrentDose)^2}$\;
+  		% $diffcost = \sum_{body}{w_{bodytype}\cdot(GoalDose-CurrentDose)^2}$\;
+  	}
+  }
+ 
+ \Return{$\sqrt{diffcost}$}\;
+ \caption{Calculation of the cost}
+ 
+ \end{algorithm}
+ 
+ ~\\ The following extension is based on the fact that the dosefunction, save for the distance( and the angles in future implementations) , remains constant. This is leveraged in precomputing the value of the dosefunction and saving it in memory. The cost-function algorithm changes as follows: \\
+
+\begin{algorithm}[H]
+\label{alg:cofu2}
+ $diffcost=0$\;
+ $tempintensity=0$\;
+ \For{x=0; x $\textless$ body.xDim; x++}{
+ 	\For{y=0; y $\textless$ body.yDim; y++}{
+ 		\For{z=0; z $\textless$ body.zDim; z++}{
+ 			\For{j=0; j $\textless$ numberOfSeeds; j++} {
+				 	$tempintensity +=  efficientdosebyseed(x,y,z,j) $\;		
+ 			}
+  		}
+  		$diffcost += {w_{bodytype}\cdot(GoalDose-CurrentDose)^2}$\;
+  		% $diffcost = \sum_{body}{w_{bodytype}\cdot(GoalDose-CurrentDose)^2}$\;
+  	}
+  }
+ 
+ \Return{$\sqrt{diffcost}$}\;
+ \caption{Calculation of the cost by an efficient dosefunction}
+ 
+ \end{algorithm}
+ 
+\subsubsection{Stopping Criterion}
+\label{subsubsec: SAstopcrit}	
+An integral Part of the Simulated Annealing algorithm is its known stopping condition: the algorithm stops once the "temperature" has reached zero. This is determined by the so-called "annealing schedule", which determines the drop in temperature. Since it is a function with the current iteration as its only input, it can be fashioned in any way desired. \\
+
+\begin{algorithm}[H]
+	$T_{i+1} = T_{i} \cdot \frac{1}{i}$~\\
+	$...$ ~\\
+	if $T<=0$ do break;
+	 
+\caption{Stopping Criterion}
+\end{algorithm}  
+
+\newpage
+\subsubsection{Parameters}
+Simulated Annealing, as introduced, has a set of parameters which can be tuned to improve performance. The relevant parameters and their effects are discussed here.
+
+\paragraph{Weights}~\\
+The cost-function as described in \ref{cofu} uses individual weighting factors for each body type.  The estimation of these weights is the at the core of influencing the therapy outcome since it directly penalizes radiation accumulation for specific areas of the irradiated volume. It can be taken even further by using gradients instead of fixed weights to penalize the core structures of a certain organ more than the outside layers. This of course requires verification with a medical professional.
+
+\paragraph{Transition Probability} ~\\ 
+The transition probability of the Metropolis Function \ref{metro} has been deduced from how a thermodynamic system, minimizing its temperature, moves from its current state to a following state. The optimality of this transition depends on the shape of the cost-function \ref{cofu} and thus depends on each patient's case and cannot be generalized for a truly optimal outcome. Since its main use is to prevent the falling into local minima, multiple runs combined with evolutionary algorithms might be an approach worth investigating.
+
+\paragraph{Annealing Schedule} ~\\ 
+The annealing schedule determines how quickly the likelihood of accepting a less optimal state drops. In the current implementation so-called Cauchy annealing is used. Tuning this parameter influences both computation speed and risk of local minimization. A truly adaptive annealing schedule that takes all previous cost-function computations into account would be a very good starting point.
+
+\subsubsection{Results}
+
+\paragraph{Weights in cost-function}
+As mentioned before, the weights are preset for any computation. If the outcome of a computation is not satisfactory, a modification of the weights and recomputation is necessary. In the tests run, weighting by tissue type has had a influence on runtime since the difference need to be multiplied by a scalar only but, as mentioned, recomputation is necessary for improving the outcome. \\ 
+
+%\newpage
+\paragraph{Precomputed Dose-function} 
+The use of a precomputed dose-function has reduced computation time by 70.8 \%  on average while keeping the results consistent.
 
 \section{Linear Programming}
 In linear programming an objective function and constraints are used to compute the optimal solution to a minimization or maximization problem, as described in [\cite{matprog}]. The problem consists of a certain number of variables and a feasible region, which is defined by the contraints. 
